@@ -1,0 +1,18 @@
+services:
+  database:
+    image: postgres:13-alpine
+    container_name: database
+    restart: unless-stopped
+    networks:
+      - app-network
+    ports:
+      - "${DATABASE_PORT}:5432"
+    volumes:
+      - "${DATABASE_HOST_DIRECTORY}:/var/lib/postgresql/data"
+      - ./database/host:/host
+    working_dir: /host
+
+networks:
+  app-network:
+    driver: bridge
+    name: app-network
