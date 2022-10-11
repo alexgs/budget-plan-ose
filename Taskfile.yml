@@ -4,7 +4,7 @@ version: '3'
 
 includes:
   db: ./database/Taskfile.yml
-#  web: ./webapp/Taskfile.yml
+  web: ./webapp/Taskfile.yml
 
 dotenv: ['.env']
 

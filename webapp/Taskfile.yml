@@ -1,0 +1,37 @@
+version: '3'
+
+vars:
+  WEBAPP_SERVICE_NAME: webapp
+  WEBAPP_WORKING_DIR: ./webapp
+
+  WEBAPP_VERSION:
+    sh: jq -r .version {{.WEBAPP_WORKING_DIR}}/package.json
+
+tasks:
+  version:
+    cmds:
+      - echo {{.WEBAPP_VERSION}}
+    desc: Show the current version number
+    silent: true
+
+  version:major:
+    dir: "{{.WEBAPP_WORKING_DIR}}"
+    cmds:
+      - "{{.NPM}} version major"
+    desc: Increment major version number
+
+  version:minor:
+    dir: "{{.WEBAPP_WORKING_DIR}}"
+    cmds:
+      - "{{.NPM}} version minor"
+    desc: Increment minor version number
+
+  version:patch:
+    dir: "{{.WEBAPP_WORKING_DIR}}"
+    cmds:
+      - "{{.NPM}} version patch"
+    desc: Increment patch version number
+
+  # --- HIDDEN COMMANDS ---
+
+  # --- PRIVATE COMMANDS ---

@@ -1,0 +1,22 @@
+{
+  "name": "budget-plan",
+  "version": "0.1.0",
+  "description": "A budgeting app for me",
+  "author": {
+    "email": "alex.nebula99@gmail.com",
+    "name": "Alex Gates-Shannon"
+  },
+  "license": "OSL-3.0",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexgs/budget-plan.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "volta": {
+    "node": "16.17.1",
+    "npm": "8.19.2"
+  }
+}
