@@ -58,3 +58,39 @@ CREATE TABLE IF NOT EXISTS public.user_accounts
 
 CREATE UNIQUE INDEX user_accounts_provider_account_id
   ON user_accounts (provider, provider_account_id);
+
+--[ # TABLE public.user_sessions # ]--
+
+CREATE TABLE IF NOT EXISTS public.user_sessions
+(
+  id            UUID DEFAULT uuid_generate_v4() NOT NULL
+    CONSTRAINT user_sessions_pk
+      PRIMARY KEY,
+  session_token TEXT                            NOT NULL,
+  user_id       UUID                            NOT NULL
+    CONSTRAINT user_sessions_user_id_fk
+      REFERENCES users
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+  expires       TIMESTAMP(3) WITHOUT TIME ZONE
+);
+
+CREATE UNIQUE INDEX user_sessions_session_token
+  on user_sessions (session_token);
+
+--[ # TABLE public.user_verification_tokens # ]--
+
+CREATE TABLE IF NOT EXISTS public.user_verification_tokens
+(
+  id            UUID DEFAULT uuid_generate_v4() NOT NULL
+    CONSTRAINT user_verification_tokens_pk
+      PRIMARY KEY,
+  token TEXT NOT NULL ,
+  expires       TIMESTAMP(3) WITHOUT TIME ZONE
+);
+
+CREATE UNIQUE INDEX user_verification_tokens_id_token
+  on user_verification_tokens (id, token);
+
+CREATE UNIQUE INDEX user_verification_tokens_token
+  on user_verification_tokens (token);
