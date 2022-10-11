@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Webapp pages" pattern="file[budget-plan]:webapp/pages//*" />
+</component>
