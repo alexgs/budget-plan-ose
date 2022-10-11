@@ -23,6 +23,11 @@ tasks:
       - "{{.COMPOSE}} down --remove-orphans"
     desc: Tear down the application
 
+  flyway:
+    cmds:
+      - "{{.COMPOSE}} run flyway"
+    desc: Open an interactive shell for working with Flyway
+
   up:
     cmds:
       - "{{.COMPOSE}} up -d"
