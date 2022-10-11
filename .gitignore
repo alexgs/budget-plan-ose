@@ -1,14 +1,9 @@
 # --- PROJECT ---
 
-# Env files
-# We only exclude the local .env file because it's used for per-developer configuration, whereas other *.env files pull
-#  from 1Password
-.env
-local.env
-
 # Misc. files
 .DS_Store
 *.crt
+*.env
 *.key
 *.pem
 *.pgsql
