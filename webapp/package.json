@@ -1,0 +1,42 @@
+{
+  "name": "budget-plan",
+  "version": "0.1.0",
+  "description": "A budgeting app for me",
+  "author": {
+    "email": "alex.nebula99@gmail.com",
+    "name": "Alex Gates-Shannon"
+  },
+  "license": "OSL-3.0",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexgs/budget-plan.git"
+  },
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "lint": "next lint",
+    "prettier": "npx prettier --check .",
+    "prettier:fix": "npx prettier --write .",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^4.5.13",
+    "next": "^12.3.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.8.4",
+    "@types/react": "18.0.21",
+    "eslint": "8.25.0",
+    "eslint-config-next": "12.3.1",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "2.7.1",
+    "typescript": "4.8.4"
+  },
+  "volta": {
+    "node": "16.17.1",
+    "npm": "8.19.2"
+  }
+}

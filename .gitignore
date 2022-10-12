@@ -1,0 +1,10 @@
+# --- PROJECT ---
+
+# Misc. files
+.DS_Store
+*.crt
+*.env
+*.key
+*.pem
+*.pgsql
+*.tar.gz
