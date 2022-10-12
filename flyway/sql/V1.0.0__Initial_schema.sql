@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS public.user_sessions
       REFERENCES users
       ON DELETE CASCADE
       ON UPDATE CASCADE,
-  expires       TIMESTAMP(3) WITHOUT TIME ZONE
+  expires       TIMESTAMP(3) WITHOUT TIME ZONE NOT NULL
 );
 
 CREATE UNIQUE INDEX user_sessions_session_token
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS public.user_verification_tokens
     CONSTRAINT user_verification_tokens_pk
       PRIMARY KEY,
   token   TEXT                            NOT NULL,
-  expires TIMESTAMP(3) WITHOUT TIME ZONE
+  expires TIMESTAMP(3) WITHOUT TIME ZONE NOT NULL
 );
 
 CREATE UNIQUE INDEX user_verification_tokens_id_token
