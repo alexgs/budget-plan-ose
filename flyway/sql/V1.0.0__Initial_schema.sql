@@ -36,24 +36,25 @@ CREATE UNIQUE INDEX users_email
 
 CREATE TABLE IF NOT EXISTS public.user_accounts
 (
-  id                  UUID DEFAULT uuid_generate_v4() NOT NULL
+  id                       UUID DEFAULT uuid_generate_v4() NOT NULL
     CONSTRAINT user_accounts_pk
       PRIMARY KEY,
-  user_id             UUID                            NOT NULL
+  user_id                  UUID                            NOT NULL
     CONSTRAINT user_accounts_user_id_fk
       REFERENCES users
       ON DELETE CASCADE
       ON UPDATE CASCADE,
-  type                TEXT                            NOT NULL,
-  provider            TEXT                            NOT NULL,
-  provider_account_id TEXT                            NOT NULL,
-  refresh_token       TEXT,
-  access_token        TEXT,
-  expires_at          INTEGER,
-  token_type          TEXT,
-  scope               TEXT,
-  id_token            TEXT,
-  session_state       TEXT
+  type                     TEXT                            NOT NULL,
+  provider                 TEXT                            NOT NULL,
+  provider_account_id      TEXT                            NOT NULL,
+  refresh_token            TEXT,
+  refresh_token_expires_in INTEGER,
+  access_token             TEXT,
+  expires_at               INTEGER,
+  token_type               TEXT,
+  scope                    TEXT,
+  id_token                 TEXT,
+  session_state            TEXT
 );
 
 CREATE UNIQUE INDEX user_accounts_provider_account_id
@@ -72,7 +73,7 @@ CREATE TABLE IF NOT EXISTS public.user_sessions
       REFERENCES users
       ON DELETE CASCADE
       ON UPDATE CASCADE,
-  expires       TIMESTAMP(3) WITHOUT TIME ZONE
+  expires       TIMESTAMP(3) WITHOUT TIME ZONE NOT NULL
 );
 
 CREATE UNIQUE INDEX user_sessions_session_token
@@ -82,11 +83,11 @@ CREATE UNIQUE INDEX user_sessions_session_token
 
 CREATE TABLE IF NOT EXISTS public.user_verification_tokens
 (
-  id            UUID DEFAULT uuid_generate_v4() NOT NULL
+  id      UUID DEFAULT uuid_generate_v4() NOT NULL
     CONSTRAINT user_verification_tokens_pk
       PRIMARY KEY,
-  token TEXT NOT NULL ,
-  expires       TIMESTAMP(3) WITHOUT TIME ZONE
+  token   TEXT                            NOT NULL,
+  expires TIMESTAMP(3) WITHOUT TIME ZONE NOT NULL
 );
 
 CREATE UNIQUE INDEX user_verification_tokens_id_token

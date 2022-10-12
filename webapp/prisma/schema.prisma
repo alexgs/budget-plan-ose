@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model flyway_schema_history {
+  installed_rank Int      @id(map: "flyway_schema_history_pk")
+  version        String?  @db.VarChar(50)
+  description    String   @db.VarChar(200)
+  type           String   @db.VarChar(20)
+  script         String   @db.VarChar(1000)
+  checksum       Int?
+  installed_by   String   @db.VarChar(100)
+  installed_on   DateTime @default(now()) @db.Timestamp(6)
+  execution_time Int
+  success        Boolean
+
+  @@index([success], map: "flyway_schema_history_s_idx")
+  @@ignore()
+}
+
+model Account {
+  id                       String  @id(map: "user_accounts_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId                   String  @map("user_id") @db.Uuid
+  type                     String
+  provider                 String
+  providerAccountId        String  @map("provider_account_id")
+  refresh_token            String?
+  refresh_token_expires_in Int?
+  access_token             String?
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String?
+  session_state            String?
+  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "user_accounts_user_id_fk")
+
+  @@unique([provider, providerAccountId], map: "user_accounts_provider_account_id")
+  @@map("user_accounts")
+}
+
+model Session {
+  id           String   @id(map: "user_sessions_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  sessionToken String   @unique(map: "user_sessions_session_token") @map("session_token")
+  userId       String   @map("user_id") @db.Uuid
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "user_sessions_user_id_fk")
+
+  @@map("user_sessions")
+}
+
+model VerificationToken {
+  identifier String   @id(map: "user_verification_tokens_pk") @default(dbgenerated("uuid_generate_v4()")) @map("id") @db.Uuid
+  token      String   @unique(map: "user_verification_tokens_token")
+  expires    DateTime
+
+  @@unique([identifier, token], map: "user_verification_tokens_id_token")
+  @@map("user_verification_tokens")
+}
+
+model User {
+  id             String    @id(map: "users_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name           String?
+  email          String?   @unique(map: "users_email")
+  emailVerified  DateTime? @map("email_verified")
+  image          String?
+  accounts       Account[]
+  sessions       Session[]
+
+  @@map("users")
+}
