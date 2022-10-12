@@ -1,8 +1,17 @@
+import styled from '@emotion/styled';
+import { contentWidth, space } from '../components/tokens';
+
+const HomePageContainer = styled.div({
+  margin: `${space.medium} auto`,
+  maxWidth: contentWidth.small,
+  textAlign: 'center',
+})
+
 function HomePage() {
   return (
-    <div>
+    <HomePageContainer>
       <h1>Budget Plan</h1>
-    </div>
+    </HomePageContainer>
   );
 }
 
