@@ -3,7 +3,7 @@ import { Session } from 'next-auth';
 import { getProviders, signIn, signOut, useSession } from 'next-auth/react';
 import { contentWidth, space } from '../components/tokens';
 
-const TestPageContainer = styled.div({
+const BudgetContainer = styled.div({
   margin: `${space.medium} auto`,
   maxWidth: contentWidth.small,
   textAlign: 'center',
@@ -11,17 +11,16 @@ const TestPageContainer = styled.div({
 
 interface Props {}
 
-function TestPage(props: Props) {
+function Budget(props: Props) {
   const session = useSession();
   console.log(session);
   return (
-    <TestPageContainer>
+    <BudgetContainer>
       <h1>Budget Plan</h1>
       <div>This is a secured page</div>
-    </TestPageContainer>
+    </BudgetContainer>
   );
 }
+Budget.auth = true;
 
-TestPage.auth = true;
-
-export default TestPage;
+export default Budget;

@@ -9,6 +9,11 @@ import prisma from '../../../server-lib/prismadb';
 
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
+  pages: {
+    error: '/auth/error',
+    signIn: '/auth/login',
+    signOut: '/auth/logout',
+  },
   providers: [
     GithubProvider({
       clientId: env.get('GITHUB_ID').required().asString(),
