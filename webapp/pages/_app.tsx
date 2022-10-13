@@ -1,20 +1,47 @@
 import { Global } from '@emotion/react';
-import { Session } from 'next-auth';
+import '@fontsource/inter/variable.css';
 import type { AppProps as DefaultAppProps } from 'next/app';
-import { SessionProvider } from 'next-auth/react';
+import { NextComponentType, NextPageContext } from 'next/dist/shared/lib/utils';
+import { Session } from 'next-auth';
+import { SessionProvider, useSession } from 'next-auth/react';
+import React, { ReactNode } from 'react';
 
 import { globalStyles } from '../components';
 
-import '@fontsource/inter/variable.css';
 import 'normalize.css/normalize.css';
 
-type AppProps = DefaultAppProps<{ session: Session }>;
+interface AppProps extends DefaultAppProps<{ session: Session }> {
+  Component: NextComponentType<NextPageContext, any, any> & { isPublic?: boolean };
+}
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SessionProvider session={session}>
       <Global styles={globalStyles} />
-      <Component {...pageProps} />
+      {Component.isPublic ? (
+        <Component {...pageProps} />
+      ) : (
+        <Auth>
+          <Component {...pageProps} />
+        </Auth>
+      )}
     </SessionProvider>
   );
+}
+
+interface AuthProps {
+  children: ReactNode | ReactNode[];
+}
+
+const Auth: React.FC<AuthProps> = (props: AuthProps) => {
+  const { children } = props;
+
+  // if `{ required: true }` is supplied, `status` can only be "loading" or "authenticated"
+  const { status } = useSession({ required: true });
+
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  return <>{ children }</>;
 }
