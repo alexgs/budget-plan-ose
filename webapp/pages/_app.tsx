@@ -11,19 +11,19 @@ import { globalStyles } from '../components';
 import 'normalize.css/normalize.css';
 
 interface AppProps extends DefaultAppProps<{ session: Session }> {
-  Component: NextComponentType<NextPageContext, any, any> & { auth?: boolean };
+  Component: NextComponentType<NextPageContext, any, any> & { isPublic?: boolean };
 }
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SessionProvider session={session}>
       <Global styles={globalStyles} />
-      {Component.auth ? (
+      {Component.isPublic ? (
+        <Component {...pageProps} />
+      ) : (
         <Auth>
           <Component {...pageProps} />
         </Auth>
-      ) : (
-        <Component {...pageProps} />
       )}
     </SessionProvider>
   );

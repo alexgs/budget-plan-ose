@@ -21,6 +21,5 @@ function Budget(props: Props) {
     </BudgetContainer>
   );
 }
-Budget.auth = true;
 
 export default Budget;

@@ -24,5 +24,6 @@ function HomePage() {
     </HomePageContainer>
   );
 }
+HomePage.isPublic = true;
 
 export default HomePage;
