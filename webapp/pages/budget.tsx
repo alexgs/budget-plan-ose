@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import { Dialog } from '../components';
 
 import { contentWidth, space } from '../components/tokens';
 
@@ -16,18 +17,11 @@ function Budget() {
     setShowAddCatDialog(true);
   }
 
-  function renderAddCategoryDialog() {
-    if (!showAddCatDialog) {
-      return null;
-    }
-    return <div>Add new category</div>;
-  }
-
   return (
     <BudgetContainer>
       <h1>Budget Plan</h1>
       <div>This is a secured page</div>
-      {renderAddCategoryDialog()}
+      <Dialog isVisible={showAddCatDialog}></Dialog>
       <div>
         <button onClick={handleAddCategoryClick}>Add Category</button>
       </div>
