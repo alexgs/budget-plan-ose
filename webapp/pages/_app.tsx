@@ -1,12 +1,13 @@
-import { MantineProvider } from '@mantine/core';
+import { MantineProvider, MantineThemeOverride } from '@mantine/core';
 import type { AppProps as DefaultAppProps } from 'next/app';
 import { NextComponentType, NextPageContext } from 'next/dist/shared/lib/utils';
 import { Session } from 'next-auth';
 import { SessionProvider, useSession } from 'next-auth/react';
 import React, { ReactNode } from 'react';
 
+import { theme } from '../components/mantine-theme';
+
 import '@fontsource/inter/variable.css';
-import 'normalize.css/normalize.css';
 
 interface AppProps extends DefaultAppProps<{ session: Session }> {
   Component: NextComponentType<NextPageContext, any, any> & { isPublic?: boolean };
@@ -15,21 +16,14 @@ interface AppProps extends DefaultAppProps<{ session: Session }> {
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SessionProvider session={session}>
-      <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-        theme={{
-          /** Put your mantine theme override here */
-          colorScheme: 'dark',
-        }}
-      >
-      {Component.isPublic ? (
-        <Component {...pageProps} />
-      ) : (
-        <Auth>
+      <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
+        {Component.isPublic ? (
           <Component {...pageProps} />
-        </Auth>
-      )}
+        ) : (
+          <Auth>
+            <Component {...pageProps} />
+          </Auth>
+        )}
       </MantineProvider>
     </SessionProvider>
   );
@@ -49,5 +43,5 @@ const Auth: React.FC<AuthProps> = (props: AuthProps) => {
     return <div>Loading...</div>;
   }
 
-  return <>{ children }</>;
-}
+  return <>{children}</>;
+};
