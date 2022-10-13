@@ -1,21 +1,12 @@
-import styled from '@emotion/styled';
-
-import { AddCategoryButton } from '../components';
-import { contentWidth, space } from '../components/tokens';
-
-const BudgetContainer = styled.div({
-  margin: `${space.medium} auto`,
-  maxWidth: contentWidth.small,
-  textAlign: 'center',
-});
+import { AddCategoryButton, Page } from '../components';
 
 function Budget() {
   return (
-    <BudgetContainer>
+    <Page>
       <h1>Budget Plan</h1>
       <p>This is a secured page</p>
       <AddCategoryButton />
-    </BudgetContainer>
+    </Page>
   );
 }
 
