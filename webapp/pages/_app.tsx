@@ -1,13 +1,11 @@
-import { Global } from '@emotion/react';
-import '@fontsource/inter/variable.css';
+import { MantineProvider } from '@mantine/core';
 import type { AppProps as DefaultAppProps } from 'next/app';
 import { NextComponentType, NextPageContext } from 'next/dist/shared/lib/utils';
 import { Session } from 'next-auth';
 import { SessionProvider, useSession } from 'next-auth/react';
 import React, { ReactNode } from 'react';
 
-import { globalStyles } from '../components';
-
+import '@fontsource/inter/variable.css';
 import 'normalize.css/normalize.css';
 
 interface AppProps extends DefaultAppProps<{ session: Session }> {
@@ -17,7 +15,14 @@ interface AppProps extends DefaultAppProps<{ session: Session }> {
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SessionProvider session={session}>
-      <Global styles={globalStyles} />
+      <MantineProvider
+        withGlobalStyles
+        withNormalizeCSS
+        theme={{
+          /** Put your mantine theme override here */
+          colorScheme: 'dark',
+        }}
+      >
       {Component.isPublic ? (
         <Component {...pageProps} />
       ) : (
@@ -25,6 +30,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
           <Component {...pageProps} />
         </Auth>
       )}
+      </MantineProvider>
     </SessionProvider>
   );
 }
