@@ -1,20 +1,30 @@
-import { Button, Modal, NativeSelect, Space } from '@mantine/core';
-import { useSession } from 'next-auth/react';
+import {
+  Button,
+  Group,
+  Modal,
+  NativeSelect,
+  Space,
+  TextInput,
+} from '@mantine/core';
 import { FC, useState } from 'react';
-import { TextInputWithFloatingLabel } from './Inputs/TextInputWithFloatingLabel';
 
 export const AddCategoryButton: FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [categoryName, setCategoryName] = useState('');
+  const [parentId, setParentId] = useState('');
 
   const parentCategories = [
-    { label: 'None', value: '0' },
+    { label: 'None', value: '' },
     { label: 'House', value: 'abc123' },
     { label: 'Groceries', value: 'abc124' },
   ];
 
-  function handleClick(): void {
+  function handleAddCategoryClick(): void {
     setIsVisible(true);
+  }
+
+  function handleSaveClick(): void {
+    setIsVisible(false);
   }
 
   return (
@@ -25,22 +35,37 @@ export const AddCategoryButton: FC = () => {
         overlayBlur={3}
         title="Add new category"
       >
-        <Space h="xs" />
-        <TextInputWithFloatingLabel
+        <TextInput
           label="Name"
           placeholder="Rainy day fund"
-          onChange={setCategoryName}
+          onChange={(event) => setCategoryName(event.currentTarget.value)}
           value={categoryName}
+          withAsterisk
         />
         <Space h="lg" />
         <NativeSelect
           data={parentCategories}
-          placeholder="Pick one"
           label="Nest under"
+          placeholder="None"
+          onChange={(event) => setParentId(event.currentTarget.value)}
+          value={parentId}
         />
+        <Space h="xl" />
+        <Group position="apart">
+          <Button
+            color="pink.3"
+            onClick={() => setIsVisible(false)}
+            variant="outline"
+          >
+            Cancel
+          </Button>
+          <Button color="lime.4" onClick={handleSaveClick} variant="outline">
+            Save
+          </Button>
+        </Group>
       </Modal>
       <div>
-        <Button variant="outline" onClick={handleClick}>
+        <Button variant="outline" onClick={handleAddCategoryClick}>
           Add Category
         </Button>
       </div>
