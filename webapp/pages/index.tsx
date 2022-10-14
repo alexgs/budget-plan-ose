@@ -1,12 +1,5 @@
-import styled from '@emotion/styled';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { contentWidth, space } from '../components/tokens';
-
-const HomePageContainer = styled.div({
-  margin: `${space.medium} auto`,
-  maxWidth: contentWidth.small,
-  textAlign: 'center',
-});
+import { Page } from '../components';
 
 function HomePage() {
   const { data: session } = useSession();
@@ -18,10 +11,10 @@ function HomePage() {
     ) : (<><button onClick={() => signIn()}>Sign in</button></>);
 
   return (
-    <HomePageContainer>
+    <Page>
       <h1>Budget Plan</h1>
       {content}
-    </HomePageContainer>
+    </Page>
   );
 }
 HomePage.isPublic = true;

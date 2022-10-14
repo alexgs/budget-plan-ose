@@ -1,1 +1,2 @@
-export { globalStyles } from './global-styles';
+export { AddCategory } from './AddCategory';
+export { Page } from './Page';
