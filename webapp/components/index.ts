@@ -1,2 +1,2 @@
-export { AddCategoryButton } from './AddCategoryButton';
+export { AddCategory } from './AddCategory';
 export { Page } from './Page';

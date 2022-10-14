@@ -8,7 +8,7 @@ import {
 } from '@mantine/core';
 import { FC, useState } from 'react';
 
-export const AddCategoryButton: FC = () => {
+export const AddCategory: FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [categoryName, setCategoryName] = useState('');
   const [parentId, setParentId] = useState('');

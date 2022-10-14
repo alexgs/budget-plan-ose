@@ -1,11 +1,11 @@
-import { AddCategoryButton, Page } from '../components';
+import { AddCategory, Page } from '../components';
 
 function Budget() {
   return (
     <Page>
       <h1>Budget Plan</h1>
       <p>This is a secured page</p>
-      <AddCategoryButton />
+      <AddCategory />
     </Page>
   );
 }
