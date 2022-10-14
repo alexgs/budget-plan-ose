@@ -1,3 +1,5 @@
+export { globalFetcher } from './global-fetcher';
+
 import { clone, cloneDeep } from 'lodash-es';
 
 interface rawCategory {

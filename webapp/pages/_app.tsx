@@ -2,33 +2,14 @@ import { MantineProvider } from '@mantine/core';
 import type { AppProps as DefaultAppProps } from 'next/app';
 import { NextComponentType, NextPageContext } from 'next/dist/shared/lib/utils';
 import { Session } from 'next-auth';
-import { SessionProvider, useSession } from 'next-auth/react';
-import React, { ReactNode } from 'react';
+import { SessionProvider } from 'next-auth/react';
 import { SWRConfig } from 'swr';
 
+import { globalFetcher } from '../client-lib';
+import { NextAuthProvider } from '../components';
 import { theme } from '../components/mantine-theme';
 
 import '@fontsource/inter/variable.css';
-
-interface AuthProps {
-  children: ReactNode | ReactNode[];
-}
-
-const Auth: React.FC<AuthProps> = (props: AuthProps) => {
-  const { children } = props;
-
-  // if `{ required: true }` is supplied, `status` can only be "loading" or "authenticated"
-  const { status } = useSession({ required: true });
-
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
-
-  return <>{children}</>;
-};
-
-const globalFetcher = (resource: RequestInfo | URL, init?: RequestInit) =>
-  fetch(resource, init).then((res) => res.json());
 
 interface AppProps extends DefaultAppProps<{ session: Session }> {
   Component: NextComponentType<NextPageContext, any, any> & {
@@ -43,9 +24,9 @@ export default function App({
   const content = Component.isPublic ? (
     <Component {...pageProps} />
   ) : (
-    <Auth>
+    <NextAuthProvider>
       <Component {...pageProps} />
-    </Auth>
+    </NextAuthProvider>
   );
 
   return (
