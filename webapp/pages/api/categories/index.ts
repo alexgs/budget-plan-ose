@@ -1,8 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+import { prisma } from '../../../server-lib';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
-    res.send('Hello categories');
+    const categories = await prisma.category.findMany();
+    res.send(categories);
   } else {
     res.status(405);
     res.setHeader('Allow', 'GET');
