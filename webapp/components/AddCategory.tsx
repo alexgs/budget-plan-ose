@@ -7,17 +7,31 @@ import {
   TextInput,
 } from '@mantine/core';
 import { FC, useState } from 'react';
+import useSWR from 'swr';
+
+import { getAllCategoryLabels } from '../client-lib';
 
 export const AddCategory: FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [categoryName, setCategoryName] = useState('');
   const [parentId, setParentId] = useState('');
 
-  const parentCategories = [
-    { label: 'None', value: '' },
-    { label: 'House', value: 'abc123' },
-    { label: 'Groceries', value: 'abc124' },
-  ];
+  const { error, data: catData } = useSWR('/api/categories');
+  if (error) {
+    console.error(error);
+    return <div>Error!</div>;
+  }
+
+  if (!catData) {
+    return <div>Loading...</div>;
+  }
+
+  const labels = getAllCategoryLabels(catData);
+  const parentCategories = labels.map((cat) => ({
+    label: cat.label,
+    value: cat.id,
+  }));
+  parentCategories.unshift({ label: 'None', value: '' });
 
   function handleAddCategoryClick(): void {
     setIsVisible(true);
