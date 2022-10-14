@@ -3,6 +3,7 @@ import { clone, cloneDeep } from 'lodash-es';
 interface rawCategory {
   id: string;
   name: string;
+  order: number | null;
   parentId: string | null;
   slug: string;
   createdAt: string;
@@ -12,6 +13,7 @@ interface rawCategory {
 interface categoryTreeNode {
   id: string;
   name: string;
+  order: number | null;
   parentId: string | null;
   slug: string;
   createdAt: string;
@@ -31,6 +33,17 @@ function buildCategoryTree(
 ): categoryTreeNode[] {
   return categories
     .filter((cat) => cat.parentId === parentId)
+    .sort((a, b) => {
+      if (a.order && b.order) {
+        return a.order - b.order;
+      } else if (a.order) {
+        return -1;
+      } else if (b.order) {
+        return 1;
+      } else {
+        return a.name.localeCompare(b.name);
+      }
+    })
     .map((cat) => {
       cat.children = buildCategoryTree(categories, cat.id);
       return cat;
@@ -44,8 +57,8 @@ function visitLeaves(
 ) {
   cats.forEach((cat) => {
     const label = parentLabel ? parentLabel + '/' + cat.name : cat.name;
-    visitLeaves(output, cat.children, label);
     output.push({ label, id: cat.id });
+    visitLeaves(output, cat.children, label);
   });
   return output;
 }
