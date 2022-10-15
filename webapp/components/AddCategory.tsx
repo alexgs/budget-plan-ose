@@ -9,6 +9,7 @@ import {
 import { useFormik } from 'formik';
 import { FC, useState } from 'react';
 import useSWR from 'swr';
+import * as Yup from 'yup';
 
 import { getAllCategoryLabels } from '../client-lib';
 
@@ -40,6 +41,9 @@ export const AddCategory: FC = () => {
     onSubmit: (values) => {
       alert(JSON.stringify(values, null, 2));
     },
+    validationSchema: Yup.object({
+      categoryName: Yup.string().required('Required'),
+    }),
   });
 
   function handleAddCategoryClick(): void {
@@ -60,6 +64,7 @@ export const AddCategory: FC = () => {
       >
         <form onSubmit={formik.handleSubmit}>
           <TextInput
+            error={formik.touched.categoryName && formik.errors.categoryName}
             id="categoryName"
             label="Name"
             name="categoryName"
@@ -89,7 +94,12 @@ export const AddCategory: FC = () => {
             >
               Cancel
             </Button>
-            <Button color="lime.4" onClick={handleSaveClick} variant="outline">
+            <Button
+              color="lime.4"
+              onClick={handleSaveClick}
+              type="submit"
+              variant="outline"
+            >
               Save
             </Button>
           </Group>
