@@ -7,8 +7,7 @@ import { getAllCategoryLabels } from '../../client-lib';
 import { AddCategoryForm } from './AddCategoryForm';
 
 interface Props {
-  onCancel: VoidFunction;
-  onSave: (values: {}) => void;
+  onClose: VoidFunction;
 }
 
 export const AddCategoryModalContent: FC<Props> = (props) => {
@@ -33,10 +32,15 @@ export const AddCategoryModalContent: FC<Props> = (props) => {
   }));
   parentCategories.unshift({ label: 'None', value: '' });
 
+  function handleModalSave(values: {categoryName: string, parentId: string}) {
+    alert(JSON.stringify(values, null, 2));
+    props.onClose();
+  }
+
   return (
     <AddCategoryForm
-      onCancel={props.onCancel}
-      onSave={props.onSave}
+      onCancel={props.onClose}
+      onSave={handleModalSave}
       parentCategories={parentCategories}
     />
   );

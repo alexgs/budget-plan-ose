@@ -10,11 +10,7 @@ export const AddCategory: FC = () => {
     setIsVisible(true);
   }
 
-  function handleModalCancel(): void {
-    setIsVisible(false);
-  }
-
-  function handleModalSave(values: {}): void {
+  function handleModalClose(): void {
     setIsVisible(false);
   }
 
@@ -22,8 +18,7 @@ export const AddCategory: FC = () => {
     if (isVisible) {
       return (
         <AddCategoryModalContent
-          onCancel={handleModalCancel}
-          onSave={handleModalSave}
+          onClose={handleModalClose}
         />
       );
     }
@@ -37,7 +32,7 @@ export const AddCategory: FC = () => {
           Add Category
         </Button>
         <Modal
-          onClose={handleModalCancel}
+          onClose={handleModalClose}
           opened={isVisible}
           overlayBlur={3}
           title="Add new category"

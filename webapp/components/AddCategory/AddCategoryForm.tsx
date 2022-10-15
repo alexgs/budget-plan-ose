@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 
 interface Props {
   onCancel: VoidFunction;
-  onSave: (values: {}) => void;
+  onSave: (values: {categoryName: string, parentId: string}) => void;
   parentCategories: { label: string, value: string }[];
 }
 
@@ -16,7 +16,6 @@ export const AddCategoryForm: FC<Props> = (props) => {
       parentId: '',
     },
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
       props.onSave(values);
     },
     validationSchema: Yup.object({
@@ -24,9 +23,7 @@ export const AddCategoryForm: FC<Props> = (props) => {
     }),
   });
 
-  const isCategoryNameTouched = formik.touched.categoryName;
-  const isSaveButtonEnabled =
-    Object.keys(formik.errors).length === 0 && isCategoryNameTouched;
+  const isSaveButtonEnabled = !formik.errors.categoryName;
 
   return (
     <form onSubmit={formik.handleSubmit}>
