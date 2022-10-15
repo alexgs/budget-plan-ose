@@ -7,21 +7,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model flyway_schema_history {
-  installed_rank Int      @id(map: "flyway_schema_history_pk")
-  version        String?  @db.VarChar(50)
-  description    String   @db.VarChar(200)
-  type           String   @db.VarChar(20)
-  script         String   @db.VarChar(1000)
-  checksum       Int?
-  installed_by   String   @db.VarChar(100)
-  installed_on   DateTime @default(now()) @db.Timestamp(6)
-  execution_time Int
-  success        Boolean
+// --- APPLICATION SCHEMA ---
 
-  @@index([success], map: "flyway_schema_history_s_idx")
-  @@ignore()
+model Category {
+  id        String   @id(map: "categories_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name      String
+  parentId  String?  @map("parent_id") @db.Uuid
+  slug      String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+  order     Int?
+
+  @@map("categories")
 }
+
+// --- NEXT AUTH SCHEMA ---
 
 model Account {
   id                       String  @id(map: "user_accounts_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
@@ -63,13 +63,31 @@ model VerificationToken {
 }
 
 model User {
-  id             String    @id(map: "users_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name           String?
-  email          String?   @unique(map: "users_email")
-  emailVerified  DateTime? @map("email_verified")
-  image          String?
-  accounts       Account[]
-  sessions       Session[]
+  id            String    @id(map: "users_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name          String?
+  email         String?   @unique(map: "users_email")
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
 
   @@map("users")
+}
+
+// --- IGNORED TABLES ---
+
+model flyway_schema_history {
+  installed_rank Int      @id(map: "flyway_schema_history_pk")
+  version        String?  @db.VarChar(50)
+  description    String   @db.VarChar(200)
+  type           String   @db.VarChar(20)
+  script         String   @db.VarChar(1000)
+  checksum       Int?
+  installed_by   String   @db.VarChar(100)
+  installed_on   DateTime @default(now()) @db.Timestamp(6)
+  execution_time Int
+  success        Boolean
+
+  @@index([success], map: "flyway_schema_history_s_idx")
+  @@ignore()
 }
