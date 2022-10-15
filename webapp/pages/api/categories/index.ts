@@ -9,7 +9,7 @@ import { prisma } from '../../../server-lib';
 
 const newCategorySchema = yup.object({
   name: yup.string().required(),
-  parentId: yup.string(),
+  parentId: yup.string().nullable(),
 });
 
 type NewCategorySchema = InferType<typeof newCategorySchema>;

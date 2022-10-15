@@ -32,9 +32,25 @@ export const AddCategoryModalContent: FC<Props> = (props) => {
   }));
   parentCategories.unshift({ label: 'None', value: '' });
 
-  function handleModalSave(values: {categoryName: string, parentId: string}) {
+  function handleModalSave(values: { categoryName: string; parentId: string }) {
     alert(JSON.stringify(values, null, 2));
+    void requestNewCategory(values.categoryName, values.parentId);
     props.onClose();
+  }
+
+  async function requestNewCategory(categoryName: string, parentId: string) {
+    const responseData = await fetch('/api/categories', {
+      body: JSON.stringify({
+        name: categoryName,
+        parentId: parentId.length === 0 ? null : parentId,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    }).then((response) => response.json());
+    // TODO We should raise a toast with success or failure
+    // TODO Use SWR's `mutate` function to update the cache
   }
 
   return (
