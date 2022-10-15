@@ -1,10 +1,11 @@
 import {
+  Alert,
   Button,
   Group,
-  Modal,
+  Loader,
   NativeSelect,
   Space,
-  TextInput,
+  TextInput
 } from '@mantine/core';
 import { useFormik } from 'formik';
 import { FC } from 'react';
@@ -17,15 +18,19 @@ interface Props {
   onSave: (values: {}) => void;
 }
 
-export const AddCategoryModal: FC<Props> = (props) => {
+export const AddCategoryModalContent: FC<Props> = (props) => {
   const { error, data: catData } = useSWR('/api/categories');
   if (error) {
     console.error(error);
-    return <div>Error!</div>;
+    return (
+      <Alert title="Error!" color="red">
+        A network error occurred. Please check the console logs for details.
+      </Alert>
+    );
   }
 
   if (!catData) {
-    return <div>Loading...</div>;
+    return <Loader variant="bars" />;
   }
 
   const labels = getAllCategoryLabels(catData);
@@ -53,12 +58,6 @@ export const AddCategoryModal: FC<Props> = (props) => {
     Object.keys(formik.errors).length === 0 && isCategoryNameTouched;
 
   return (
-    <Modal
-      onClose={props.onCancel}
-      opened={true}
-      overlayBlur={3}
-      title="Add new category"
-    >
       <form onSubmit={formik.handleSubmit}>
         <TextInput
           error={formik.touched.categoryName && formik.errors.categoryName}
@@ -98,6 +97,5 @@ export const AddCategoryModal: FC<Props> = (props) => {
           </Button>
         </Group>
       </form>
-    </Modal>
   );
 };

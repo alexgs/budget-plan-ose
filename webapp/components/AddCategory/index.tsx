@@ -1,7 +1,7 @@
-import { Button } from '@mantine/core';
+import { Button, Modal } from '@mantine/core';
 import { FC, useState } from 'react';
 
-import { AddCategoryModal } from './Modal';
+import { AddCategoryModalContent } from './ModalContent';
 
 export const AddCategory: FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -18,10 +18,10 @@ export const AddCategory: FC = () => {
     setIsVisible(false);
   }
 
-  function renderModal() {
+  function renderModalContent() {
     if (isVisible) {
       return (
-        <AddCategoryModal
+        <AddCategoryModalContent
           onCancel={handleModalCancel}
           onSave={handleModalSave}
         />
@@ -36,7 +36,14 @@ export const AddCategory: FC = () => {
         <Button variant="outline" onClick={handleAddCategoryClick}>
           Add Category
         </Button>
-        {renderModal()}
+        <Modal
+          onClose={handleModalCancel}
+          opened={isVisible}
+          overlayBlur={3}
+          title="Add new category"
+        >
+          {renderModalContent()}
+        </Modal>
       </div>
     </>
   );
