@@ -6,6 +6,7 @@ import {
   Space,
   TextInput,
 } from '@mantine/core';
+import { useFormik } from 'formik';
 import { FC, useState } from 'react';
 import useSWR from 'swr';
 
@@ -13,8 +14,6 @@ import { getAllCategoryLabels } from '../client-lib';
 
 export const AddCategory: FC = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [categoryName, setCategoryName] = useState('');
-  const [parentId, setParentId] = useState('');
 
   const { error, data: catData } = useSWR('/api/categories');
   if (error) {
@@ -33,6 +32,16 @@ export const AddCategory: FC = () => {
   }));
   parentCategories.unshift({ label: 'None', value: '' });
 
+  const formik = useFormik({
+    initialValues: {
+      categoryName: '',
+      parentId: '',
+    },
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+    },
+  });
+
   function handleAddCategoryClick(): void {
     setIsVisible(true);
   }
@@ -49,34 +58,42 @@ export const AddCategory: FC = () => {
         overlayBlur={3}
         title="Add new category"
       >
-        <TextInput
-          label="Name"
-          placeholder="Rainy day fund"
-          onChange={(event) => setCategoryName(event.currentTarget.value)}
-          value={categoryName}
-          withAsterisk
-        />
-        <Space h="lg" />
-        <NativeSelect
-          data={parentCategories}
-          label="Nest under"
-          placeholder="None"
-          onChange={(event) => setParentId(event.currentTarget.value)}
-          value={parentId}
-        />
-        <Space h="xl" />
-        <Group position="apart">
-          <Button
-            color="pink.3"
-            onClick={() => setIsVisible(false)}
-            variant="outline"
-          >
-            Cancel
-          </Button>
-          <Button color="lime.4" onClick={handleSaveClick} variant="outline">
-            Save
-          </Button>
-        </Group>
+        <form onSubmit={formik.handleSubmit}>
+          <TextInput
+            id="categoryName"
+            label="Name"
+            name="categoryName"
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            placeholder="Rainy day fund"
+            value={formik.values.categoryName}
+            withAsterisk
+          />
+          <Space h="lg" />
+          <NativeSelect
+            id="parentId"
+            data={parentCategories}
+            label="Nest under"
+            name="parentId"
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            placeholder="None"
+            value={formik.values.parentId}
+          />
+          <Space h="xl" />
+          <Group position="apart">
+            <Button
+              color="pink.3"
+              onClick={() => setIsVisible(false)}
+              variant="outline"
+            >
+              Cancel
+            </Button>
+            <Button color="lime.4" onClick={handleSaveClick} variant="outline">
+              Save
+            </Button>
+          </Group>
+        </form>
       </Modal>
       <div>
         <Button variant="outline" onClick={handleAddCategoryClick}>
