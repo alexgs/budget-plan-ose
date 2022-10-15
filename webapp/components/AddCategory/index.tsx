@@ -11,7 +11,7 @@ import { FC, useState } from 'react';
 import useSWR from 'swr';
 import * as Yup from 'yup';
 
-import { getAllCategoryLabels } from '../client-lib';
+import { getAllCategoryLabels } from '../../client-lib';
 
 export const AddCategory: FC = () => {
   const [isVisible, setIsVisible] = useState(false);
