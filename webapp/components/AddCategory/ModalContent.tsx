@@ -1,4 +1,5 @@
 import { Alert, Loader } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import { FC } from 'react';
 import useSWR from 'swr';
 
@@ -48,9 +49,21 @@ export const AddCategoryModalContent: FC<Props> = (props) => {
         'Content-Type': 'application/json',
       },
       method: 'POST',
-    }).then((response) => response.json());
-    // TODO We should raise a toast with success or failure
-    // TODO Use SWR's `mutate` function to update the cache
+    })
+      .then((response) => response.json())
+      .catch((e) => {
+        console.error(e);
+        showNotification({
+          color: 'red',
+          message: 'Something went wrong! Please check the logs.',
+          title: 'Error',
+        });
+      });
+
+    showNotification({
+      message: `Saved new category "${responseData.name}"`,
+      title: 'Success',
+    });
   }
 
   return (

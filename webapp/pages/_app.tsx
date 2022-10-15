@@ -1,4 +1,5 @@
 import { MantineProvider } from '@mantine/core';
+import { NotificationsProvider } from '@mantine/notifications';
 import type { AppProps as DefaultAppProps } from 'next/app';
 import { NextComponentType, NextPageContext } from 'next/dist/shared/lib/utils';
 import { Session } from 'next-auth';
@@ -32,9 +33,11 @@ export default function App({
   return (
     <SessionProvider session={session}>
       <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
-        <SWRConfig value={{ fetcher: globalFetcher }}>
-          {content}
-        </SWRConfig>
+        <NotificationsProvider>
+          <SWRConfig value={{ fetcher: globalFetcher }}>
+            {content}
+          </SWRConfig>
+        </NotificationsProvider>
       </MantineProvider>
     </SessionProvider>
   );
