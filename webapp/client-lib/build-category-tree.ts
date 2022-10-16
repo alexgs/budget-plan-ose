@@ -1,10 +1,11 @@
-import { categoryTreeNode } from './types';
+import { cloneDeep } from 'lodash-es';
+import { categoryTreeNode, rawCategory } from './types';
 
 // Adapted from https://javascript.plainenglish.io/how-to-build-a-tree-array-from-flat-array-in-javascript-8d0414ac1190
-export function buildCategoryTree(
+function recursiveWorker(
   categories: categoryTreeNode[],
   parentId: string | null = null
-): categoryTreeNode[] {
+) {
   return categories
     .filter((cat) => cat.parentId === parentId)
     .sort((a, b) => {
@@ -19,7 +20,23 @@ export function buildCategoryTree(
       }
     })
     .map((cat) => {
-      cat.children = buildCategoryTree(categories, cat.id);
+      cat.children = recursiveWorker(categories, cat.id);
       return cat;
     });
+}
+
+export function buildCategoryTree(
+  rawCategoryData: rawCategory[]
+): categoryTreeNode[] {
+  const categories: categoryTreeNode[] = cloneDeep(rawCategoryData).map(
+    (cat: rawCategory): categoryTreeNode => {
+      const { currentValue, ...output } = cat;
+      return {
+        ...output,
+        value: (currentValue[0] && currentValue[0].value) ?? 0,
+        children: [],
+      };
+    }
+  );
+  return recursiveWorker(categories);
 }
