@@ -7,7 +7,6 @@ CREATE TABLE IF NOT EXISTS public.categories
       PRIMARY KEY,
   name       TEXT                                                      NOT NULL,
   parent_id  UUID,
-  slug       TEXT,
   created_at TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP  NOT NULL,
   updated_at TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP  NOT NULL
 );
