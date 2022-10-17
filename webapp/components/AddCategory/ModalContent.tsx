@@ -3,7 +3,7 @@ import { showNotification } from '@mantine/notifications';
 import { FC } from 'react';
 import useSWR from 'swr';
 
-import { getAllCategoryLabels } from '../../client-lib';
+import { getCategoryList } from '../../client-lib';
 
 import { AddCategoryForm } from './AddCategoryForm';
 
@@ -26,12 +26,12 @@ export const AddCategoryModalContent: FC<Props> = (props) => {
     return <Loader variant="bars" />;
   }
 
-  const labels = getAllCategoryLabels(catData);
-  const parentCategories = labels.map((cat) => ({
+  const categories = getCategoryList(catData);
+  const menuItems = categories.map((cat) => ({
     label: cat.label,
     value: cat.id,
   }));
-  parentCategories.unshift({ label: 'None', value: '' });
+  menuItems.unshift({ label: 'None', value: '' });
 
   function handleModalSave(values: { categoryName: string; parentId: string }) {
     alert(JSON.stringify(values, null, 2));
@@ -70,7 +70,7 @@ export const AddCategoryModalContent: FC<Props> = (props) => {
     <AddCategoryForm
       onCancel={props.onClose}
       onSave={handleModalSave}
-      parentCategories={parentCategories}
+      categoryMenuItems={menuItems}
     />
   );
 };

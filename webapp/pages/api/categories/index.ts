@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import slug from 'slug';
 import { InferType, ValidationError } from 'yup';
 import * as yup from 'yup';
 
@@ -40,10 +39,7 @@ export default async function handler(
     }
 
     const newCategory = await prisma.category.create({
-      data: {
-        ...payload,
-        slug: slug(payload.name),
-      },
+      data: payload,
     });
     res.send(newCategory);
   } else {
