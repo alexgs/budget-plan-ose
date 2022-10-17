@@ -1,11 +1,12 @@
 import { Alert, Loader } from '@mantine/core';
 import useSWR from 'swr';
 
-import { getCategoryList } from '../client-lib';
+import { buildCategoryTree, parseCategoryTree } from '../client-lib';
+import { categoryTreeNode } from '../client-lib/types';
 import { AddCategory, Page } from '../components';
 
 function Budget() {
-  // Get sorted categories and values
+  // Get sorted categories and balances
   const { error, data: catData } = useSWR('/api/categories');
   if (error) {
     console.error(error);
@@ -20,11 +21,12 @@ function Budget() {
     return <Loader variant="bars" />;
   }
 
-  const categoryValues = getCategoryList(catData);
+  const catTree: categoryTreeNode[] = buildCategoryTree(catData);
+  const topLevelBalances = parseCategoryTree(catTree, 0);
 
   // TODO Display values in a nice table
   // TODO Add copyright statements to files
-  console.log(categoryValues);
+  console.log(topLevelBalances);
 
   return (
     <Page>

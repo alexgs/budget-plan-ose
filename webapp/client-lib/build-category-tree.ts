@@ -21,6 +21,11 @@ function recursiveWorker(
     })
     .map((cat) => {
       cat.children = recursiveWorker(categories, cat.id);
+      if (cat.children.length > 0) {
+        cat.balance = cat.children.reduce((sum, cat) => {
+          return sum + (cat.balance ?? 0)
+        }, 0);
+      }
       return cat;
     });
 }
