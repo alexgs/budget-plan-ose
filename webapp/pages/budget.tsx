@@ -1,4 +1,4 @@
-import { Alert, Loader } from '@mantine/core';
+import { Alert, Loader, Table } from '@mantine/core';
 import useSWR from 'swr';
 
 import { buildCategoryTree, parseCategoryTree } from '../client-lib';
@@ -21,17 +21,29 @@ function Budget() {
     return <Loader variant="bars" />;
   }
 
+  // TODO Add copyright statements to files
+
   const catTree: categoryTreeNode[] = buildCategoryTree(catData);
   const topLevelBalances = parseCategoryTree(catTree, 0);
-
-  // TODO Display values in a nice table
-  // TODO Add copyright statements to files
-  console.log(topLevelBalances);
+  const rows = topLevelBalances.map((row) => (
+    <tr key={row.name}>
+      <td>{row.name}</td>
+      <td>{row.balance}</td>
+    </tr>
+  ));
 
   return (
     <Page>
       <h1>Budget Plan</h1>
-      <p>This is a secured page</p>
+      <Table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </Table>
       <AddCategory />
     </Page>
   );
