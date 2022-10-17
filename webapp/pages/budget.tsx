@@ -22,7 +22,7 @@ function Budget() {
 
   const categoryValues = getCurrentValues(catData);
 
-  // Iterate over categories, printing current values
+  // TODO Display values in a nice table
   console.log(categoryValues);
 
   return (
