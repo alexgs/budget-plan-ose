@@ -3,12 +3,19 @@ version: '3'
 vars:
   DATABASE_INIT_NAME: postgres-init-container
   DATABASE_SERVICE_NAME: database
+  DATABASE_WORKING_DIR: ./database
 
 tasks:
   psql:
     cmds:
       - "psql -h localhost -p $DATABASE_PORT -U $DATABASE_USER -d $DATABASE_NAME"
     desc: Connect to the Postgres cluster with the `psql` tool
+
+  seed:
+    dir: "{{.DATABASE_WORKING_DIR}}"
+    cmds:
+      - npm run seed
+    desc: Seed the database with sample data
 
   shell:
     cmds:

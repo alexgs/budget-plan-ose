@@ -23,6 +23,7 @@ function Budget() {
   const categoryValues = getCurrentValues(catData);
 
   // TODO Display values in a nice table
+  // TODO Add copyright statements to files
   console.log(categoryValues);
 
   return (
