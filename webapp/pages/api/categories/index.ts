@@ -18,9 +18,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === 'GET') {
-    const categories = await prisma.category.findMany({
-      include: { currentValue: true },
-    });
+    const categories = await prisma.category.findMany();
     res.send(categories);
   } else if (req.method === 'POST') {
     let payload: NewCategorySchema = { name: '' };

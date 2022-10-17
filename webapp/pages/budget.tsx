@@ -1,7 +1,7 @@
 import { Alert, Loader } from '@mantine/core';
 import useSWR from 'swr';
 
-import { getCurrentValues } from '../client-lib';
+import { getCategoryList } from '../client-lib';
 import { AddCategory, Page } from '../components';
 
 function Budget() {
@@ -20,7 +20,7 @@ function Budget() {
     return <Loader variant="bars" />;
   }
 
-  const categoryValues = getCurrentValues(catData);
+  const categoryValues = getCategoryList(catData);
 
   // TODO Display values in a nice table
   // TODO Add copyright statements to files

@@ -30,10 +30,8 @@ export function buildCategoryTree(
 ): categoryTreeNode[] {
   const categories: categoryTreeNode[] = cloneDeep(rawCategoryData).map(
     (cat: rawCategory): categoryTreeNode => {
-      const { currentValue, ...output } = cat;
       return {
-        ...output,
-        value: (currentValue[0] && currentValue[0].value) ?? 0,
+        ...cat,
         children: [],
       };
     }

@@ -3,8 +3,8 @@ import { categoryTreeNode, rawCategory } from './types';
 
 interface categoryValues {
   id: string; // UUID of this category
+  balance: number | null; // Current balance in cents
   label: string; // Slash-separated joining of category's name with parent's name
-  value: number; // Current balance in cents
 }
 
 function visitLeaves(
@@ -14,15 +14,14 @@ function visitLeaves(
 ) {
   cats.forEach((cat) => {
     const label = parentLabel ? parentLabel + '/' + cat.name : cat.name;
-    const { id, value } = cat;
-    output.push({ id, label, value });
+    const { id, balance } = cat;
+    output.push({ id, balance, label });
     visitLeaves(output, cat.children, label);
   });
   return output;
 }
 
-// TODO This is so similar to getAllCategoryLabels that they could probably be combined into a single function
-export function getCurrentValues(data: rawCategory[]): categoryValues[] {
+export function getCategoryList(data: rawCategory[]): categoryValues[] {
   const catTree = buildCategoryTree(data);
 
   const output: categoryValues[] = [];

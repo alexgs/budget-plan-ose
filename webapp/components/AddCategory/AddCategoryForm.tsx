@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 interface Props {
   onCancel: VoidFunction;
   onSave: (values: {categoryName: string, parentId: string}) => void;
-  parentCategories: { label: string, value: string }[];
+  categoryMenuItems: { label: string, value: string }[];
 }
 
 export const AddCategoryForm: FC<Props> = (props) => {
@@ -41,7 +41,7 @@ export const AddCategoryForm: FC<Props> = (props) => {
       <Space h="lg" />
       <NativeSelect
         id="parentId"
-        data={props.parentCategories}
+        data={props.categoryMenuItems}
         label="Nest under"
         name="parentId"
         onBlur={formik.handleBlur}
