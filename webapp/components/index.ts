@@ -3,5 +3,6 @@
  */
 
 export { AddCategory } from './AddCategory';
+export { AddTransactionButton } from './AddTransactionButton';
 export { NextAuthProvider } from './NextAuthProvider';
 export { Page } from './Page';
