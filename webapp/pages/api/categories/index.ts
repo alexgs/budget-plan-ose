@@ -3,7 +3,7 @@
  */
 
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { unstable_getServerSession } from "next-auth/next"
+import { unstable_getServerSession } from 'next-auth/next';
 import { InferType, ValidationError } from 'yup';
 import * as yup from 'yup';
 
@@ -23,7 +23,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const session = await unstable_getServerSession(req, res, authOptions)
+  const session = await unstable_getServerSession(req, res, authOptions);
 
   if (session) {
     if (req.method === 'GET') {
@@ -39,7 +39,9 @@ export default async function handler(
           console.error(`>> POST /api/categories 400 ${error.errors} <<`);
           res
             .status(400)
-            .send('Error: payload failed validation. Please check server logs.');
+            .send(
+              'Error: payload failed validation. Please check server logs.'
+            );
         } else {
           console.error(`>> Unknown error: ${e} <<`);
           res.status(500).send('Unknown error. Please check server logs.');
@@ -52,7 +54,10 @@ export default async function handler(
       });
       res.send(newCategory);
     } else {
-      res.status(405).setHeader('Allow', 'GET POST').send('Method not allowed.');
+      res
+        .status(405)
+        .setHeader('Allow', 'GET POST')
+        .send('Method not allowed.');
     }
   } else {
     res.status(400).send('Bad request.');
