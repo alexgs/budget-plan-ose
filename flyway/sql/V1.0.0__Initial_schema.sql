@@ -104,7 +104,7 @@ CREATE UNIQUE INDEX user_verification_tokens_token
 
 --[ # APPLICATION TABLES # ]--
 
---[ # TABLE public.categories # ]--
+--[ ## TABLE public.categories ## ]--
 
 CREATE TABLE IF NOT EXISTS public.categories
 (
@@ -122,5 +122,80 @@ CREATE TABLE IF NOT EXISTS public.categories
 CREATE TRIGGER set_categories_updated_at
   BEFORE UPDATE
   ON categories
+  FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_updated_at();
+
+--[ ## TABLE public.financial_accounts ## ]--
+
+CREATE TABLE IF NOT EXISTS public.financial_accounts
+(
+  id          UUID                           DEFAULT uuid_generate_v4() NOT NULL
+    CONSTRAINT financial_accounts_pk
+      PRIMARY KEY,
+  description TEXT                                                      NOT NULL,
+  created_at  TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+  updated_at  TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP  NOT NULL
+);
+
+CREATE TRIGGER set_financial_accounts_updated_at
+  BEFORE UPDATE
+  ON financial_accounts
+  FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_updated_at();
+
+--[ ## TABLE public.transaction_records ## ]--
+
+CREATE SEQUENCE IF NOT EXISTS public.transaction_records_order_sequence
+  AS INTEGER
+  START 1000;
+
+CREATE TABLE IF NOT EXISTS public.transaction_records
+(
+  id          UUID                           DEFAULT uuid_generate_v4()                            NOT NULL
+    CONSTRAINT transaction_records_pk
+      PRIMARY KEY,
+  "date"      DATE                                                                                 NOT NULL,
+  "order"     INTEGER                        DEFAULT nextval('transaction_records_order_sequence') NOT NULL,
+  description TEXT                                                                                 NOT NULL,
+  type        TEXT                                                                                 NOT NULL,
+  template    UUID,
+  created_at  TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP                             NOT NULL,
+  updated_at  TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP                             NOT NULL
+);
+
+CREATE TRIGGER set_transaction_records_updated_at
+  BEFORE UPDATE
+  ON transaction_records
+  FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_updated_at();
+
+ALTER SEQUENCE transaction_records_order_sequence
+  OWNED BY transaction_records."order";
+
+--[ ## TABLE public.transaction_amounts ## ]--
+
+CREATE TABLE IF NOT EXISTS public.transaction_amounts
+(
+  id                    UUID                           DEFAULT uuid_generate_v4() NOT NULL
+    CONSTRAINT transaction_amounts_pk
+      PRIMARY KEY,
+  account_id            UUID                                                      NOT NULL,
+  transaction_record_id UUID                                                      NOT NULL
+    CONSTRAINT transaction_amounts_transaction_record_id_fk
+      REFERENCES transaction_records
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+  notes                 TEXT,
+  amount                INTEGER                                                   NOT NULL,
+  is_credit             BOOLEAN                        DEFAULT false              NOT NULL,
+  category              UUID                                                      NOT NULL,
+  status                TEXT                                                      NOT NULL,
+  created_at            TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+  updated_at            TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP  NOT NULL
+);
+
+CREATE TRIGGER set_transaction_amounts_updated_at
+  BEFORE UPDATE
+  ON transaction_amounts
   FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_updated_at();
