@@ -18,32 +18,35 @@ const prisma = new PrismaClient();
 
 async function createCategories() {
   return Promise.all(
-    categories.map((data) => {
-      return prisma.category.create({ data });
+    categories.map(async (data) => {
+      const result = await prisma.category.findFirst({
+        where: { id: data.id },
+      });
+      if (!result) {
+        return prisma.category.create({ data });
+      }
     })
   );
 }
 
 async function upsertUsers() {
   return Promise.all(
-    users.map((data) => {
-      return prisma.user.upsert({
-        where: { id: data.id },
-        create: data,
-        update: data,
-      });
+    users.map(async (data) => {
+      const result = await prisma.user.findFirst({ where: { id: data.id } });
+      if (!result) {
+        return prisma.user.create({ data });
+      }
     })
   );
 }
 
 async function upsertUserAccounts() {
   return Promise.all(
-    userAccounts.map((data) => {
-      return prisma.account.upsert({
-        where: { id: data.id },
-        create: data,
-        update: data,
-      });
+    userAccounts.map(async (data) => {
+      const result = await prisma.account.findFirst({ where: { id: data.id } });
+      if (!result) {
+        return prisma.account.create({ data });
+      }
     })
   );
 }
