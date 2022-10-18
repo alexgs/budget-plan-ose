@@ -1,3 +1,7 @@
+/*
+ * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
+ */
+
 import styled from '@emotion/styled';
 import { getProviders, signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
