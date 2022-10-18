@@ -3,14 +3,23 @@
  */
 
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { unstable_getServerSession } from 'next-auth/next';
+import { authOptions } from '../auth/[...nextauth]';
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'GET') {
-    const { categoryId } = req.query;
-    res.send(`Hello category ${categoryId}`);
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const session = await unstable_getServerSession(req, res, authOptions);
+
+  if (session) {
+    if (req.method === 'GET') {
+      const { categoryId } = req.query;
+      res.send(`Hello category ${categoryId}`);
+    } else {
+      res.status(405).setHeader('Allow', 'GET').send('Method not allowed.');
+    }
   } else {
-    res.status(405);
-    res.setHeader('Allow', 'GET');
-    res.send('Method not allowed.');
+    res.status(400).send('Bad request.');
   }
 }
