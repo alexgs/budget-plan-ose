@@ -7,7 +7,7 @@ import useSWR from 'swr';
 
 import { buildCategoryTree, parseCategoryTree } from '../client-lib';
 import { categoryTreeNode } from '../client-lib/types';
-import { AddCategory, Page } from '../components';
+import { AddCategory, AddTransactionButton, Page } from '../components';
 
 function Budget() {
   // Get sorted categories and balances
@@ -47,6 +47,7 @@ function Budget() {
         <tbody>{rows}</tbody>
       </Table>
       <AddCategory />
+      <AddTransactionButton />
     </Page>
   );
 }
