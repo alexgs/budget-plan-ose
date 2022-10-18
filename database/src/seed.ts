@@ -11,12 +11,13 @@ dotenvExpand.expand(envVars);
 import { PrismaClient } from '@prisma/client';
 
 import categories from './seed-data/categories.json' assert { type: 'json' };
+import financialAccounts from './seed-data/financial_accounts.json' assert { type: 'json' };
 import users from './seed-data/users.json' assert { type: 'json' };
 import userAccounts from './seed-data/user_accounts.json' assert { type: 'json' };
 
 const prisma = new PrismaClient();
 
-async function createCategories() {
+async function upsertCategories() {
   return Promise.all(
     categories.map(async (data) => {
       const result = await prisma.category.findFirst({
@@ -24,6 +25,17 @@ async function createCategories() {
       });
       if (!result) {
         return prisma.category.create({ data });
+      }
+    })
+  );
+}
+
+async function upsertFinancialAccounts() {
+  return Promise.all(
+    financialAccounts.map(async (data) => {
+      const result = await prisma.financialAccount.findFirst({ where: { id: data.id } });
+      if (!result) {
+        return prisma.financialAccount.create({ data });
       }
     })
   );
@@ -54,7 +66,8 @@ async function upsertUserAccounts() {
 async function seed() {
   await upsertUsers();
   await upsertUserAccounts();
-  await createCategories();
+  await upsertCategories();
+  await upsertFinancialAccounts();
 }
 
 seed()
