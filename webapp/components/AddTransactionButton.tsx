@@ -4,14 +4,25 @@
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlusLarge } from '@fortawesome/pro-solid-svg-icons'
-import { Affix, Button } from '@mantine/core';
+import { Affix, Button, createStyles } from '@mantine/core';
 import { FC } from 'react';
 
+const useStyles = createStyles((theme) => ({
+  button: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: theme.colors.lime[8],
+  }
+}));
+
 export const AddTransactionButton: FC = () => {
+  const { classes } = useStyles();
   return (
     <>
       <Affix position={{ bottom: 20, right: 20 }}>
         <Button
+          className={classes.button}
           onClick={() => {
             console.log('>> click <<');
           }}
