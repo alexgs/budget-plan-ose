@@ -1,12 +1,18 @@
 import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Checkbox, NativeSelect, NumberInput, TextInput } from '@mantine/core';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { FC } from 'react';
+
+import { getCategoryList } from '../../client-lib';
 import { Page } from '../../components';
+import { prisma } from '../../server-lib';
 
 // TODO Handle splitting transaction
 
-const NewTransaction: FC = () => {
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+const NewTransaction: FC<Props> = (props) => {
   return (
     <Page>
       <h1>Budget Plan</h1>
@@ -23,12 +29,7 @@ const NewTransaction: FC = () => {
             withAsterisk
           />
           <NativeSelect
-            data={[
-              /* TODO Add accounts to DB and build menu from there */
-              { value: '101', label: 'WF checking' },
-              { value: '102', label: 'Credit union checking' },
-              { value: '103', label: 'WF credit card' },
-            ]}
+            data={props.accounts}
             label="Account"
             withAsterisk
           />
@@ -38,9 +39,7 @@ const NewTransaction: FC = () => {
             withAsterisk
           />
           <NativeSelect
-            data={[
-              /* TODO Connect to DB */
-            ]}
+            data={props.categories}
             label="Category"
             withAsterisk
           />
@@ -58,5 +57,21 @@ const NewTransaction: FC = () => {
     </Page>
   );
 };
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const accountsTemp = await prisma.financialAccount.findMany();
+  const accounts = accountsTemp.map(account => ({
+    value: account.id,
+    label: account.description,
+  }));
+
+  const categoriesTemp = await prisma.category.findMany();
+  const categories = getCategoryList(categoriesTemp).map((cat) => ({
+    value: cat.id,
+    label: cat.label,
+  }));
+
+  return { props: { accounts, categories } }
+}
 
 export default NewTransaction;
