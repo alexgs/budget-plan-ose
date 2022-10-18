@@ -2,6 +2,8 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
+import { faCircleExclamation } from '@fortawesome/pro-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { FC } from 'react';
@@ -20,7 +22,7 @@ export const AddCategoryModalContent: FC<Props> = (props) => {
   if (error) {
     console.error(error);
     return (
-      <Alert title="Error!" color="red">
+      <Alert icon={<FontAwesomeIcon icon={faCircleExclamation} />} title="Error!" color="red">
         A network error occurred. Please check the console logs for details.
       </Alert>
     );
