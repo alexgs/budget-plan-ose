@@ -13,6 +13,8 @@
     "url": "git+https://github.com/alexgs/budget-plan.git"
   },
   "scripts": {
+    "prettier": "npx prettier --check .",
+    "prettier:fix": "npx prettier --write .",
     "seed": "ts-node-esm --transpile-only src/seed.ts"
   },
   "type": "module",
@@ -20,6 +22,7 @@
     "@types/node": "^18.11.0",
     "dotenv": "^16.0.3",
     "dotenv-expand": "^9.0.0",
+    "prettier": "2.7.1",
     "prisma": "^4.4.0",
     "ts-node": "^10.9.1"
   },
