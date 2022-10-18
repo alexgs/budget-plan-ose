@@ -179,7 +179,11 @@ CREATE TABLE IF NOT EXISTS public.transaction_amounts
   id                    UUID                           DEFAULT uuid_generate_v4() NOT NULL
     CONSTRAINT transaction_amounts_pk
       PRIMARY KEY,
-  account_id            UUID                                                      NOT NULL,
+  account_id            UUID                                                      NOT NULL
+    CONSTRAINT transaction_amounts_financial_account_id_fk
+      REFERENCES financial_accounts
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
   transaction_record_id UUID                                                      NOT NULL
     CONSTRAINT transaction_amounts_transaction_record_id_fk
       REFERENCES transaction_records
