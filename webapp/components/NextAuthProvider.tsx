@@ -17,4 +17,3 @@ export const NextAuthProvider: FC<PropsWithChildren> = (props) => {
 
   return <>{children}</>;
 };
-

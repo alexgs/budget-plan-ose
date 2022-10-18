@@ -33,15 +33,15 @@ function Login(props: Props) {
         </div>
       ))}
     </HomePageContainer>
-  )
+  );
 }
 Login.isPublic = true;
 
 export async function getServerSideProps() {
-  const providers = await getProviders()
+  const providers = await getProviders();
   return {
     props: { providers },
-  }
+  };
 }
 
 export default Login;

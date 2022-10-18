@@ -20,11 +20,7 @@ export const AddCategory: FC = () => {
 
   function renderModalContent() {
     if (isVisible) {
-      return (
-        <AddCategoryModalContent
-          onClose={handleModalClose}
-        />
-      );
+      return <AddCategoryModalContent onClose={handleModalClose} />;
     }
     return null;
   }

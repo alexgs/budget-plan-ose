@@ -54,7 +54,8 @@ export const color = {
 // --- FONTS ---
 
 const typefaces = {
-  inter: 'InterVariable, Roboto, "Helvetica Neue", Arial, ui-sans-serif, sans-serif',
+  inter:
+    'InterVariable, Roboto, "Helvetica Neue", Arial, ui-sans-serif, sans-serif',
 };
 
 export const font = {
@@ -85,7 +86,7 @@ export const contentWidth = {
   medium: 768,
   large: 1024,
   xLarge: 1280,
-}
+};
 
 export const breakpoint = {
   // Default size is extra-small

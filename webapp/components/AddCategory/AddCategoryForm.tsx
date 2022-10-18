@@ -9,8 +9,8 @@ import * as Yup from 'yup';
 
 interface Props {
   onCancel: VoidFunction;
-  onSave: (values: {categoryName: string, parentId: string}) => void;
-  categoryMenuItems: { label: string, value: string }[];
+  onSave: (values: { categoryName: string; parentId: string }) => void;
+  categoryMenuItems: { label: string; value: string }[];
 }
 
 export const AddCategoryForm: FC<Props> = (props) => {

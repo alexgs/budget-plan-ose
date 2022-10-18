@@ -7,6 +7,5 @@ import { font } from './tokens';
 
 export const theme: MantineThemeOverride = {
   colorScheme: 'dark',
-  fontFamily: font.face.body
+  fontFamily: font.face.body,
 };
-
