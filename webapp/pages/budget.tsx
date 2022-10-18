@@ -25,8 +25,6 @@ function Budget() {
     return <Loader variant="bars" />;
   }
 
-  // TODO Add copyright statements to files
-
   const catTree: categoryTreeNode[] = buildCategoryTree(catData);
   const topLevelBalances = parseCategoryTree(catTree, 0);
   const rows = topLevelBalances.map((row) => (
