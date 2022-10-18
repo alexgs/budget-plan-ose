@@ -1,3 +1,7 @@
+/*
+ * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
+ */
+
 -- Tables are ordered alphabetically, except as dictated by foreign key constraints.
 
 --[ # EXTENSIONS # ]--

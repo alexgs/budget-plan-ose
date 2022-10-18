@@ -1,3 +1,7 @@
+/*
+ * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
+ */
+
 import { cloneDeep } from 'lodash-es';
 import { categoryTreeNode, rawCategory } from './types';
 
@@ -23,7 +27,7 @@ function recursiveWorker(
       cat.children = recursiveWorker(categories, cat.id);
       if (cat.children.length > 0) {
         cat.balance = cat.children.reduce((sum, cat) => {
-          return sum + (cat.balance ?? 0)
+          return sum + (cat.balance ?? 0);
         }, 0);
       }
       return cat;

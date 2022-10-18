@@ -1,3 +1,7 @@
+/*
+ * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
+ */
+
 // --- COLORS ---
 
 function formatRgb(rgb: { r: number; g: number; b: number }) {
@@ -50,7 +54,8 @@ export const color = {
 // --- FONTS ---
 
 const typefaces = {
-  inter: 'InterVariable, Roboto, "Helvetica Neue", Arial, ui-sans-serif, sans-serif',
+  inter:
+    'InterVariable, Roboto, "Helvetica Neue", Arial, ui-sans-serif, sans-serif',
 };
 
 export const font = {
@@ -81,7 +86,7 @@ export const contentWidth = {
   medium: 768,
   large: 1024,
   xLarge: 1280,
-}
+};
 
 export const breakpoint = {
   // Default size is extra-small

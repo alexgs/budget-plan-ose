@@ -1,3 +1,7 @@
+/*
+ * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
+ */
+
 import { useSession } from 'next-auth/react';
 import { FC, PropsWithChildren } from 'react';
 
@@ -13,4 +17,3 @@ export const NextAuthProvider: FC<PropsWithChildren> = (props) => {
 
   return <>{children}</>;
 };
-

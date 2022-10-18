@@ -1,3 +1,7 @@
+/*
+ * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
+ */
+
 import { Button, Group, NativeSelect, Space, TextInput } from '@mantine/core';
 import { useFormik } from 'formik';
 import { FC } from 'react';
@@ -5,8 +9,8 @@ import * as Yup from 'yup';
 
 interface Props {
   onCancel: VoidFunction;
-  onSave: (values: {categoryName: string, parentId: string}) => void;
-  categoryMenuItems: { label: string, value: string }[];
+  onSave: (values: { categoryName: string; parentId: string }) => void;
+  categoryMenuItems: { label: string; value: string }[];
 }
 
 export const AddCategoryForm: FC<Props> = (props) => {

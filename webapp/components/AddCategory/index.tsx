@@ -1,3 +1,7 @@
+/*
+ * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
+ */
+
 import { Button, Modal } from '@mantine/core';
 import { FC, useState } from 'react';
 
@@ -16,11 +20,7 @@ export const AddCategory: FC = () => {
 
   function renderModalContent() {
     if (isVisible) {
-      return (
-        <AddCategoryModalContent
-          onClose={handleModalClose}
-        />
-      );
+      return <AddCategoryModalContent onClose={handleModalClose} />;
     }
     return null;
   }

@@ -1,3 +1,7 @@
+/*
+ * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
+ */
+
 import { Alert, Loader, Table } from '@mantine/core';
 import useSWR from 'swr';
 
@@ -20,8 +24,6 @@ function Budget() {
   if (!catData) {
     return <Loader variant="bars" />;
   }
-
-  // TODO Add copyright statements to files
 
   const catTree: categoryTreeNode[] = buildCategoryTree(catData);
   const topLevelBalances = parseCategoryTree(catTree, 0);
