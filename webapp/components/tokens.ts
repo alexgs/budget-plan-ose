@@ -1,3 +1,7 @@
+/*
+ * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
+ */
+
 // --- COLORS ---
 
 function formatRgb(rgb: { r: number; g: number; b: number }) {
