@@ -5,7 +5,6 @@
 import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Checkbox, NativeSelect, NumberInput, TextInput } from '@mantine/core';
-import { DatePicker } from '@mantine/dates';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
@@ -23,37 +22,30 @@ type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 const NewTransaction: FC<Props> = (props) => {
   const formik = useFormik({
     initialValues: {
-      transactionDate: new Date(),
-      // transactionDate: dayjs().format('YYYY-MM-DD'),
+      transactionDate: dayjs().format('YYYY-MM-DD'),
       transactionType: 'payment',
     },
     onSubmit: (values) => {},
     validationSchema: Yup.object({
-      transactionType: Yup.string().required()
+      // TODO Validate `transactionDate`
+      transactionType: Yup.string().required(),
     }),
   });
-
-  function handleDateChange(date: Date) {
-    console.log(date);
-    formik.values.transactionDate = date;
-  }
-
-  const datePickerError: string|undefined = formik.touched.transactionDate && (formik.errors.transactionDate as string);
 
   return (
     <Page>
       <h1>Budget Plan</h1>
       <div>
         <form>
-          <DatePicker
-            allowFreeInput
-            error={datePickerError}
+          <TextInput
+            error={
+              formik.touched.transactionDate && formik.errors.transactionDate
+            }
             id="transactionDate"
-            inputFormat="YYYY-MM-DD"
             label="Date"
             name="transactionDate"
             onBlur={formik.handleBlur}
-            onChange={handleDateChange}
+            onChange={formik.handleChange}
             placeholder="Pick date"
             required
             value={formik.values.transactionDate}
@@ -72,8 +64,8 @@ const NewTransaction: FC<Props> = (props) => {
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             name="transactionType"
-            value={formik.values.transactionType}
             required
+            value={formik.values.transactionType}
           />
           <NativeSelect data={props.accounts} label="Account" required />
           <TextInput
