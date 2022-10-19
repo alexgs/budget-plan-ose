@@ -22,12 +22,21 @@ type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 const NewTransaction: FC<Props> = (props) => {
   const formik = useFormik({
     initialValues: {
+      account: '',
+      amount: '',
+      category: '',
+      description: '',
       transactionDate: dayjs().format('YYYY-MM-DD'),
       transactionType: 'payment',
     },
     onSubmit: (values) => {},
     validationSchema: Yup.object({
-      // TODO Validate `transactionDate`
+      account: Yup.string().required(),
+      // amount: Yup.number().required(),
+      amount: Yup.string().required(),
+      category: Yup.string().required(),
+      description: Yup.string().required(),
+      transactionDate: Yup.string().required(), // TODO Better validation for this field
       transactionType: Yup.string().required(),
     }),
   });
@@ -67,23 +76,58 @@ const NewTransaction: FC<Props> = (props) => {
             required
             value={formik.values.transactionType}
           />
-          <NativeSelect data={props.accounts} label="Account" required />
+          <NativeSelect
+            data={props.accounts}
+            error={formik.touched.account && formik.errors.account}
+            id="account"
+            label="Account"
+            name="account"
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            required
+            value={formik.values.account}
+          />
           <TextInput
+            error={formik.touched.description && formik.errors.description}
+            id="description"
             label="Description"
+            name="description"
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
             placeholder="Payee or payer"
             required
+            value={formik.values.description}
           />
-          <NativeSelect data={props.categories} label="Category" required />
+          <NativeSelect
+            data={props.categories}
+            error={formik.touched.category && formik.errors.category}
+            id="category"
+            label="Category"
+            name="category"
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            required
+            value={formik.values.category}
+          />
           <NumberInput
             decimalSeparator="."
+            error={formik.touched.amount && formik.errors.amount}
             hideControls
             icon={<FontAwesomeIcon icon={faDollarSign} />}
+            id="amount"
             label="Amount"
+            name="amount"
             my="sm"
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
             precision={2}
             required
+            value={parseFloat(formik.values.amount)}
           />
-          <Checkbox label="Credit or deposit" />
+          <Checkbox
+            label="Credit or deposit"
+            required
+          />
         </form>
       </div>
     </Page>
