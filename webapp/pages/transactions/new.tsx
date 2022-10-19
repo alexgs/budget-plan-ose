@@ -1,6 +1,12 @@
+/*
+ * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
+ */
+
 import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Checkbox, NativeSelect, NumberInput, TextInput } from '@mantine/core';
+import { DatePicker } from '@mantine/dates';
+import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { FC } from 'react';
@@ -17,6 +23,8 @@ type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 const NewTransaction: FC<Props> = (props) => {
   const formik = useFormik({
     initialValues: {
+      transactionDate: new Date(),
+      // transactionDate: dayjs().format('YYYY-MM-DD'),
       transactionType: 'payment',
     },
     onSubmit: (values) => {},
@@ -25,12 +33,31 @@ const NewTransaction: FC<Props> = (props) => {
     }),
   });
 
+  function handleDateChange(date: Date) {
+    console.log(date);
+    formik.values.transactionDate = date;
+  }
+
+  const datePickerError: string|undefined = formik.touched.transactionDate && (formik.errors.transactionDate as string);
+
   return (
     <Page>
       <h1>Budget Plan</h1>
       <div>
         <form>
-          <TextInput label="Date" required />
+          <DatePicker
+            allowFreeInput
+            error={datePickerError}
+            id="transactionDate"
+            inputFormat="YYYY-MM-DD"
+            label="Date"
+            name="transactionDate"
+            onBlur={formik.handleBlur}
+            onChange={handleDateChange}
+            placeholder="Pick date"
+            required
+            value={formik.values.transactionDate}
+          />
           <NativeSelect
             data={[
               { value: 'payment', label: 'Payment' },
