@@ -5,8 +5,8 @@
 import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Checkbox, NativeSelect, NumberInput, TextInput } from '@mantine/core';
+import { useForm, yupResolver } from '@mantine/form';
 import dayjs from 'dayjs';
-import { useFormik } from 'formik';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { FC } from 'react';
 import * as Yup from 'yup';
@@ -17,10 +17,20 @@ import { prisma } from '../../server-lib';
 
 // TODO Handle splitting transaction
 
+const formSchema = Yup.object({
+  account: Yup.string().required(),
+  // amount: Yup.number().required(),
+  amount: Yup.string().required(),
+  category: Yup.string().required(),
+  description: Yup.string().required(),
+  transactionDate: Yup.string().required(), // TODO Better validation for this field
+  transactionType: Yup.string().required(),
+})
+
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const NewTransaction: FC<Props> = (props) => {
-  const formik = useFormik({
+  const form = useForm({
     initialValues: {
       account: '',
       amount: '',
@@ -29,104 +39,23 @@ const NewTransaction: FC<Props> = (props) => {
       transactionDate: dayjs().format('YYYY-MM-DD'),
       transactionType: 'payment',
     },
-    onSubmit: (values) => {},
-    validationSchema: Yup.object({
-      account: Yup.string().required(),
-      // amount: Yup.number().required(),
-      amount: Yup.string().required(),
-      category: Yup.string().required(),
-      description: Yup.string().required(),
-      transactionDate: Yup.string().required(), // TODO Better validation for this field
-      transactionType: Yup.string().required(),
-    }),
+    validate: yupResolver(formSchema),
+    validateInputOnChange: true,
   });
 
   return (
     <Page>
       <h1>Budget Plan</h1>
       <div>
-        <form>
+        <form onSubmit={form.onSubmit((values) => console.log(values))}>
           <TextInput
-            error={
-              formik.touched.transactionDate && formik.errors.transactionDate
-            }
-            id="transactionDate"
-            label="Date"
-            name="transactionDate"
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-            placeholder="Pick date"
-            required
-            value={formik.values.transactionDate}
-          />
-          <NativeSelect
-            data={[
-              { value: 'payment', label: 'Payment' },
-              { value: 'credit_card_charge', label: 'Credit card charge' },
-              { value: 'account_transfer', label: 'Account transfer' },
-            ]}
-            error={
-              formik.touched.transactionType && formik.errors.transactionType
-            }
-            id="transactionType"
-            label="Type"
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-            name="transactionType"
-            required
-            value={formik.values.transactionType}
-          />
-          <NativeSelect
-            data={props.accounts}
-            error={formik.touched.account && formik.errors.account}
-            id="account"
-            label="Account"
-            name="account"
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-            required
-            value={formik.values.account}
-          />
-          <TextInput
-            error={formik.touched.description && formik.errors.description}
-            id="description"
             label="Description"
-            name="description"
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
             placeholder="Payee or payer"
             required
-            value={formik.values.description}
-          />
-          <NativeSelect
-            data={props.categories}
-            error={formik.touched.category && formik.errors.category}
-            id="category"
-            label="Category"
-            name="category"
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-            required
-            value={formik.values.category}
-          />
-          <NumberInput
-            decimalSeparator="."
-            error={formik.touched.amount && formik.errors.amount}
-            hideControls
-            icon={<FontAwesomeIcon icon={faDollarSign} />}
-            id="amount"
-            label="Amount"
-            name="amount"
-            my="sm"
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-            precision={2}
-            required
-            value={parseFloat(formik.values.amount)}
-          />
-          <Checkbox
-            label="Credit or deposit"
-            required
+            {
+              // I really dislike this syntax; it's too much magic
+              ...form.getInputProps('description')
+            }
           />
         </form>
       </div>
