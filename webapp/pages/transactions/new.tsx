@@ -5,8 +5,8 @@
 import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Checkbox, NativeSelect, NumberInput, TextInput } from '@mantine/core';
+import { DatePicker } from '@mantine/dates';
 import { useForm, yupResolver } from '@mantine/form';
-import dayjs from 'dayjs';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { FC } from 'react';
 import * as Yup from 'yup';
@@ -19,13 +19,13 @@ import { prisma } from '../../server-lib';
 
 const formSchema = Yup.object({
   account: Yup.string().required(),
-  // amount: Yup.number().required(),
-  amount: Yup.string().required(),
+  amount: Yup.number().required(),
   category: Yup.string().required(),
   description: Yup.string().required(),
-  transactionDate: Yup.string().required(), // TODO Better validation for this field
+  transactionDate: Yup.date().required(), // TODO Better error message for this field
   transactionType: Yup.string().required(),
-})
+  // TODO Add validation for `is_credit` checkbox
+});
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
@@ -33,10 +33,10 @@ const NewTransaction: FC<Props> = (props) => {
   const form = useForm({
     initialValues: {
       account: '',
-      amount: '',
+      amount: 0,
       category: '',
       description: '',
-      transactionDate: dayjs().format('YYYY-MM-DD'),
+      transactionDate: new Date(),
       transactionType: 'payment',
     },
     validate: yupResolver(formSchema),
@@ -48,15 +48,55 @@ const NewTransaction: FC<Props> = (props) => {
       <h1>Budget Plan</h1>
       <div>
         <form onSubmit={form.onSubmit((values) => console.log(values))}>
+          <DatePicker
+            allowFreeInput
+            inputFormat="YYYY-MM-DD"
+            label="Date"
+            required
+            {
+              // I really dislike this syntax; it's too much magic
+              ...form.getInputProps('transactionDate')
+            }
+          />
+          <NativeSelect
+            data={[
+              { value: 'payment', label: 'Payment' },
+              { value: 'credit_card_charge', label: 'Credit card charge' },
+              { value: 'account_transfer', label: 'Account transfer' },
+            ]}
+            label="Type"
+            required
+            {...form.getInputProps('transactionType')}
+          />
+          <NativeSelect
+            data={props.accounts}
+            label="Account"
+            required
+            {...form.getInputProps('account')}
+          />
           <TextInput
             label="Description"
             placeholder="Payee or payer"
             required
-            {
-              // I really dislike this syntax; it's too much magic
-              ...form.getInputProps('description')
-            }
+            {...form.getInputProps('description')}
           />
+          <NativeSelect
+            data={props.categories}
+            label="Category"
+            required
+            {...form.getInputProps('category')}
+          />
+          <NumberInput
+            decimalSeparator="."
+            hideControls
+            icon={<FontAwesomeIcon icon={faDollarSign} />}
+            label="Amount"
+            my="sm"
+            precision={2}
+            required
+            {...form.getInputProps('amount')}
+          />
+          <Checkbox label="Credit or deposit" required />
         </form>
       </div>
     </Page>
