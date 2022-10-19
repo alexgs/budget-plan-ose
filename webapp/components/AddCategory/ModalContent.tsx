@@ -22,7 +22,11 @@ export const AddCategoryModalContent: FC<Props> = (props) => {
   if (error) {
     console.error(error);
     return (
-      <Alert icon={<FontAwesomeIcon icon={faCircleExclamation} />} title="Error!" color="red">
+      <Alert
+        icon={<FontAwesomeIcon icon={faCircleExclamation} />}
+        title="Error!"
+        color="red"
+      >
         A network error occurred. Please check the console logs for details.
       </Alert>
     );
