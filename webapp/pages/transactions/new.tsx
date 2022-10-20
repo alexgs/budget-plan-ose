@@ -3,6 +3,7 @@
  */
 
 import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
+import { faSplit } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
@@ -16,7 +17,8 @@ import { DatePicker } from '@mantine/dates';
 import { useForm, yupResolver } from '@mantine/form';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { FC } from 'react';
-import * as Yup from 'yup';
+import { v4 as uuid } from 'uuid';
+import * as yup from 'yup';
 
 import { getCategoryList } from '../../client-lib';
 import { Page } from '../../components';
@@ -24,13 +26,21 @@ import { prisma } from '../../server-lib';
 
 // TODO Handle splitting transaction
 
-const formSchema = Yup.object({
-  account: Yup.string().required(),
-  amount: Yup.number().required(),
-  category: Yup.string().required(),
-  description: Yup.string().required(),
-  transactionDate: Yup.date().required(), // TODO Better error message for this field
-  transactionType: Yup.string().required(),
+const formSchema = yup.object({
+  amounts: yup.array().of(
+    yup.object({
+      account: yup.string().required(),
+      amount: yup.number().required(),
+      category: yup.string().required(),
+      id: yup.string().required(),
+      isCredit: yup.boolean().required(),
+      notes: yup.number().required(),
+    })
+  ),
+  description: yup.string().required(),
+  id: yup.string().required(),
+  transactionDate: yup.date().required(), // TODO Better error message for this field
+  transactionType: yup.string().required(),
 });
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
@@ -38,17 +48,69 @@ type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 const NewTransaction: FC<Props> = (props) => {
   const form = useForm({
     initialValues: {
-      account: props.accounts[0].value,
-      amount: 0,
-      category: props.categories[0].value,
+      amounts: [
+        {
+          account: props.accounts[0].value,
+          amount: 0,
+          category: props.categories[0].value,
+          id: uuid(),
+          isCredit: false,
+          notes: '',
+        },
+      ],
       description: '',
-      isCredit: false,
+      id: uuid(),
       transactionDate: new Date(),
       transactionType: 'payment',
     },
     validate: yupResolver(formSchema),
     validateInputOnChange: true,
   });
+
+  function handleSplitClick() {
+    form.insertListItem('amounts', {
+      account: props.accounts[0].value,
+      amount: 0,
+      category: props.categories[0].value,
+      isCredit: false,
+      notes: '',
+    });
+  }
+
+  function renderAmounts() {
+    return form.values.amounts.map((amount, index) => (
+      <div key={amount.id}>
+        <NativeSelect
+          data={props.accounts}
+          label="Account"
+          my="sm"
+          required
+          {...form.getInputProps('account')}
+        />
+        <NativeSelect
+          data={props.categories}
+          label="Category"
+          my="sm"
+          required
+          {...form.getInputProps('category')}
+        />
+        <NumberInput
+          decimalSeparator="."
+          hideControls
+          icon={<FontAwesomeIcon icon={faDollarSign} />}
+          label="Amount"
+          my="sm"
+          precision={2}
+          required
+          {...form.getInputProps('amount')}
+        />
+        <Checkbox
+          label="Credit or deposit"
+          {...form.getInputProps('isCredit', { type: 'checkbox' })}
+        />
+      </div>
+    ));
+  }
 
   return (
     <Page>
@@ -76,13 +138,6 @@ const NewTransaction: FC<Props> = (props) => {
             my="sm"
             required
             {...form.getInputProps('transactionType')}
-          />
-          <NativeSelect
-            data={props.accounts}
-            label="Account"
-            my="sm"
-            required
-            {...form.getInputProps('account')}
           />
           <TextInput
             label="Description"
@@ -112,8 +167,16 @@ const NewTransaction: FC<Props> = (props) => {
             label="Credit or deposit"
             {...form.getInputProps('isCredit', { type: 'checkbox' })}
           />
-          <Group position="right" mt="md">
-            <Button type="submit">Save</Button>
+          {renderAmounts()}
+          <Group position="apart">
+            <Group position="left" mt="md">
+              <Button onClick={handleSplitClick} variant="outline">
+                <FontAwesomeIcon icon={faSplit} size="lg" />
+              </Button>
+            </Group>
+            <Group position="right" mt="md">
+              <Button type="submit">Save</Button>
+            </Group>
           </Group>
         </form>
       </div>
