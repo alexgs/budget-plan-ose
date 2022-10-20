@@ -22,9 +22,8 @@ import * as yup from 'yup';
 
 import { getCategoryList } from '../../client-lib';
 import { Page } from '../../components';
+import { SinglePaymentForm, SplitPaymentForm } from '../../components/NewTransactionForm';
 import { prisma } from '../../server-lib';
-
-// TODO Handle splitting transaction
 
 const formSchema = yup.object({
   amounts: yup.array().of(
@@ -72,114 +71,38 @@ const NewTransaction: FC<Props> = (props) => {
       account: props.accounts[0].value,
       amount: 0,
       category: props.categories[0].value,
+      id: uuid(),
       isCredit: false,
       notes: '',
     });
   }
 
-  function renderAmounts() {
-    return form.values.amounts.map((amount, index) => (
-      <div key={amount.id}>
-        <NativeSelect
-          data={props.accounts}
-          label="Account"
-          my="sm"
-          required
-          {...form.getInputProps('account')}
+  function renderForm() {
+    if (form.values.amounts.length === 1) {
+      return (
+        <SinglePaymentForm
+          accounts={props.accounts}
+          categories={props.categories}
+          mantineForm={form}
+          onSplitClick={handleSplitClick}
         />
-        <NativeSelect
-          data={props.categories}
-          label="Category"
-          my="sm"
-          required
-          {...form.getInputProps('category')}
+      );
+    } else {
+      return (
+        <SplitPaymentForm
+          accounts={props.accounts}
+          categories={props.categories}
+          mantineForm={form}
+          onSplitClick={handleSplitClick}
         />
-        <NumberInput
-          decimalSeparator="."
-          hideControls
-          icon={<FontAwesomeIcon icon={faDollarSign} />}
-          label="Amount"
-          my="sm"
-          precision={2}
-          required
-          {...form.getInputProps('amount')}
-        />
-        <Checkbox
-          label="Credit or deposit"
-          {...form.getInputProps('isCredit', { type: 'checkbox' })}
-        />
-      </div>
-    ));
+      );
+    }
   }
 
   return (
     <Page>
       <h1>Budget Plan</h1>
-      <div>
-        <form onSubmit={form.onSubmit((values) => console.log(values))}>
-          <DatePicker
-            allowFreeInput
-            inputFormat="YYYY-MM-DD"
-            label="Date"
-            my="sm"
-            required
-            {
-              // I really dislike this syntax; it's too much magic
-              ...form.getInputProps('transactionDate')
-            }
-          />
-          <NativeSelect
-            data={[
-              { value: 'payment', label: 'Payment' },
-              { value: 'credit_card_charge', label: 'Credit card charge' },
-              { value: 'account_transfer', label: 'Account transfer' },
-            ]}
-            label="Type"
-            my="sm"
-            required
-            {...form.getInputProps('transactionType')}
-          />
-          <TextInput
-            label="Description"
-            placeholder="Payee or payer"
-            my="sm"
-            required
-            {...form.getInputProps('description')}
-          />
-          <NativeSelect
-            data={props.categories}
-            label="Category"
-            my="sm"
-            required
-            {...form.getInputProps('category')}
-          />
-          <NumberInput
-            decimalSeparator="."
-            hideControls
-            icon={<FontAwesomeIcon icon={faDollarSign} />}
-            label="Amount"
-            my="sm"
-            precision={2}
-            required
-            {...form.getInputProps('amount')}
-          />
-          <Checkbox
-            label="Credit or deposit"
-            {...form.getInputProps('isCredit', { type: 'checkbox' })}
-          />
-          {renderAmounts()}
-          <Group position="apart">
-            <Group position="left" mt="md">
-              <Button onClick={handleSplitClick} variant="outline">
-                <FontAwesomeIcon icon={faSplit} size="lg" />
-              </Button>
-            </Group>
-            <Group position="right" mt="md">
-              <Button type="submit">Save</Button>
-            </Group>
-          </Group>
-        </form>
-      </div>
+      <div>{renderForm()}</div>
     </Page>
   );
 };
