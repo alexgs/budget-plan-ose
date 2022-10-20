@@ -8,7 +8,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
   Checkbox,
+  CSSObject,
   Group,
+  MantineTheme,
   NativeSelect,
   NumberInput,
   TextInput,
@@ -16,6 +18,11 @@ import {
 import { DatePicker } from '@mantine/dates';
 import { FC } from 'react';
 import { NewTransactionFormHook } from '../../client-lib/types';
+
+const amountStyle = (theme: MantineTheme): CSSObject => ({
+  '.mantine-NumberInput-icon': { color: theme.colors.green[6] },
+  input: { color: theme.colors.green[4] },
+});
 
 interface Props {
   accounts: { label: string; value: string }[];
@@ -83,11 +90,14 @@ export const SinglePaymentForm: FC<Props> = (props) => {
         my="sm"
         precision={2}
         required
+        sx={props.mantineForm.values.amounts[0].isCredit ? amountStyle : {}}
         {...props.mantineForm.getInputProps('amounts.0.amount')}
       />
       <Checkbox
         label="Credit or deposit"
-        {...props.mantineForm.getInputProps('amounts.0.isCredit', { type: 'checkbox' })}
+        {...props.mantineForm.getInputProps('amounts.0.isCredit', {
+          type: 'checkbox',
+        })}
       />
       <Group position="apart">
         <Group position="left" mt="md">

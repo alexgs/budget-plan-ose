@@ -8,20 +8,31 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
   Checkbox,
+  CSSObject,
   Group,
+  MantineTheme,
   NativeSelect,
   NumberInput,
-  TextInput
+  TextInput,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { FC } from 'react';
 import { NewTransactionFormHook } from '../../client-lib/types';
 
+// TODO This is good for me (who isn't colorblind), but we should add a '+' or
+//   '-' prefix (or maybe some other FontAwesome icon) so there's another visual
+//   indicator, too.
+
+const amountStyle = (theme: MantineTheme): CSSObject => ({
+  '.mantine-NumberInput-icon': { color: theme.colors.green[6] },
+  input: { color: theme.colors.green[4] },
+});
+
 interface Props {
   accounts: { label: string; value: string }[];
   categories: { label: string; value: string }[];
   mantineForm: NewTransactionFormHook;
-  onSplitClick: VoidFunction
+  onSplitClick: VoidFunction;
 }
 
 export const SplitPaymentForm: FC<Props> = (props) => {
@@ -50,18 +61,28 @@ export const SplitPaymentForm: FC<Props> = (props) => {
           my="sm"
           precision={2}
           required
+          sx={
+            props.mantineForm.values.amounts[index].isCredit ? amountStyle : {}
+          }
           {...props.mantineForm.getInputProps(`amounts.${index}.amount`)}
         />
         <Checkbox
           label="Credit or deposit"
-          {...props.mantineForm.getInputProps(`amounts.${index}.isCredit`, { type: 'checkbox' })}
+          {...props.mantineForm.getInputProps(`amounts.${index}.isCredit`, {
+            type: 'checkbox',
+          })}
         />
       </div>
     ));
   }
 
   return (
-    <form onSubmit={props.mantineForm.onSubmit((values) => console.log(values))}>
+    <form
+      onSubmit={props.mantineForm.onSubmit(
+        (values) => console.log(values),
+        (values) => console.error(values)
+      )}
+    >
       <DatePicker
         allowFreeInput
         inputFormat="YYYY-MM-DD"
@@ -99,6 +120,7 @@ export const SplitPaymentForm: FC<Props> = (props) => {
         my="sm"
         precision={2}
         required
+        sx={props.mantineForm.values.isCredit ? amountStyle : {}}
         {...props.mantineForm.getInputProps('amount')}
       />
       <Checkbox
@@ -117,6 +139,5 @@ export const SplitPaymentForm: FC<Props> = (props) => {
         </Group>
       </Group>
     </form>
-
   );
-}
+};
