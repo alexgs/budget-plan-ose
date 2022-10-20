@@ -22,11 +22,11 @@ model Category {
 }
 
 model FinancialAccount {
-  id                String              @id(map: "financial_accounts_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  description       String
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @default(now()) @map("updated_at")
-  TransactionAmount TransactionAmount[]
+  id          String              @id(map: "financial_accounts_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  description String
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime            @default(now()) @map("updated_at")
+  amounts     TransactionAmount[]
 
   @@map("financial_accounts")
 }
