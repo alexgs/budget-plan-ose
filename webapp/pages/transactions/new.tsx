@@ -25,7 +25,7 @@ const formSchema = yup.object({
       category: yup.string().required(),
       id: yup.string().required(),
       isCredit: yup.boolean().required(),
-      notes: yup.number().required(),
+      notes: yup.string(),
     })
   ),
   description: yup.string().required(),

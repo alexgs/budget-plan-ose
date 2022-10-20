@@ -21,14 +21,15 @@ interface Props {
   accounts: { label: string; value: string }[];
   categories: { label: string; value: string }[];
   mantineForm: NewTransactionFormHook;
-  onSplitClick: VoidFunction
+  onSplitClick: VoidFunction;
 }
 
 export const SinglePaymentForm: FC<Props> = (props) => {
   return (
     <form
-      onSubmit={props.mantineForm.onSubmit((values) =>
-        console.log(values)
+      onSubmit={props.mantineForm.onSubmit(
+        (values) => console.log(values),
+        (values) => console.error(values)
       )}
     >
       <DatePicker
@@ -53,13 +54,6 @@ export const SinglePaymentForm: FC<Props> = (props) => {
         required
         {...props.mantineForm.getInputProps('transactionType')}
       />
-      <NativeSelect
-        data={props.accounts}
-        label="Account"
-        my="sm"
-        required
-        {...props.mantineForm.getInputProps('account')}
-      />
       <TextInput
         label="Description"
         placeholder="Payee or payer"
@@ -68,11 +62,18 @@ export const SinglePaymentForm: FC<Props> = (props) => {
         {...props.mantineForm.getInputProps('description')}
       />
       <NativeSelect
+        data={props.accounts}
+        label="Account"
+        my="sm"
+        required
+        {...props.mantineForm.getInputProps('amounts.0.account')}
+      />
+      <NativeSelect
         data={props.categories}
         label="Category"
         my="sm"
         required
-        {...props.mantineForm.getInputProps('category')}
+        {...props.mantineForm.getInputProps('amounts.0.category')}
       />
       <NumberInput
         decimalSeparator="."
@@ -82,11 +83,11 @@ export const SinglePaymentForm: FC<Props> = (props) => {
         my="sm"
         precision={2}
         required
-        {...props.mantineForm.getInputProps('amount')}
+        {...props.mantineForm.getInputProps('amounts.0.amount')}
       />
       <Checkbox
         label="Credit or deposit"
-        {...props.mantineForm.getInputProps('isCredit', { type: 'checkbox' })}
+        {...props.mantineForm.getInputProps('amounts.0.isCredit', { type: 'checkbox' })}
       />
       <Group position="apart">
         <Group position="left" mt="md">
