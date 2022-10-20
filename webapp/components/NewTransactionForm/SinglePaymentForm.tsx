@@ -15,18 +15,19 @@ import {
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { FC } from 'react';
+import { NewTransactionFormHook } from '../../client-lib/types';
 
 interface Props {
-  accounts: any[]; // TODO Fix type
-  categories: any[]; // TODO Fix type
-  mantineForm: any; // TODO Fix type
+  accounts: { label: string; value: string }[];
+  categories: { label: string; value: string }[];
+  mantineForm: NewTransactionFormHook;
   onSplitClick: VoidFunction
 }
 
 export const SinglePaymentForm: FC<Props> = (props) => {
   return (
     <form
-      onSubmit={props.mantineForm.onSubmit((values: any) =>
+      onSubmit={props.mantineForm.onSubmit((values) =>
         console.log(values)
       )}
     >

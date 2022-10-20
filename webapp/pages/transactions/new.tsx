@@ -2,27 +2,19 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
-import { faSplit } from '@fortawesome/pro-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Button,
-  Checkbox,
-  Group,
-  NativeSelect,
-  NumberInput,
-  TextInput,
-} from '@mantine/core';
-import { DatePicker } from '@mantine/dates';
 import { useForm, yupResolver } from '@mantine/form';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { GetServerSideProps } from 'next';
 import { FC } from 'react';
 import { v4 as uuid } from 'uuid';
 import * as yup from 'yup';
 
 import { getCategoryList } from '../../client-lib';
+import { NewTransactionFormHook } from '../../client-lib/types';
 import { Page } from '../../components';
-import { SinglePaymentForm, SplitPaymentForm } from '../../components/NewTransactionForm';
+import {
+  SinglePaymentForm,
+  SplitPaymentForm,
+} from '../../components/NewTransactionForm';
 import { prisma } from '../../server-lib';
 
 const formSchema = yup.object({
@@ -42,10 +34,13 @@ const formSchema = yup.object({
   transactionType: yup.string().required(),
 });
 
-type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+interface Props {
+  accounts: { label: string; value: string }[];
+  categories: { label: string; value: string }[];
+}
 
 const NewTransaction: FC<Props> = (props) => {
-  const form = useForm({
+  const form: NewTransactionFormHook = useForm({
     initialValues: {
       amounts: [
         {
@@ -53,12 +48,13 @@ const NewTransaction: FC<Props> = (props) => {
           amount: 0,
           category: props.categories[0].value,
           id: uuid(),
-          isCredit: false,
+          isCredit: false as boolean,
           notes: '',
         },
       ],
       description: '',
       id: uuid(),
+      isCredit: false as boolean,
       transactionDate: new Date(),
       transactionType: 'payment',
     },

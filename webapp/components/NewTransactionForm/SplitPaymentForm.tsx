@@ -15,31 +15,32 @@ import {
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { FC } from 'react';
+import { NewTransactionFormHook } from '../../client-lib/types';
 
 interface Props {
-  accounts: any[]; // TODO Fix type
-  categories: any[]; // TODO Fix type
-  mantineForm: any; // TODO Fix type
+  accounts: { label: string; value: string }[];
+  categories: { label: string; value: string }[];
+  mantineForm: NewTransactionFormHook;
   onSplitClick: VoidFunction
 }
 
 export const SplitPaymentForm: FC<Props> = (props) => {
   function renderAmounts() {
-    return props.mantineForm.values.amounts.map((amount: any, index: number) => (
+    return props.mantineForm.values.amounts.map((amount, index) => (
       <div key={amount.id}>
         <NativeSelect
           data={props.accounts}
           label="Account"
           my="sm"
           required
-          {...props.mantineForm.getInputProps('account')}
+          {...props.mantineForm.getInputProps(`amounts.${index}.account`)}
         />
         <NativeSelect
           data={props.categories}
           label="Category"
           my="sm"
           required
-          {...props.mantineForm.getInputProps('category')}
+          {...props.mantineForm.getInputProps(`amounts.${index}.category`)}
         />
         <NumberInput
           decimalSeparator="."
@@ -49,18 +50,18 @@ export const SplitPaymentForm: FC<Props> = (props) => {
           my="sm"
           precision={2}
           required
-          {...props.mantineForm.getInputProps('amount')}
+          {...props.mantineForm.getInputProps(`amounts.${index}.amount`)}
         />
         <Checkbox
           label="Credit or deposit"
-          {...props.mantineForm.getInputProps('isCredit', { type: 'checkbox' })}
+          {...props.mantineForm.getInputProps(`amounts.${index}.isCredit`, { type: 'checkbox' })}
         />
       </div>
     ));
   }
 
   return (
-    <form onSubmit={props.mantineForm.onSubmit((values: any) => console.log(values))}>
+    <form onSubmit={props.mantineForm.onSubmit((values) => console.log(values))}>
       <DatePicker
         allowFreeInput
         inputFormat="YYYY-MM-DD"

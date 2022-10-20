@@ -2,10 +2,12 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-export interface categoryTreeNode {
+import { UseFormReturnType } from '@mantine/form';
+
+export interface CategoryTreeNode {
   id: string;
   balance: number | null;
-  children: categoryTreeNode[];
+  children: CategoryTreeNode[];
   name: string;
   order: number | null;
   parentId: string | null;
@@ -13,7 +15,23 @@ export interface categoryTreeNode {
   updatedAt: string;
 }
 
-export interface rawCategory {
+export type NewTransactionFormHook = UseFormReturnType<{
+  amounts: {
+    account: any;
+    amount: number;
+    category: any;
+    id: string;
+    isCredit: boolean;
+    notes: string;
+  }[];
+  description: string;
+  id: string;
+  isCredit: boolean;
+  transactionDate: Date;
+  transactionType: string;
+}>;
+
+export interface RawCategory {
   id: string;
   balance: number | null;
   name: string;
