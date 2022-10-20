@@ -4,7 +4,14 @@
 
 import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Checkbox, NativeSelect, NumberInput, TextInput } from '@mantine/core';
+import {
+  Button,
+  Checkbox,
+  Group,
+  NativeSelect,
+  NumberInput,
+  TextInput,
+} from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useForm, yupResolver } from '@mantine/form';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
@@ -24,7 +31,6 @@ const formSchema = Yup.object({
   description: Yup.string().required(),
   transactionDate: Yup.date().required(), // TODO Better error message for this field
   transactionType: Yup.string().required(),
-  // TODO Add validation for `is_credit` checkbox
 });
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
@@ -32,10 +38,11 @@ type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 const NewTransaction: FC<Props> = (props) => {
   const form = useForm({
     initialValues: {
-      account: '',
+      account: props.accounts[0].value,
       amount: 0,
-      category: '',
+      category: props.categories[0].value,
       description: '',
+      isCredit: false,
       transactionDate: new Date(),
       transactionType: 'payment',
     },
@@ -52,6 +59,7 @@ const NewTransaction: FC<Props> = (props) => {
             allowFreeInput
             inputFormat="YYYY-MM-DD"
             label="Date"
+            my="sm"
             required
             {
               // I really dislike this syntax; it's too much magic
@@ -65,24 +73,28 @@ const NewTransaction: FC<Props> = (props) => {
               { value: 'account_transfer', label: 'Account transfer' },
             ]}
             label="Type"
+            my="sm"
             required
             {...form.getInputProps('transactionType')}
           />
           <NativeSelect
             data={props.accounts}
             label="Account"
+            my="sm"
             required
             {...form.getInputProps('account')}
           />
           <TextInput
             label="Description"
             placeholder="Payee or payer"
+            my="sm"
             required
             {...form.getInputProps('description')}
           />
           <NativeSelect
             data={props.categories}
             label="Category"
+            my="sm"
             required
             {...form.getInputProps('category')}
           />
@@ -96,7 +108,13 @@ const NewTransaction: FC<Props> = (props) => {
             required
             {...form.getInputProps('amount')}
           />
-          <Checkbox label="Credit or deposit" required />
+          <Checkbox
+            label="Credit or deposit"
+            {...form.getInputProps('isCredit', { type: 'checkbox' })}
+          />
+          <Group position="right" mt="md">
+            <Button type="submit">Save</Button>
+          </Group>
         </form>
       </div>
     </Page>
