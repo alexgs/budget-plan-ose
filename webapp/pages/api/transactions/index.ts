@@ -4,18 +4,23 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
-import { InferType, ValidationError } from 'yup';
 import * as yup from 'yup';
+import { InferType, ValidationError } from 'yup';
 
 import { authOptions } from '../auth/[...nextauth]';
 import { prisma } from '../../../server-lib';
 
-const newCategorySchema = yup.object({
-  name: yup.string().required(),
-  parentId: yup.string().nullable(),
+const newTransactionSchema = yup.object({
+  account: yup.string().required(),
+  amount: yup.number().required(),
+  category: yup.string().required(),
+  description: yup.string().required(),
+  isCredit: yup.boolean().required(),
+  transactionDate: yup.date().required(),
+  transactionType: yup.string().required(),
 });
 
-type NewCategorySchema = InferType<typeof newCategorySchema>;
+type NewCategorySchema = InferType<typeof newTransactionSchema>;
 
 export default async function handler(
   req: NextApiRequest,
@@ -24,17 +29,22 @@ export default async function handler(
   const session = await unstable_getServerSession(req, res, authOptions);
 
   if (session) {
-    if (req.method === 'GET') {
-      const categories = await prisma.category.findMany();
-      res.send(categories);
-    } else if (req.method === 'POST') {
-      let payload: NewCategorySchema = { name: '' };
+    if (req.method === 'POST') {
+      let payload: NewCategorySchema = {
+        account: '',
+        amount: 0,
+        category: '',
+        description: '',
+        isCredit: false,
+        transactionDate: new Date(),
+        transactionType: '',
+      };
       try {
-        payload = await newCategorySchema.validate(req.body);
+        payload = await newTransactionSchema.validate(req.body);
       } catch (e: any) {
         if (e.name && e.name === 'ValidationError') {
           const error: ValidationError = e as ValidationError;
-          console.error(`>> POST /api/categories 400 ${error.errors} <<`);
+          console.error(`>> POST /api/transactions 400 ${error.errors} <<`);
           res
             .status(400)
             .send(
@@ -46,15 +56,15 @@ export default async function handler(
         }
         return;
       }
-
-      const newCategory = await prisma.category.create({
+      // TODO Split into transaction record and txn amount tables
+      const newTransaction = await prisma.transactionAmount.create({
         data: payload,
       });
-      res.send(newCategory);
+      res.send(newTransaction);
     } else {
       res
         .status(405)
-        .setHeader('Allow', 'GET POST')
+        .setHeader('Allow', 'POST')
         .send('Method not allowed.');
     }
   } else {
