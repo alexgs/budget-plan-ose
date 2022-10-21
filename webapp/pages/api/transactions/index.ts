@@ -23,11 +23,12 @@ export default async function handler(
       let payload: NewTransactionSchema = {
         amounts: [
           {
-            account: '',
+            accountId: '',
             amount: 0,
-            category: '',
+            categoryId: '',
             id: '',
             isCredit: false,
+            status: 'uncleared'
           },
         ],
         date: new Date(),
@@ -52,23 +53,15 @@ export default async function handler(
         }
         return;
       }
+      const { amounts, ...record } = payload;
       const newTransaction = prisma.transactionRecord.create({
         data: {
+          ...record,
           amounts: {
             createMany: {
-              data: [
-                {
-                  amount: 5,
-                  category: 'category',
-                  status: 'super',
-                  accountId: 'super saver',
-                },
-              ],
+              data: amounts,
             },
           },
-          type: 'some_type',
-          description: 'description',
-          date: new Date(),
         },
       });
       res.send(newTransaction);

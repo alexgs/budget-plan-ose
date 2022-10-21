@@ -44,7 +44,7 @@ export const SplitPaymentForm: FC<Props> = (props) => {
           label="Account"
           my="sm"
           required
-          {...props.mantineForm.getInputProps(`amounts.${index}.account`)}
+          {...props.mantineForm.getInputProps(`amounts.${index}.accountId`)}
         />
         <NativeSelect
           data={props.categories}

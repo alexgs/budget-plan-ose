@@ -47,7 +47,7 @@ export const SinglePaymentForm: FC<Props> = (props) => {
         required
         {
           // I really dislike this syntax; it's too much magic
-          ...props.mantineForm.getInputProps('transactionDate')
+          ...props.mantineForm.getInputProps('date')
         }
       />
       <NativeSelect
@@ -59,7 +59,7 @@ export const SinglePaymentForm: FC<Props> = (props) => {
         label="Type"
         my="sm"
         required
-        {...props.mantineForm.getInputProps('transactionType')}
+        {...props.mantineForm.getInputProps('type')}
       />
       <TextInput
         label="Description"
@@ -73,7 +73,7 @@ export const SinglePaymentForm: FC<Props> = (props) => {
         label="Account"
         my="sm"
         required
-        {...props.mantineForm.getInputProps('amounts.0.account')}
+        {...props.mantineForm.getInputProps('amounts.0.accountId')}
       />
       <NativeSelect
         data={props.categories}
