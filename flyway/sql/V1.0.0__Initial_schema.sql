@@ -114,7 +114,11 @@ CREATE TABLE IF NOT EXISTS public.categories
   balance    INTEGER,
   name       TEXT                                                      NOT NULL,
   "order"    INTEGER,
-  parent_id  UUID,
+  parent_id  UUID
+    CONSTRAINT categories_parent_id_fk
+      REFERENCES categories
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
   created_at TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP  NOT NULL,
   updated_at TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP  NOT NULL
 );
@@ -158,7 +162,7 @@ CREATE TABLE IF NOT EXISTS public.transaction_records
   "order"     INTEGER                        DEFAULT nextval('transaction_records_order_sequence') NOT NULL,
   description TEXT                                                                                 NOT NULL,
   type        TEXT                                                                                 NOT NULL,
-  template    UUID,
+  template_id UUID,
   created_at  TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP                             NOT NULL,
   updated_at  TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP                             NOT NULL
 );
@@ -192,7 +196,11 @@ CREATE TABLE IF NOT EXISTS public.transaction_amounts
   notes                 TEXT,
   amount                INTEGER                                                   NOT NULL,
   is_credit             BOOLEAN                        DEFAULT false              NOT NULL,
-  category              UUID                                                      NOT NULL,
+  category_id           UUID                                                      NOT NULL
+    CONSTRAINT transaction_amounts_category_id_fk
+      REFERENCES categories
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
   status                TEXT                                                      NOT NULL,
   created_at            TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP  NOT NULL,
   updated_at            TIMESTAMP(3) WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP  NOT NULL

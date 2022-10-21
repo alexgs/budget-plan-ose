@@ -18,24 +18,31 @@ import userAccounts from './seed-data/user_accounts.json' assert { type: 'json' 
 const prisma = new PrismaClient();
 
 async function upsertCategories() {
-  return Promise.all(
-    categories.map(async (data) => {
-      const result = await prisma.category.findFirst({
-        where: { id: data.id },
-      });
-      if (!result) {
-        return prisma.category.create({ data });
-      }
-    })
-  );
+  for (let i = 0; i < categories.length; i++) {
+    const data = categories[i];
+    const result = await prisma.category.findFirst({
+      where: { id: data.id },
+    });
+    if (!result) {
+      await prisma.category.create({ data });
+    }
+  }
 }
 
 async function upsertFinancialAccounts() {
   return Promise.all(
     financialAccounts.map(async (data) => {
-      const result = await prisma.financialAccount.findFirst({ where: { id: data.id } });
+      const result = await prisma.financialAccount.findFirst({
+        where: { id: data.id },
+      });
       if (!result) {
-        return prisma.financialAccount.create({ data });
+        return prisma.financialAccount.create({
+          data: {
+            ...data,
+            createdAt: new Date(data.createdAt),
+            updatedAt: new Date(data.updatedAt),
+          },
+        });
       }
     })
   );

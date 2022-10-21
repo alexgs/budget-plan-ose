@@ -14,8 +14,8 @@ export interface CategoryTreeNode {
   name: string;
   order: number | null;
   parentId: string | null;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export type NewTransactionFormHook = UseFormReturnType<

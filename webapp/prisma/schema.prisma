@@ -10,13 +10,16 @@ datasource db {
 // --- APPLICATION SCHEMA ---
 
 model Category {
-  id        String   @id(map: "categories_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id        String              @id(map: "categories_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   balance   Int?
   name      String
   order     Int?
-  parentId  String?  @map("parent_id") @db.Uuid
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
+  parentId  String?             @map("parent_id") @db.Uuid
+  createdAt DateTime            @default(now()) @map("created_at")
+  updatedAt DateTime            @default(now()) @map("updated_at")
+  parent    Category?           @relation("categoriesTocategories", fields: [parentId], references: [id], onDelete: Cascade, map: "categories_parent_id_fk")
+  children  Category[]          @relation("categoriesTocategories")
+  amounts   TransactionAmount[] @relation("categoriesTotransaction_amounts")
 
   @@map("categories")
 }
@@ -32,18 +35,19 @@ model FinancialAccount {
 }
 
 model TransactionAmount {
-  id                  String            @id(map: "transaction_amounts_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  accountId           String            @map("account_id") @db.Uuid
-  transactionRecordId String            @map("transaction_record_id") @db.Uuid
-  notes               String?
-  amount              Int
-  isCredit            Boolean           @default(false) @map("is_credit")
-  category            String            @db.Uuid
-  status              String
-  createdAt           DateTime          @default(now()) @map("created_at")
-  updatedAt           DateTime          @default(now()) @map("updated_at")
-  account             FinancialAccount  @relation(fields: [accountId], references: [id], onDelete: Cascade, map: "transaction_amounts_financial_account_id_fk")
-  record              TransactionRecord @relation(fields: [transactionRecordId], references: [id], onDelete: Cascade, map: "transaction_amounts_transaction_record_id_fk")
+  id         String            @id(map: "transaction_amounts_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  accountId  String            @map("account_id") @db.Uuid
+  recordId   String            @map("transaction_record_id") @db.Uuid
+  notes      String?
+  amount     Int
+  isCredit   Boolean           @default(false) @map("is_credit")
+  categoryId String            @map("category_id") @db.Uuid
+  status     String
+  createdAt  DateTime          @default(now()) @map("created_at")
+  updatedAt  DateTime          @default(now()) @map("updated_at")
+  account    FinancialAccount  @relation(fields: [accountId], references: [id], onDelete: Cascade, map: "transaction_amounts_financial_account_id_fk")
+  category   Category          @relation("categoriesTotransaction_amounts", fields: [categoryId], references: [id], onDelete: Cascade, map: "transaction_amounts_category_id_fk")
+  record     TransactionRecord @relation(fields: [recordId], references: [id], onDelete: Cascade, map: "transaction_amounts_transaction_record_id_fk")
 
   @@map("transaction_amounts")
 }
@@ -54,7 +58,7 @@ model TransactionRecord {
   order       Int                 @default(autoincrement())
   description String
   type        String
-  template    String?             @db.Uuid
+  templateId  String?             @map("template_id") @db.Uuid
   createdAt   DateTime            @default(now()) @map("created_at")
   updatedAt   DateTime            @default(now()) @map("updated_at")
   amounts     TransactionAmount[]
