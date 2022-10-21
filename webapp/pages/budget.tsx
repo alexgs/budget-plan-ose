@@ -6,7 +6,7 @@ import { Alert, Loader, Table } from '@mantine/core';
 import useSWR from 'swr';
 
 import { buildCategoryTree, parseCategoryTree } from '../client-lib';
-import { categoryTreeNode } from '../client-lib/types';
+import { CategoryTreeNode } from '../client-lib/types';
 import { AddCategory, AddTransactionButton, Page } from '../components';
 
 function Budget() {
@@ -25,7 +25,7 @@ function Budget() {
     return <Loader variant="bars" />;
   }
 
-  const catTree: categoryTreeNode[] = buildCategoryTree(catData);
+  const catTree: CategoryTreeNode[] = buildCategoryTree(catData);
   const topLevelBalances = parseCategoryTree(catTree, 0);
   const rows = topLevelBalances.map((row) => (
     <tr key={row.name}>

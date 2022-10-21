@@ -12,24 +12,6 @@ services:
       - ./database/host:/host
     working_dir: /host
 
-  flyway:
-    image: alexgs99/flyway:1
-    container_name: flyway
-    restart: "no"
-    networks:
-      - app-network
-    volumes:
-      - ./flyway/conf:/flyway/conf
-      - ./flyway/sql:/flyway/sql
-    environment:
-      - FLYWAY_PASSWORD=${DATABASE_PASSWORD}
-      - FLYWAY_URL=jdbc:postgresql://database:5432/${DATABASE_NAME}
-      - FLYWAY_USER=${DATABASE_USER}
-    depends_on:
-      - database
-    labels:
-      - "traefik.enable=false"
-
 networks:
   app-network:
     driver: bridge

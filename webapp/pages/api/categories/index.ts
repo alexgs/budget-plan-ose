@@ -10,8 +10,6 @@ import * as yup from 'yup';
 import { authOptions } from '../auth/[...nextauth]';
 import { prisma } from '../../../server-lib';
 
-// TODO Add auth
-
 const newCategorySchema = yup.object({
   name: yup.string().required(),
   parentId: yup.string().nullable(),

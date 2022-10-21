@@ -3,7 +3,7 @@
  */
 
 import { buildCategoryTree } from './build-category-tree';
-import { categoryTreeNode, rawCategory } from './types';
+import { CategoryTreeNode, RawCategory } from './types';
 
 interface categoryValues {
   id: string; // UUID of this category
@@ -13,7 +13,7 @@ interface categoryValues {
 
 function visitLeaves(
   output: categoryValues[],
-  cats: categoryTreeNode[],
+  cats: CategoryTreeNode[],
   parentLabel: string | null = null
 ) {
   cats.forEach((cat) => {
@@ -25,7 +25,7 @@ function visitLeaves(
   return output;
 }
 
-export function getCategoryList(data: rawCategory[]): categoryValues[] {
+export function getCategoryList(data: RawCategory[]): categoryValues[] {
   const catTree = buildCategoryTree(data);
 
   const output: categoryValues[] = [];

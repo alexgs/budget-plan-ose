@@ -13,12 +13,14 @@ Look at [common commands][3] in the :lock: devops repo for additional tips and t
 ### Getting started
 
 1. Make sure the following keys are set in `../.env`.
+
 ```
 DATABASE_ADMIN_PASSWORD
 DATABASE_ADMIN_USER
 DATABASE_HOST_DIRECTORY
 DATABASE_NAME
 ```
+
 2. Run `task db:DANGEROUS:wipe-host-data` to delete previous database files in `$DATABASE_HOST_DIRECTORY`, if any.
 3. Run `task db:DANGEROUS:initialize`.
 4. Run `task up` to start the application stack. You can verify that everything is okay with Postgres by checking the logs with `docker-compose logs -f database`.

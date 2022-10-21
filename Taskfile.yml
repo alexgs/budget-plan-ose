@@ -4,6 +4,7 @@ version: '3'
 
 includes:
   db: ./database/Taskfile.yml
+  flyway: ./flyway/Taskfile.yml
   web: ./webapp/Taskfile.yml
 
 dotenv: ['.env']
@@ -22,11 +23,6 @@ tasks:
     cmds:
       - "{{.COMPOSE}} down --remove-orphans"
     desc: Tear down the application
-
-  flyway:
-    cmds:
-      - "{{.COMPOSE}} run flyway"
-    desc: Open an interactive shell for working with Flyway
 
   up:
     cmds:

@@ -3,14 +3,14 @@
  */
 
 import { clone } from 'lodash-es';
-import { categoryTreeNode } from './types';
+import { CategoryTreeNode } from './types';
 
 function cloneToDepth(
-  node: categoryTreeNode,
+  node: CategoryTreeNode,
   currentDepth: number,
   maxDepth: number
 ) {
-  let children: categoryTreeNode[] = [];
+  let children: CategoryTreeNode[] = [];
   if (currentDepth <= maxDepth) {
     children = clone(node.children);
     children.forEach((node) => cloneToDepth(node, currentDepth + 1, maxDepth));
@@ -21,17 +21,17 @@ function cloneToDepth(
 }
 
 export function parseCategoryTree(
-  tree: categoryTreeNode[],
+  tree: CategoryTreeNode[],
   rootNode: string
-): categoryTreeNode[];
+): CategoryTreeNode[];
 export function parseCategoryTree(
-  tree: categoryTreeNode[],
+  tree: CategoryTreeNode[],
   depth: number
-): categoryTreeNode[];
+): CategoryTreeNode[];
 export function parseCategoryTree(
-  tree: categoryTreeNode[],
+  tree: CategoryTreeNode[],
   rootOrDepth: number | string
-): categoryTreeNode[] {
+): CategoryTreeNode[] {
   let root: string = '';
   let depth: number = -1;
   if (typeof rootOrDepth === 'number') {

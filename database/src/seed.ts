@@ -11,39 +11,61 @@ dotenvExpand.expand(envVars);
 import { PrismaClient } from '@prisma/client';
 
 import categories from './seed-data/categories.json' assert { type: 'json' };
+import financialAccounts from './seed-data/financial_accounts.json' assert { type: 'json' };
 import users from './seed-data/users.json' assert { type: 'json' };
 import userAccounts from './seed-data/user_accounts.json' assert { type: 'json' };
 
 const prisma = new PrismaClient();
 
-async function createCategories() {
+async function upsertCategories() {
+  for (let i = 0; i < categories.length; i++) {
+    const data = categories[i];
+    const result = await prisma.category.findFirst({
+      where: { id: data.id },
+    });
+    if (!result) {
+      await prisma.category.create({ data });
+    }
+  }
+}
+
+async function upsertFinancialAccounts() {
   return Promise.all(
-    categories.map((data) => {
-      return prisma.category.create({ data });
+    financialAccounts.map(async (data) => {
+      const result = await prisma.financialAccount.findFirst({
+        where: { id: data.id },
+      });
+      if (!result) {
+        return prisma.financialAccount.create({
+          data: {
+            ...data,
+            createdAt: new Date(data.createdAt),
+            updatedAt: new Date(data.updatedAt),
+          },
+        });
+      }
     })
   );
 }
 
 async function upsertUsers() {
   return Promise.all(
-    users.map((data) => {
-      return prisma.user.upsert({
-        where: { id: data.id },
-        create: data,
-        update: data,
-      });
+    users.map(async (data) => {
+      const result = await prisma.user.findFirst({ where: { id: data.id } });
+      if (!result) {
+        return prisma.user.create({ data });
+      }
     })
   );
 }
 
 async function upsertUserAccounts() {
   return Promise.all(
-    userAccounts.map((data) => {
-      return prisma.account.upsert({
-        where: { id: data.id },
-        create: data,
-        update: data,
-      });
+    userAccounts.map(async (data) => {
+      const result = await prisma.account.findFirst({ where: { id: data.id } });
+      if (!result) {
+        return prisma.account.create({ data });
+      }
     })
   );
 }
@@ -51,7 +73,8 @@ async function upsertUserAccounts() {
 async function seed() {
   await upsertUsers();
   await upsertUserAccounts();
-  await createCategories();
+  await upsertCategories();
+  await upsertFinancialAccounts();
 }
 
 seed()
