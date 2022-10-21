@@ -28,7 +28,7 @@ export default async function handler(
             categoryId: '',
             id: '',
             isCredit: false,
-            status: 'uncleared'
+            status: 'uncleared',
           },
         ],
         date: new Date(),
@@ -54,7 +54,11 @@ export default async function handler(
         return;
       }
       const { amounts, ...record } = payload;
-      const newTransaction = prisma.transactionRecord.create({
+      // TODO To handle this issue with the date field on transactions, I think
+      //   we need a repository pattern to translate from the DB model to a
+      //   programmatic one. I guess this is business logic, so it needs to
+      //   happen on the server (so either adjust the API contract or use SSR).
+      const newTransaction = await prisma.transactionRecord.create({
         data: {
           ...record,
           amounts: {
@@ -63,6 +67,7 @@ export default async function handler(
             },
           },
         },
+        include: { amounts: true },
       });
       res.send(newTransaction);
     } else {
