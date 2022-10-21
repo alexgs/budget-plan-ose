@@ -3,6 +3,9 @@
  */
 
 import { UseFormReturnType } from '@mantine/form';
+import { InferType } from 'yup';
+
+import { newTransactionSchema } from '../shared-lib';
 
 export interface CategoryTreeNode {
   id: string;
@@ -15,21 +18,12 @@ export interface CategoryTreeNode {
   updatedAt: string;
 }
 
-export type NewTransactionFormHook = UseFormReturnType<{
-  amounts: {
-    account: any;
-    amount: number;
-    category: any;
-    id: string;
-    isCredit: boolean;
-    notes: string;
-  }[];
-  description: string;
-  id: string;
-  isCredit: boolean;
-  transactionDate: Date;
-  transactionType: string;
-}>;
+export type NewTransactionFormHook = UseFormReturnType<
+  InferType<typeof newTransactionSchema> & {
+    balance: number; // Client-only field
+    isCredit: boolean; // Client-only field
+  }
+>;
 
 export interface RawCategory {
   id: string;

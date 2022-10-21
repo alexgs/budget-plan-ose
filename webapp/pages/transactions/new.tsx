@@ -16,23 +16,7 @@ import {
   SplitPaymentForm,
 } from '../../components/NewTransactionForm';
 import { prisma } from '../../server-lib';
-
-const formSchema = yup.object({
-  amounts: yup.array().of(
-    yup.object({
-      account: yup.string().required(),
-      amount: yup.number().required(),
-      category: yup.string().required(),
-      id: yup.string().required(),
-      isCredit: yup.boolean().required(),
-      notes: yup.string(),
-    })
-  ),
-  description: yup.string().required(),
-  id: yup.string().required(),
-  transactionDate: yup.date().required(), // TODO Better error message for this field
-  transactionType: yup.string().required(),
-});
+import { newTransactionSchema } from '../../shared-lib';
 
 interface Props {
   accounts: { label: string; value: string }[];
@@ -49,16 +33,16 @@ const NewTransaction: FC<Props> = (props) => {
           category: props.categories[0].value,
           id: uuid(),
           isCredit: false as boolean,
-          notes: '',
         },
       ],
+      balance: 0, // Client-only field
+      date: new Date(),
       description: '',
       id: uuid(),
-      isCredit: false as boolean,
-      transactionDate: new Date(),
-      transactionType: 'payment',
+      isCredit: false as boolean, // Client-only field
+      type: 'payment',
     },
-    validate: yupResolver(formSchema),
+    validate: yupResolver(newTransactionSchema),
     validateInputOnChange: true,
   });
 
