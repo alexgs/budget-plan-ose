@@ -6,6 +6,7 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import { Page } from '../components';
 
 function HomePage() {
+  // TODO Tighten security so I'm the only one who can access this app
   const { data: session } = useSession();
   const content = session ? (
     <>
