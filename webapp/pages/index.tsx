@@ -21,7 +21,6 @@ function HomePage() {
 
   return (
     <Page>
-      <h1>Budget Plan</h1>
       {content}
     </Page>
   );

@@ -13,16 +13,22 @@ import {
   Text,
   useMantineTheme,
 } from '@mantine/core';
-import { FC, useState } from 'react';
+import { FC, PropsWithChildren, useState } from 'react';
 
-export const Page: FC = () => {
+
+// TODO Animate navbar slide-out
+// TODO Put user info in footer (or maybe in footer in navbar)
+// TODO Add things to navbar
+// TODO Check look at different screen widths
+
+export const Page: FC<PropsWithChildren> = (props) => {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   return (
     <AppShell
       styles={{
         main: {
-          background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
+          background: theme.colors.dark[8],
         },
       }}
       navbarOffsetBreakpoint="sm"
@@ -57,12 +63,12 @@ export const Page: FC = () => {
               />
             </MediaQuery>
 
-            <Text>Application header</Text>
+            <Text>Budget Plan 🥽</Text>
           </div>
         </Header>
       }
     >
-      <Text>Resize app to see responsive navbar in action</Text>
+      {props.children}
     </AppShell>
   );
 };
