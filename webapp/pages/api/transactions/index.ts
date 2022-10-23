@@ -52,15 +52,13 @@ export default async function handler(
             accountId: '',
             amount: 0,
             categoryId: '',
-            id: '',
             isCredit: false,
-            status: 'uncleared',
+            status: 'pending',
           },
         ],
         date: new Date(),
         description: '',
-        id: '',
-        type: '',
+        type: 'payment',
       };
       try {
         payload = await newTransactionSchema.validate(req.body);
