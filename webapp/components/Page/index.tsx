@@ -12,12 +12,10 @@ import {
 } from '@mantine/core';
 import { FC, PropsWithChildren, useState } from 'react';
 
-import { Footer } from './Footer';
 import { NavBar } from './NavBar';
 
-// TODO Put user info in footer (or maybe in footer in navbar)
 // TODO Add things to navbar
-// TODO Check look at different screen widths
+// TODO Use a real CSS grid for layout instead of Mantine's AppShell component
 
 export const Page: FC<PropsWithChildren> = (props) => {
   const theme = useMantineTheme();
@@ -37,7 +35,6 @@ export const Page: FC<PropsWithChildren> = (props) => {
           <Text>Application navbar</Text>
         </NavBar>
       }
-      footer={<Footer />}
       header={
         <Header height={70} p="md">
           <div
