@@ -46,6 +46,8 @@ export default async function handler(
       const payload = txns.map((txn) => formatTransaction(txn));
       res.send(payload);
     } else if (req.method === 'POST') {
+      // --- VALIDATE PAYLOAD ---
+
       let payload: NewTransactionSchema = {
         amounts: [
           {
@@ -77,7 +79,37 @@ export default async function handler(
         }
         return;
       }
+
+      if (payload.amounts?.length === 0) {
+        console.error(
+          '>> POST /api/transactions 400 Field `payload.amounts` must contain at least item. <<'
+        );
+        res
+          .status(400)
+          .send('Error: payload failed validation. Please check server logs.');
+      }
+      // TODO Check that each `amount` item has a different category
+
+      // --- BUSINESS LOGIC ---
+
+      // TODO All of the DB updates in here should be wrapped in a single DB transaction
+
       const { amounts, ...record } = payload;
+
+      // Update category balance for each amount
+      await Promise.all(
+        amounts.map((amount) => {
+          const operation = amount.isCredit ? 'increment' : 'decrement';
+          return prisma.category.update({
+            where: { id: amount.categoryId },
+            data: {
+              balance: { [operation]: amount.amount },
+            },
+          });
+        })
+      );
+
+      // Save transaction data and send response
       const newTransaction = await prisma.transactionRecord.create({
         data: {
           ...record,
