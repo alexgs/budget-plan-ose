@@ -5,7 +5,6 @@
 import { useForm, yupResolver } from '@mantine/form';
 import { GetServerSideProps } from 'next';
 import { FC } from 'react';
-import { v4 as uuid } from 'uuid';
 
 import { getCategoryList } from '../../client-lib';
 import { NewTransactionFormHook } from '../../client-lib/types';
@@ -30,15 +29,13 @@ const NewTransaction: FC<Props> = (props) => {
           accountId: props.accounts[0].value,
           amount: 0,
           categoryId: props.categories[0].value,
-          id: uuid(),
           isCredit: false as boolean,
-          status: 'uncleared',
+          status: 'pending',
         },
       ],
       balance: 0, // Client-only field
       date: new Date(),
       description: '',
-      id: uuid(),
       isCredit: false as boolean, // Client-only field
       type: 'payment',
     },
@@ -51,7 +48,6 @@ const NewTransaction: FC<Props> = (props) => {
       account: props.accounts[0].value,
       amount: 0,
       category: props.categories[0].value,
-      id: uuid(),
       isCredit: false,
       notes: '',
     });
