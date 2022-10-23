@@ -4,7 +4,7 @@
 
 import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Alert, Loader } from '@mantine/core';
+import { Alert, Loader, NumberInput, Table } from '@mantine/core';
 import { FC } from 'react';
 import useSWR from 'swr';
 import { getCategoryList } from '../../client-lib';
@@ -33,9 +33,31 @@ const Deposit: FC = () => {
 
   const categories = getCategoryList(catData);
   console.log(categories);
+  const rows = categories.map((row) => {
+    const input = row.isLeaf ? (
+      <NumberInput decimalSeparator="." hideControls precision={2} required />
+    ) : null;
+    return (
+      <tr key={row.id}>
+        <td style={{ paddingLeft: 10 + 16 * row.depth }}>{row.label}</td>
+        <td>{row.balance}</td>
+        <td>{input}</td>
+      </tr>
+    );
+  });
+
   return (
     <Page>
-      <div>Hello deposit!</div>
+      <Table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Current Balance</th>
+            <th>Deposit Amount</th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </Table>
     </Page>
   );
 };
