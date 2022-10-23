@@ -9,12 +9,12 @@ import {
   Footer,
   Header,
   MediaQuery,
-  Navbar,
   Text,
   useMantineTheme,
 } from '@mantine/core';
 import { FC, PropsWithChildren, useState } from 'react';
 
+import { NavBar } from './NavBar';
 
 // TODO Animate navbar slide-out
 // TODO Put user info in footer (or maybe in footer in navbar)
@@ -24,6 +24,7 @@ import { FC, PropsWithChildren, useState } from 'react';
 export const Page: FC<PropsWithChildren> = (props) => {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
+
   return (
     <AppShell
       styles={{
@@ -34,9 +35,9 @@ export const Page: FC<PropsWithChildren> = (props) => {
       navbarOffsetBreakpoint="sm"
       asideOffsetBreakpoint="sm"
       navbar={
-        <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 200, lg: 300 }}>
+        <NavBar isOpened={opened} onClose={() => setOpened(false)}>
           <Text>Application navbar</Text>
-        </Navbar>
+        </NavBar>
       }
       aside={
         <MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
@@ -52,7 +53,9 @@ export const Page: FC<PropsWithChildren> = (props) => {
       }
       header={
         <Header height={70} p="md">
-          <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+          <div
+            style={{ display: 'flex', alignItems: 'center', height: '100%' }}
+          >
             <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
               <Burger
                 opened={opened}
