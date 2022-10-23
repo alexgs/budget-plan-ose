@@ -2,6 +2,7 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
+import { TransactionRecord, TransactionAmount } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
 import { InferType, ValidationError } from 'yup';
@@ -12,6 +13,25 @@ import { newTransactionSchema } from '../../../shared-lib';
 
 type NewTransactionSchema = InferType<typeof newTransactionSchema>;
 
+function formatTransaction(
+  txn: TransactionRecord & { amounts: TransactionAmount[] }
+) {
+  const utcDate = [
+    txn.date.getUTCFullYear(),
+    padTwoDigits(txn.date.getUTCMonth() + 1),
+    padTwoDigits(txn.date.getUTCDate()),
+  ].join('-');
+
+  return {
+    ...txn,
+    date: utcDate,
+  };
+}
+
+function padTwoDigits(x: number): string {
+  return x.toString(10).padStart(2, '0');
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -19,7 +39,13 @@ export default async function handler(
   const session = await unstable_getServerSession(req, res, authOptions);
 
   if (session) {
-    if (req.method === 'POST') {
+    if (req.method === 'GET') {
+      const txns = await prisma.transactionRecord.findMany({
+        include: { amounts: true },
+      });
+      const payload = txns.map((txn) => formatTransaction(txn));
+      res.send(payload);
+    } else if (req.method === 'POST') {
       let payload: NewTransactionSchema = {
         amounts: [
           {
@@ -54,10 +80,6 @@ export default async function handler(
         return;
       }
       const { amounts, ...record } = payload;
-      // TODO To handle this issue with the date field on transactions, I think
-      //   we need a repository pattern to translate from the DB model to a
-      //   programmatic one. I guess this is business logic, so it needs to
-      //   happen on the server (so either adjust the API contract or use SSR).
       const newTransaction = await prisma.transactionRecord.create({
         data: {
           ...record,
@@ -69,9 +91,12 @@ export default async function handler(
         },
         include: { amounts: true },
       });
-      res.send(newTransaction);
+      res.send(formatTransaction(newTransaction));
     } else {
-      res.status(405).setHeader('Allow', 'POST').send('Method not allowed.');
+      res
+        .status(405)
+        .setHeader('Allow', 'GET POST')
+        .send('Method not allowed.');
     }
   } else {
     res.status(400).send('Bad request.');
