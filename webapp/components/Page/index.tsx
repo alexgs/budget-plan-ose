@@ -4,9 +4,7 @@
 
 import {
   AppShell,
-  Aside,
   Burger,
-  Footer,
   Header,
   MediaQuery,
   Text,
@@ -14,9 +12,9 @@ import {
 } from '@mantine/core';
 import { FC, PropsWithChildren, useState } from 'react';
 
+import { Footer } from './Footer';
 import { NavBar } from './NavBar';
 
-// TODO Animate navbar slide-out
 // TODO Put user info in footer (or maybe in footer in navbar)
 // TODO Add things to navbar
 // TODO Check look at different screen widths
@@ -39,18 +37,7 @@ export const Page: FC<PropsWithChildren> = (props) => {
           <Text>Application navbar</Text>
         </NavBar>
       }
-      aside={
-        <MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
-          <Aside p="md" hiddenBreakpoint="sm" width={{ sm: 200, lg: 300 }}>
-            <Text>Application sidebar</Text>
-          </Aside>
-        </MediaQuery>
-      }
-      footer={
-        <Footer height={60} p="md">
-          Application footer
-        </Footer>
-      }
+      footer={<Footer />}
       header={
         <Header height={70} p="md">
           <div
