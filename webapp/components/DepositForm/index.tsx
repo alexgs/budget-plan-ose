@@ -11,7 +11,7 @@ import {
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useForm, yupResolver } from '@mantine/form';
-import { FC, PropsWithChildren } from 'react';
+import { FC, PropsWithChildren, SyntheticEvent } from 'react';
 
 import { CategoryValues } from '../../client-lib/types';
 import { newTransactionSchema } from '../../shared-lib';
@@ -22,17 +22,20 @@ interface Props extends PropsWithChildren {
 }
 
 export const DepositForm: FC<Props> = (props) => {
+  const initialAmounts = props.categories.reduce((output, current) => {
+    return {
+      ...output,
+      [current.id]: {
+        amount: 0,
+        categoryId: current.id,
+      },
+    };
+  }, {});
+
   const form = useForm({
     initialValues: {
-      amounts: [
-        {
-          accountId: props.accounts[0].value,
-          amount: 0,
-          categoryId: props.categories[0].id,
-          isCredit: false as boolean,
-          status: 'pending',
-        },
-      ],
+      amounts: initialAmounts,
+      accountId: props.accounts[0].value,
       date: new Date(),
       description: '',
     },
@@ -40,10 +43,24 @@ export const DepositForm: FC<Props> = (props) => {
     validateInputOnChange: true,
   });
 
+  function handleCategoryChangeFactory(defaultChangeHandler: (e: SyntheticEvent) => void) {
+    return function handleCategoryChange(e: SyntheticEvent) {
+      defaultChangeHandler(e);
+    }
+  }
+
   const rows = props.categories.map((row) => {
-    const input = row.isLeaf ? (
-      <NumberInput decimalSeparator="." hideControls precision={2} />
-    ) : null;
+    let input = null;
+    if (row.isLeaf) {
+      const { onChange, ...inputProps } = form.getInputProps(`amounts.${row.id}.amount`)
+      input = <NumberInput
+        decimalSeparator="."
+        hideControls
+        precision={2}
+        onChange={handleCategoryChangeFactory(onChange)}
+        {...inputProps}
+      />
+    }
     return (
       <tr key={row.id}>
         <td style={{ paddingLeft: 10 + 16 * row.depth }}>{row.label}</td>
@@ -83,7 +100,7 @@ export const DepositForm: FC<Props> = (props) => {
         label="Account"
         my="sm"
         required
-        {...form.getInputProps('amounts.0.accountId')}
+        {...form.getInputProps('accountId')}
       />
       <Group position="apart">
         <NumberInput
