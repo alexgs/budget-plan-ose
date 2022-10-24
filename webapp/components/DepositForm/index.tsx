@@ -11,7 +11,7 @@ import {
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useForm, yupResolver } from '@mantine/form';
-import { FC, PropsWithChildren, SyntheticEvent } from 'react';
+import { FC, PropsWithChildren } from 'react';
 
 import { CategoryValues } from '../../client-lib/types';
 import { newTransactionSchema } from '../../shared-lib';
@@ -19,6 +19,11 @@ import { newTransactionSchema } from '../../shared-lib';
 interface Props extends PropsWithChildren {
   accounts: { label: string; value: string }[];
   categories: CategoryValues[];
+}
+
+interface CurrentAmount {
+  amount: number;
+  categoryId: string;
 }
 
 export const DepositForm: FC<Props> = (props) => {
@@ -38,29 +43,26 @@ export const DepositForm: FC<Props> = (props) => {
       accountId: props.accounts[0].value,
       date: new Date(),
       description: '',
+      totalAmount: 0,
     },
     validate: yupResolver(newTransactionSchema),
     validateInputOnChange: true,
   });
 
-  function handleCategoryChangeFactory(defaultChangeHandler: (e: SyntheticEvent) => void) {
-    return function handleCategoryChange(e: SyntheticEvent) {
-      defaultChangeHandler(e);
-    }
+  function sumAllocations(): number {
+    const allocations: CurrentAmount[] = Object.values(form.values.amounts);
+    return allocations.reduce((output, current) => output + current.amount, 0);
   }
 
   const rows = props.categories.map((row) => {
-    let input = null;
-    if (row.isLeaf) {
-      const { onChange, ...inputProps } = form.getInputProps(`amounts.${row.id}.amount`)
-      input = <NumberInput
+    const input = row.isLeaf ? (
+      <NumberInput
         decimalSeparator="."
         hideControls
         precision={2}
-        onChange={handleCategoryChangeFactory(onChange)}
-        {...inputProps}
+        {...form.getInputProps(`amounts.${row.id}.amount`)}
       />
-    }
+    ) : null;
     return (
       <tr key={row.id}>
         <td style={{ paddingLeft: 10 + 16 * row.depth }}>{row.label}</td>
@@ -121,7 +123,7 @@ export const DepositForm: FC<Props> = (props) => {
           my="sm"
           precision={2}
           style={{ width: '45%' }}
-          value={0}
+          value={form.values.totalAmount - sumAllocations()}
         />
       </Group>
       <Table>
