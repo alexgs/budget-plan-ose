@@ -16,15 +16,25 @@ import { FC, PropsWithChildren } from 'react';
 import { CategoryValues } from '../../client-lib/types';
 import { newTransactionSchema } from '../../shared-lib';
 
+interface CategoryAmount {
+  amount: number;
+  categoryId: string;
+}
+
+interface FormValues {
+  accountId: string;
+  amounts: { [id: string]: CategoryAmount };
+  date: Date;
+  description: string;
+  totalAmount: number;
+}
+
 interface Props extends PropsWithChildren {
   accounts: { label: string; value: string }[];
   categories: CategoryValues[];
 }
 
-interface CurrentAmount {
-  amount: number;
-  categoryId: string;
-}
+// TODO Add submit handler and connect form to API
 
 export const DepositForm: FC<Props> = (props) => {
   const initialAmounts = props.categories.reduce((output, current) => {
@@ -35,9 +45,9 @@ export const DepositForm: FC<Props> = (props) => {
         categoryId: current.id,
       },
     };
-  }, {});
+  }, {} as { [id: string]: CategoryAmount });
 
-  const form = useForm({
+  const form = useForm<FormValues>({
     initialValues: {
       amounts: initialAmounts,
       accountId: props.accounts[0].value,
@@ -49,8 +59,10 @@ export const DepositForm: FC<Props> = (props) => {
     validateInputOnChange: true,
   });
 
+  function handleSubmit(values?: FormValues) {}
+
   function sumAllocations(): number {
-    const allocations: CurrentAmount[] = Object.values(form.values.amounts);
+    const allocations: CategoryAmount[] = Object.values(form.values.amounts);
     return allocations.reduce((output, current) => output + current.amount, 0);
   }
 
