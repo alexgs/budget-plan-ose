@@ -2,6 +2,8 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
+import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader, Table } from '@mantine/core';
 import useSWR from 'swr';
 
@@ -17,7 +19,11 @@ function HomePage() {
   if (error) {
     console.error(error);
     return (
-      <Alert title="Error!" color="red">
+      <Alert
+        color="red"
+        icon={<FontAwesomeIcon icon={faTriangleExclamation} />}
+        title="Error!"
+      >
         A network error occurred. Please check the console logs for details.
       </Alert>
     );

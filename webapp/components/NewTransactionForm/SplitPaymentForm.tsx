@@ -37,6 +37,7 @@ interface Props {
 
 export const SplitPaymentForm: FC<Props> = (props) => {
   function renderAmounts() {
+    // TODO Fix restore amount.id field, even if it's a temp field (or we could use the index :shrug:)
     return props.mantineForm.values.amounts.map((amount, index) => (
       <div key={amount.id}>
         <NativeSelect
@@ -79,7 +80,7 @@ export const SplitPaymentForm: FC<Props> = (props) => {
   return (
     <form
       onSubmit={props.mantineForm.onSubmit(
-        (values) => console.log(values),
+        (values) => console.log(values), // TODO Send data to API
         (values) => console.error(values)
       )}
     >

@@ -84,6 +84,7 @@ const NewTransaction: FC<Props> = (props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
+  // TODO Use API instead of server-side props
   const accountsTemp = await prisma.financialAccount.findMany();
   const accounts = accountsTemp.map((account) => ({
     value: account.id,

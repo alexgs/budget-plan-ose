@@ -3,32 +3,33 @@
  */
 
 import { buildCategoryTree } from './build-category-tree';
-import { CategoryTreeNode, RawCategory } from './types';
-
-interface categoryValues {
-  id: string; // UUID of this category
-  balance: number | null; // Current balance in cents
-  label: string; // Slash-separated joining of category's name with parent's name
-}
+import { CategoryTreeNode, CategoryValues, RawCategory } from './types';
 
 function visitLeaves(
-  output: categoryValues[],
+  output: CategoryValues[],
   cats: CategoryTreeNode[],
-  parentLabel: string | null = null
+  parentLabel: string | null = null,
+  depth: number = 0
 ) {
   cats.forEach((cat) => {
     const label = parentLabel ? parentLabel + '/' + cat.name : cat.name;
     const { id, balance } = cat;
-    output.push({ id, balance, label });
-    visitLeaves(output, cat.children, label);
+    output.push({
+      balance,
+      depth,
+      id,
+      label,
+      isLeaf: cat.children.length === 0,
+    });
+    visitLeaves(output, cat.children, label, depth + 1);
   });
   return output;
 }
 
-export function getCategoryList(data: RawCategory[]): categoryValues[] {
+export function getCategoryList(data: RawCategory[]): CategoryValues[] {
   const catTree = buildCategoryTree(data);
 
-  const output: categoryValues[] = [];
+  const output: CategoryValues[] = [];
   visitLeaves(output, catTree);
   return output;
 }
