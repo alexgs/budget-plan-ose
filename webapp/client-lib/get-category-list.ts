@@ -3,18 +3,10 @@
  */
 
 import { buildCategoryTree } from './build-category-tree';
-import { CategoryTreeNode, RawCategory } from './types';
-
-interface categoryValues {
-  balance: number | null; // Current balance in cents
-  depth: number;
-  id: string; // UUID of this category
-  isLeaf: boolean;
-  label: string; // Slash-separated joining of category's name with parent's name
-}
+import { CategoryTreeNode, CategoryValues, RawCategory } from './types';
 
 function visitLeaves(
-  output: categoryValues[],
+  output: CategoryValues[],
   cats: CategoryTreeNode[],
   parentLabel: string | null = null,
   depth: number = 0
@@ -34,10 +26,10 @@ function visitLeaves(
   return output;
 }
 
-export function getCategoryList(data: RawCategory[]): categoryValues[] {
+export function getCategoryList(data: RawCategory[]): CategoryValues[] {
   const catTree = buildCategoryTree(data);
 
-  const output: categoryValues[] = [];
+  const output: CategoryValues[] = [];
   visitLeaves(output, catTree);
   return output;
 }

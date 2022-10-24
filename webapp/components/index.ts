@@ -4,6 +4,7 @@
 
 export { AddCategory } from './AddCategory';
 export { AddTransactionButton } from './AddTransactionButton';
+export { DepositForm } from './DepositForm';
 export { NextAuthProvider } from './NextAuthProvider';
 export { Page } from './Page';
 export { TransactionAmountForm } from './TransactionAmountForm';

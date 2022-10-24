@@ -4,18 +4,23 @@
 
 import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Alert, Loader, NumberInput, Table } from '@mantine/core';
+import { Alert, Loader } from '@mantine/core';
+import { FinancialAccount } from '@prisma/client';
 import { FC } from 'react';
 import useSWR from 'swr';
-import { getCategoryList } from '../../client-lib';
 
-import { Page } from '../../components';
+import { getCategoryList } from '../../client-lib';
+import { RawCategory } from '../../client-lib/types';
+import { DepositForm, Page } from '../../components';
 
 const Deposit: FC = () => {
-  // Get sorted categories and balances
-  const { error, data: catData } = useSWR('/api/categories');
-  if (error) {
-    console.error(error);
+  // Get accounts and categories
+  const { error: accountsError, data: accountsData } =
+    useSWR<FinancialAccount[]>('/api/accounts');
+  const { error: categoriesError, data: categoriesData } =
+    useSWR<RawCategory[]>('/api/categories');
+  if (accountsError || categoriesError) {
+    console.error(accountsError ?? categoriesError);
     return (
       <Alert
         color="red"
@@ -27,37 +32,19 @@ const Deposit: FC = () => {
     );
   }
 
-  if (!catData) {
+  if (!accountsData || !categoriesData) {
     return <Loader variant="bars" />;
   }
 
-  const categories = getCategoryList(catData);
-  console.log(categories);
-  const rows = categories.map((row) => {
-    const input = row.isLeaf ? (
-      <NumberInput decimalSeparator="." hideControls precision={2} required />
-    ) : null;
-    return (
-      <tr key={row.id}>
-        <td style={{ paddingLeft: 10 + 16 * row.depth }}>{row.label}</td>
-        <td>{row.balance}</td>
-        <td>{input}</td>
-      </tr>
-    );
-  });
+  const accounts = accountsData.map((account) => ({
+    value: account.id,
+    label: account.description,
+  }));
+  const categories = getCategoryList(categoriesData);
 
   return (
     <Page>
-      <Table>
-        <thead>
-          <tr>
-            <th>Category</th>
-            <th>Current Balance</th>
-            <th>Deposit Amount</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </Table>
+      <DepositForm accounts={accounts} categories={categories} />
     </Page>
   );
 };

@@ -35,7 +35,7 @@ export const SinglePaymentForm: FC<Props> = (props) => {
   return (
     <form
       onSubmit={props.mantineForm.onSubmit(
-        (values) => console.log(values),
+        (values) => console.log(values), // TODO Send data to API
         (values) => console.error(values)
       )}
     >

@@ -18,6 +18,14 @@ export interface CategoryTreeNode {
   updatedAt: Date;
 }
 
+export interface CategoryValues {
+  balance: number | null; // Current balance in cents
+  depth: number;
+  id: string; // UUID of this category
+  isLeaf: boolean;
+  label: string; // Slash-separated joining of category's name with parent's name
+}
+
 export type NewTransactionFormHook = UseFormReturnType<
   InferType<typeof newTransactionSchema> & {
     balance: number; // Client-only field
