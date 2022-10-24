@@ -3,6 +3,7 @@
  */
 
 import {
+  Button,
   Group,
   NativeSelect,
   NumberInput,
@@ -10,11 +11,12 @@ import {
   TextInput,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
-import { useForm, yupResolver } from '@mantine/form';
+import { useForm } from '@mantine/form';
+import { showNotification } from '@mantine/notifications';
 import { FC, PropsWithChildren } from 'react';
 
+import { formatClientDate } from '../../client-lib';
 import { CategoryValues } from '../../client-lib/types';
-import { newTransactionSchema } from '../../shared-lib';
 
 interface CategoryAmount {
   amount: number;
@@ -55,11 +57,55 @@ export const DepositForm: FC<Props> = (props) => {
       description: '',
       totalAmount: 0,
     },
-    validate: yupResolver(newTransactionSchema),
-    validateInputOnChange: true,
   });
 
-  function handleSubmit(values?: FormValues) {}
+  function handleSubmit(values: FormValues) {
+    // TODO Display a loading modal
+    void requestDeposit(values);
+  }
+
+  async function requestDeposit(values: FormValues) {
+    const amounts = Object.values(values.amounts)
+      .filter((amount) => amount.amount !== 0)
+      .map((amount) => {
+        return {
+          accountId: values.accountId,
+          amount: amount.amount,
+          categoryId: amount.categoryId,
+          isCredit: true,
+          status: 'pending',
+        };
+      });
+    const payload = {
+      amounts,
+      date: formatClientDate(values.date),
+      description: values.description,
+      type: 'payment', // TODO Should this be "deposit" to better reflect the intent of this "event"?
+    };
+    console.log(payload);
+
+    const responseData = await fetch('/api/transactions', {
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    })
+      .then((response) => response.json())
+      .catch((e) => {
+        console.error(e);
+        showNotification({
+          color: 'red',
+          message: 'Something went wrong! Please check the logs.',
+          title: 'Error',
+        });
+      });
+
+    showNotification({
+      message: `Saved deposit "${responseData.description}"`,
+      title: 'Success',
+    });
+  }
 
   function sumAllocations(): number {
     const allocations: CategoryAmount[] = Object.values(form.values.amounts);
@@ -84,12 +130,10 @@ export const DepositForm: FC<Props> = (props) => {
     );
   });
 
+  const amountRemaining = form.values.totalAmount - sumAllocations();
   return (
     <form
-      onSubmit={form.onSubmit(
-        (values) => console.log(values),
-        (values) => console.error(values)
-      )}
+      onSubmit={form.onSubmit(handleSubmit, (values) => console.error(values))}
     >
       <DatePicker
         allowFreeInput
@@ -135,7 +179,7 @@ export const DepositForm: FC<Props> = (props) => {
           my="sm"
           precision={2}
           style={{ width: '45%' }}
-          value={form.values.totalAmount - sumAllocations()}
+          value={amountRemaining}
         />
       </Group>
       <Table>
@@ -148,6 +192,9 @@ export const DepositForm: FC<Props> = (props) => {
         </thead>
         <tbody>{rows}</tbody>
       </Table>
+      <Group position="right" mt="md">
+        <Button disabled={amountRemaining !== 0} type="submit">Save</Button>
+      </Group>
     </form>
   );
 };
