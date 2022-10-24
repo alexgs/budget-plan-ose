@@ -2,14 +2,19 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { NativeSelect, NumberInput, Table, TextInput } from '@mantine/core';
+import {
+  Group,
+  NativeSelect,
+  NumberInput,
+  Table,
+  TextInput,
+} from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useForm, yupResolver } from '@mantine/form';
 import { FC, PropsWithChildren } from 'react';
 
 import { CategoryValues } from '../../client-lib/types';
 import { newTransactionSchema } from '../../shared-lib';
-import { Page } from '../Page';
 
 interface Props extends PropsWithChildren {
   accounts: { label: string; value: string }[];
@@ -30,7 +35,6 @@ export const DepositForm: FC<Props> = (props) => {
       ],
       date: new Date(),
       description: '',
-      type: 'payment',
     },
     validate: yupResolver(newTransactionSchema),
     validateInputOnChange: true,
@@ -81,6 +85,28 @@ export const DepositForm: FC<Props> = (props) => {
         required
         {...form.getInputProps('amounts.0.accountId')}
       />
+      <Group position="apart">
+        <NumberInput
+          decimalSeparator="."
+          hideControls
+          label="Total Amount"
+          my="sm"
+          precision={2}
+          required
+          style={{ width: '45%' }}
+          {...form.getInputProps('totalAmount')}
+        />
+        <NumberInput
+          decimalSeparator="."
+          disabled
+          hideControls
+          label="Amount Remaining"
+          my="sm"
+          precision={2}
+          style={{ width: '45%' }}
+          value={0}
+        />
+      </Group>
       <Table>
         <thead>
           <tr>
