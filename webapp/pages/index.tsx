@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader, Table } from '@mantine/core';
 import useSWR from 'swr';
 
-import { buildCategoryTree, parseCategoryTree } from '../client-lib';
+import { buildCategoryTree, formatAmount, parseCategoryTree } from '../client-lib';
 import { CategoryTreeNode } from '../client-lib/types';
 import { Page } from '../components';
 
@@ -38,7 +38,7 @@ function HomePage() {
   const rows = topLevelBalances.map((row) => (
     <tr key={row.name}>
       <td>{row.name}</td>
-      <td>{row.balance}</td>
+      <td>{formatAmount(row.balance)}</td>
     </tr>
   ));
 

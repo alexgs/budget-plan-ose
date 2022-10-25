@@ -4,6 +4,7 @@
 
 export { buildCategoryTree } from './build-category-tree';
 export { getCategoryList } from './get-category-list';
+export { formatAmount } from './format-amount';
 export { formatClientDate } from './format-client-date';
 export { globalFetcher } from './global-fetcher';
 export { parseCategoryTree } from './parse-category-tree';

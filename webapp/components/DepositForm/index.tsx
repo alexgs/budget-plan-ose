@@ -15,7 +15,7 @@ import { useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import { FC, PropsWithChildren } from 'react';
 
-import { formatClientDate } from '../../client-lib';
+import { formatAmount, formatClientDate } from '../../client-lib';
 import { CategoryValues } from '../../client-lib/types';
 
 interface CategoryAmount {
@@ -122,7 +122,7 @@ export const DepositForm: FC<Props> = (props) => {
     return (
       <tr key={row.id}>
         <td style={{ paddingLeft: 10 + 16 * row.depth }}>{row.label}</td>
-        <td>{row.balance}</td>
+        <td>{formatAmount(row.balance)}</td>
         <td>{input}</td>
       </tr>
     );
