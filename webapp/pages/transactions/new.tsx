@@ -3,11 +3,15 @@
  */
 
 import { useForm, yupResolver } from '@mantine/form';
+import { showNotification } from '@mantine/notifications';
 import { GetServerSideProps } from 'next';
 import { FC } from 'react';
 
-import { getCategoryList } from '../../client-lib';
-import { NewTransactionFormHook } from '../../client-lib/types';
+import { formatClientDate, getCategoryList } from '../../client-lib';
+import {
+  NewTransactionFormHook,
+  NewTransactionFormValues,
+} from '../../client-lib/types';
 import { Page } from '../../components';
 import {
   SinglePaymentForm,
@@ -53,6 +57,46 @@ const NewTransaction: FC<Props> = (props) => {
     });
   }
 
+  function handleSubmit(values: NewTransactionFormValues) {
+    // TODO Display a loading modal
+    void requestPostTransaction(values);
+  }
+
+  async function requestPostTransaction(values: NewTransactionFormValues) {
+    const { balance, isCredit, ...record } = values;
+    const amounts = record.amounts.map((amount) => ({
+      ...amount,
+      amount: amount.amount * 100,
+    }));
+    const payload = {
+      ...record,
+      amounts,
+      date: formatClientDate(record.date),
+    }
+
+    const responseData = await fetch('/api/transactions', {
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    })
+      .then((response) => response.json())
+      .catch((e) => {
+        console.error(e);
+        showNotification({
+          color: 'red',
+          message: 'Something went wrong! Please check the logs.',
+          title: 'Error',
+        });
+      });
+
+    showNotification({
+      message: `Saved deposit "${responseData.description}"`,
+      title: 'Success',
+    });
+  }
+
   function renderForm() {
     if (form.values.amounts.length === 1) {
       return (
@@ -61,6 +105,7 @@ const NewTransaction: FC<Props> = (props) => {
           categories={props.categories}
           mantineForm={form}
           onSplitClick={handleSplitClick}
+          onSubmit={handleSubmit}
         />
       );
     } else {
@@ -70,6 +115,7 @@ const NewTransaction: FC<Props> = (props) => {
           categories={props.categories}
           mantineForm={form}
           onSplitClick={handleSplitClick}
+          onSubmit={handleSubmit}
         />
       );
     }

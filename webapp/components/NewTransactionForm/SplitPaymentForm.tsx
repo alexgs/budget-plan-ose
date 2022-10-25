@@ -17,7 +17,10 @@ import {
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { FC } from 'react';
-import { NewTransactionFormHook } from '../../client-lib/types';
+import {
+  NewTransactionFormHook,
+  NewTransactionFormValues,
+} from '../../client-lib/types';
 
 // TODO This is good for me (who isn't colorblind), but we should add a '+' or
 //   '-' prefix (or maybe some other FontAwesome icon) so there's another visual
@@ -33,13 +36,13 @@ interface Props {
   categories: { label: string; value: string }[];
   mantineForm: NewTransactionFormHook;
   onSplitClick: VoidFunction;
+  onSubmit: (values: NewTransactionFormValues) => void;
 }
 
 export const SplitPaymentForm: FC<Props> = (props) => {
   function renderAmounts() {
-    // TODO Fix restore amount.id field, even if it's a temp field (or we could use the index :shrug:)
     return props.mantineForm.values.amounts.map((amount, index) => (
-      <div key={amount.id}>
+      <div key={`amount.${index}`}>
         <NativeSelect
           data={props.accounts}
           label="Account"
@@ -79,9 +82,8 @@ export const SplitPaymentForm: FC<Props> = (props) => {
 
   return (
     <form
-      onSubmit={props.mantineForm.onSubmit(
-        (values) => console.log(values), // TODO Send data to API
-        (values) => console.error(values)
+      onSubmit={props.mantineForm.onSubmit(props.onSubmit, (values) =>
+        console.error(values)
       )}
     >
       <DatePicker

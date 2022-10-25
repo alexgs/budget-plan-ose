@@ -26,12 +26,15 @@ export interface CategoryValues {
   label: string; // Slash-separated joining of category's name with parent's name
 }
 
-export type NewTransactionFormHook = UseFormReturnType<
-  InferType<typeof newTransactionSchema> & {
-    balance: number; // Client-only field
-    isCredit: boolean; // Client-only field
-  }
->;
+export type NewTransactionFormHook =
+  UseFormReturnType<NewTransactionFormValues>;
+
+export type NewTransactionFormValues = InferType<
+  typeof newTransactionSchema
+> & {
+  balance: number; // Client-only field
+  isCredit: boolean; // Client-only field
+};
 
 export interface RawCategory {
   id: string;
