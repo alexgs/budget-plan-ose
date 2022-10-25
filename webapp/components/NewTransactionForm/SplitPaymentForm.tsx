@@ -55,7 +55,7 @@ export const SplitPaymentForm: FC<Props> = (props) => {
           label="Category"
           my="sm"
           required
-          {...props.mantineForm.getInputProps(`amounts.${index}.category`)}
+          {...props.mantineForm.getInputProps(`amounts.${index}.categoryId`)}
         />
         <NumberInput
           decimalSeparator="."
@@ -94,7 +94,7 @@ export const SplitPaymentForm: FC<Props> = (props) => {
         required
         {
           // I really dislike this syntax; it's too much magic
-          ...props.mantineForm.getInputProps('transactionDate')
+          ...props.mantineForm.getInputProps('date')
         }
       />
       <NativeSelect
@@ -124,7 +124,7 @@ export const SplitPaymentForm: FC<Props> = (props) => {
         precision={2}
         required
         sx={props.mantineForm.values.isCredit ? amountStyle : {}}
-        {...props.mantineForm.getInputProps('amount')}
+        {...props.mantineForm.getInputProps('balance')}
       />
       <Checkbox
         label="Credit or deposit"

@@ -49,11 +49,12 @@ const NewTransaction: FC<Props> = (props) => {
 
   function handleSplitClick() {
     form.insertListItem('amounts', {
-      account: props.accounts[0].value,
+      accountId: props.accounts[0].value,
       amount: 0,
-      category: props.categories[0].value,
+      categoryId: props.categories[0].value,
       isCredit: false,
       notes: '',
+      status: 'pending',
     });
   }
 
