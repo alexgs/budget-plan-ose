@@ -3,6 +3,7 @@
  */
 
 import {
+  Button,
   Group,
   NativeSelect,
   NumberInput,
@@ -10,20 +11,29 @@ import {
   TextInput,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
-import { useForm, yupResolver } from '@mantine/form';
+import { useForm } from '@mantine/form';
+import { showNotification } from '@mantine/notifications';
 import { FC, PropsWithChildren } from 'react';
 
+import { formatClientDate } from '../../client-lib';
 import { CategoryValues } from '../../client-lib/types';
-import { newTransactionSchema } from '../../shared-lib';
+
+interface CategoryAmount {
+  amount: number;
+  categoryId: string;
+}
+
+interface FormValues {
+  accountId: string;
+  amounts: { [id: string]: CategoryAmount };
+  date: Date;
+  description: string;
+  totalAmount: number;
+}
 
 interface Props extends PropsWithChildren {
   accounts: { label: string; value: string }[];
   categories: CategoryValues[];
-}
-
-interface CurrentAmount {
-  amount: number;
-  categoryId: string;
 }
 
 export const DepositForm: FC<Props> = (props) => {
@@ -35,9 +45,9 @@ export const DepositForm: FC<Props> = (props) => {
         categoryId: current.id,
       },
     };
-  }, {});
+  }, {} as { [id: string]: CategoryAmount });
 
-  const form = useForm({
+  const form = useForm<FormValues>({
     initialValues: {
       amounts: initialAmounts,
       accountId: props.accounts[0].value,
@@ -45,12 +55,58 @@ export const DepositForm: FC<Props> = (props) => {
       description: '',
       totalAmount: 0,
     },
-    validate: yupResolver(newTransactionSchema),
-    validateInputOnChange: true,
   });
 
+  function handleSubmit(values: FormValues) {
+    // TODO Display a loading modal
+    void requestDeposit(values);
+  }
+
+  async function requestDeposit(values: FormValues) {
+    const amounts = Object.values(values.amounts)
+      .filter((amount) => amount.amount !== 0)
+      .map((amount) => {
+        return {
+          accountId: values.accountId,
+          amount: Math.round(amount.amount * 100), // TODO Make this change in other txn form(s)
+          categoryId: amount.categoryId,
+          isCredit: true,
+          status: 'pending',
+        };
+      });
+    const payload = {
+      amounts,
+      date: formatClientDate(values.date),
+      description: values.description,
+      type: 'payment', // TODO Should this be "deposit" to better reflect the intent of this "event"?
+    };
+    console.log(payload);
+
+    const responseData = await fetch('/api/transactions', {
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    })
+      .then((response) => response.json())
+      .catch((e) => {
+        console.error(e);
+        showNotification({
+          color: 'red',
+          message: 'Something went wrong! Please check the logs.',
+          title: 'Error',
+        });
+      });
+
+    showNotification({
+      message: `Saved deposit "${responseData.description}"`,
+      title: 'Success',
+    });
+  }
+
   function sumAllocations(): number {
-    const allocations: CurrentAmount[] = Object.values(form.values.amounts);
+    const allocations: CategoryAmount[] = Object.values(form.values.amounts);
     return allocations.reduce((output, current) => output + current.amount, 0);
   }
 
@@ -72,12 +128,10 @@ export const DepositForm: FC<Props> = (props) => {
     );
   });
 
+  const amountRemaining = form.values.totalAmount - sumAllocations();
   return (
     <form
-      onSubmit={form.onSubmit(
-        (values) => console.log(values),
-        (values) => console.error(values)
-      )}
+      onSubmit={form.onSubmit(handleSubmit, (values) => console.error(values))}
     >
       <DatePicker
         allowFreeInput
@@ -123,7 +177,7 @@ export const DepositForm: FC<Props> = (props) => {
           my="sm"
           precision={2}
           style={{ width: '45%' }}
-          value={form.values.totalAmount - sumAllocations()}
+          value={amountRemaining}
         />
       </Group>
       <Table>
@@ -136,6 +190,9 @@ export const DepositForm: FC<Props> = (props) => {
         </thead>
         <tbody>{rows}</tbody>
       </Table>
+      <Group position="right" mt="md">
+        <Button disabled={amountRemaining !== 0} type="submit">Save</Button>
+      </Group>
     </form>
   );
 };
