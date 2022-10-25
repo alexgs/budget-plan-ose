@@ -36,8 +36,6 @@ interface Props extends PropsWithChildren {
   categories: CategoryValues[];
 }
 
-// TODO Add submit handler and connect form to API
-
 export const DepositForm: FC<Props> = (props) => {
   const initialAmounts = props.categories.reduce((output, current) => {
     return {
@@ -70,7 +68,7 @@ export const DepositForm: FC<Props> = (props) => {
       .map((amount) => {
         return {
           accountId: values.accountId,
-          amount: amount.amount,
+          amount: Math.round(amount.amount * 100), // TODO Make this change in other txn form(s)
           categoryId: amount.categoryId,
           isCredit: true,
           status: 'pending',
