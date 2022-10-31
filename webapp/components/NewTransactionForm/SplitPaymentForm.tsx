@@ -17,6 +17,7 @@ import {
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { FC } from 'react';
+import { formatAmount } from '../../client-lib';
 import {
   NewTransactionFormHook,
   NewTransactionFormValues,
@@ -134,16 +135,7 @@ export const SplitPaymentForm: FC<Props> = (props) => {
           sx={props.mantineForm.values.isCredit ? amountStyle : {}}
           {...props.mantineForm.getInputProps('balance')}
         />
-        <NumberInput
-          decimalSeparator="."
-          disabled
-          hideControls
-          label="Amount Remaining"
-          my="sm"
-          precision={2}
-          style={{ width: '45%' }}
-          value={amountRemaining}
-        />
+        <div style={{ width: '45%' }}>Amount Remaining: {formatAmount(amountRemaining * 100)}</div>
       </Group>
       <Checkbox
         label="Credit or deposit"

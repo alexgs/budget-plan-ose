@@ -169,16 +169,7 @@ export const DepositForm: FC<Props> = (props) => {
           style={{ width: '45%' }}
           {...form.getInputProps('totalAmount')}
         />
-        <NumberInput
-          decimalSeparator="."
-          disabled
-          hideControls
-          label="Amount Remaining"
-          my="sm"
-          precision={2}
-          style={{ width: '45%' }}
-          value={amountRemaining}
-        />
+        <div style={{ width: '45%' }}>Amount Remaining: {formatAmount(amountRemaining * 100)}</div>
       </Group>
       <Table>
         <thead>
