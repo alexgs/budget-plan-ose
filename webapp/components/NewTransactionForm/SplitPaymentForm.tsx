@@ -40,6 +40,11 @@ interface Props {
 }
 
 export const SplitPaymentForm: FC<Props> = (props) => {
+  function sumAllocations(): number {
+    const allocations = Object.values(props.mantineForm.values.amounts);
+    return allocations.reduce((output, current) => output + current.amount, 0);
+  }
+
   function renderAmounts() {
     return props.mantineForm.values.amounts.map((amount, index) => (
       <div key={`amount.${index}`}>
@@ -80,6 +85,7 @@ export const SplitPaymentForm: FC<Props> = (props) => {
     ));
   }
 
+  const amountRemaining = props.mantineForm.values.balance - sumAllocations();
   return (
     <form
       onSubmit={props.mantineForm.onSubmit(props.onSubmit, (values) =>
@@ -115,17 +121,30 @@ export const SplitPaymentForm: FC<Props> = (props) => {
         required
         {...props.mantineForm.getInputProps('description')}
       />
-      <NumberInput
-        decimalSeparator="."
-        hideControls
-        icon={<FontAwesomeIcon icon={faDollarSign} />}
-        label="Total Amount"
-        my="sm"
-        precision={2}
-        required
-        sx={props.mantineForm.values.isCredit ? amountStyle : {}}
-        {...props.mantineForm.getInputProps('balance')}
-      />
+      <Group position="apart">
+        <NumberInput
+          decimalSeparator="."
+          hideControls
+          icon={<FontAwesomeIcon icon={faDollarSign} />}
+          label="Total Amount"
+          my="sm"
+          precision={2}
+          required
+          style={{ width: '45%' }}
+          sx={props.mantineForm.values.isCredit ? amountStyle : {}}
+          {...props.mantineForm.getInputProps('balance')}
+        />
+        <NumberInput
+          decimalSeparator="."
+          disabled
+          hideControls
+          label="Amount Remaining"
+          my="sm"
+          precision={2}
+          style={{ width: '45%' }}
+          value={amountRemaining}
+        />
+      </Group>
       <Checkbox
         label="Credit or deposit"
         {...props.mantineForm.getInputProps('isCredit', { type: 'checkbox' })}
