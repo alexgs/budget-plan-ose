@@ -83,7 +83,7 @@ export const SinglePaymentForm: FC<Props> = (props) => {
         label="Category"
         my="sm"
         required
-        {...props.mantineForm.getInputProps('amounts.0.category')}
+        {...props.mantineForm.getInputProps('amounts.0.categoryId')}
       />
       <NumberInput
         decimalSeparator="."
