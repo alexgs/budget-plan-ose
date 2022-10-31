@@ -9,14 +9,14 @@ import { formatClientDate } from '../../client-lib';
 import {
   CategoryValues,
   NewTransactionFormHook,
-  NewTransactionFormValues
+  NewTransactionFormValues,
 } from '../../client-lib/types';
 import { newTransactionSchema } from '../../shared-lib';
 import { SinglePaymentForm } from './SinglePaymentForm';
 import { SplitPaymentForm } from './SplitPaymentForm';
 
 interface Props {
-  accounts: {value: string, label: string}[];
+  accounts: { value: string; label: string }[];
   categories: CategoryValues[];
 }
 
@@ -29,17 +29,17 @@ export const NewTransactionForm: FC<Props> = (props) => {
           amount: 0,
           categoryId: props.categories[0].id,
           isCredit: false as boolean,
-          status: 'pending'
-        }
+          status: 'pending',
+        },
       ],
       balance: 0, // Client-only field
       date: new Date(),
       description: '',
       isCredit: false as boolean, // Client-only field
-      type: 'payment'
+      type: 'payment',
     },
     validate: yupResolver(newTransactionSchema),
-    validateInputOnChange: true
+    validateInputOnChange: true,
   });
 
   function handleSplitClick() {
@@ -49,7 +49,7 @@ export const NewTransactionForm: FC<Props> = (props) => {
       categoryId: props.categories[0].id,
       isCredit: false,
       notes: '',
-      status: 'pending'
+      status: 'pending',
     });
   }
 
@@ -62,20 +62,20 @@ export const NewTransactionForm: FC<Props> = (props) => {
     const { balance, isCredit, ...record } = values;
     const amounts = record.amounts.map((amount) => ({
       ...amount,
-      amount: amount.amount * 100
+      amount: amount.amount * 100,
     }));
     const payload = {
       ...record,
       amounts,
-      date: formatClientDate(record.date)
+      date: formatClientDate(record.date),
     };
 
     const responseData = await fetch('/api/transactions', {
       body: JSON.stringify(payload),
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      method: 'POST'
+      method: 'POST',
     })
       .then((response) => response.json())
       .catch((e) => {
@@ -83,20 +83,22 @@ export const NewTransactionForm: FC<Props> = (props) => {
         showNotification({
           color: 'red',
           message: 'Something went wrong! Please check the logs.',
-          title: 'Error'
+          title: 'Error',
         });
       });
 
     showNotification({
       message: `Saved deposit "${responseData.description}"`,
-      title: 'Success'
+      title: 'Success',
     });
   }
 
-  const categoriesData = props.categories.map((cat) => ({
-    value: cat.id,
-    label: cat.label,
-  }));
+  const categoriesData = props.categories
+    .filter((cat) => cat.isLeaf)
+    .map((cat) => ({
+      value: cat.id,
+      label: cat.label,
+    }));
 
   if (form.values.amounts.length === 1) {
     return (
