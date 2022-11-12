@@ -2,6 +2,7 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
+import styled from '@emotion/styled';
 import { faSplit } from '@fortawesome/pro-regular-svg-icons';
 import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -22,6 +23,23 @@ import {
   NewTransactionFormHook,
   NewTransactionFormValues,
 } from '../../client-lib/types';
+import { space } from '../tokens';
+
+const AmountContainer = styled.div({
+  marginTop: space.lg,
+});
+
+const AmountRemainingAmount = styled.div({
+  backgroundColor: 'rgb(37, 38, 43)',
+  border: 'solid rgb(55, 58, 64) 1px',
+  borderRadius: 3,
+  fontSize: 14,
+  padding: '6px 12px',
+});
+
+const AmountRemainingLabel = styled.div({
+  fontSize: 14,
+});
 
 // TODO This is good for me (who isn't colorblind), but we should add a '+' or
 //   '-' prefix (or maybe some other FontAwesome icon) so there's another visual
@@ -48,7 +66,7 @@ export const SplitPaymentForm: FC<Props> = (props) => {
 
   function renderAmounts() {
     return props.mantineForm.values.amounts.map((amount, index) => (
-      <div key={`amount.${index}`}>
+      <AmountContainer key={`amount.${index}`}>
         <NativeSelect
           data={props.accounts}
           label="Account"
@@ -82,7 +100,7 @@ export const SplitPaymentForm: FC<Props> = (props) => {
             type: 'checkbox',
           })}
         />
-      </div>
+      </AmountContainer>
     ));
   }
 
@@ -135,7 +153,12 @@ export const SplitPaymentForm: FC<Props> = (props) => {
           sx={props.mantineForm.values.isCredit ? amountStyle : {}}
           {...props.mantineForm.getInputProps('balance')}
         />
-        <div style={{ width: '45%' }}>Amount Remaining: {formatAmount(amountRemaining * 100)}</div>
+        <div style={{ width: '45%' }}>
+          <AmountRemainingLabel>Amount Remaining:</AmountRemainingLabel>
+          <AmountRemainingAmount>
+            {formatAmount(amountRemaining * 100)}
+          </AmountRemainingAmount>
+        </div>
       </Group>
       <Checkbox
         label="Credit or deposit"
