@@ -9,11 +9,10 @@ import useSWR from 'swr';
 
 import { buildCategoryTree, formatAmount, parseCategoryTree } from '../client-lib';
 import { CategoryTreeNode } from '../client-lib/types';
-import { Page } from '../components';
+import { AddCategory, Page } from '../components';
+import { space } from '../components/tokens';
 
 function HomePage() {
-  // TODO Tighten security so I'm the only one who can access this app
-
   // Get sorted categories and balances
   const { error, data: catData } = useSWR('/api/categories');
   if (error) {
@@ -53,6 +52,9 @@ function HomePage() {
         </thead>
         <tbody>{rows}</tbody>
       </Table>
+      <div style={{ marginTop: space.xl }} >
+        <AddCategory />
+      </div>
     </Page>
   );
 }
