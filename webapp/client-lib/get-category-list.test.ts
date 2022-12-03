@@ -2,10 +2,8 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-export {};
+import { getCategoryList } from './get-category-list';
 
-describe('Smoke test', () => {
-  it('works', () => {
-    expect(1+1).toEqual(2);
-  });
+describe('Function `getCategoryList`', () => {
+  it.todo('returns a parent and two children in order');
 });
