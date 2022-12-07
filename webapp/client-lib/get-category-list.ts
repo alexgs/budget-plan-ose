@@ -26,6 +26,8 @@ function visitLeaves(
   return output;
 }
 
+// TODO Change this so that the argument type is `CategoryTreeNode[]` (i.e. you have to manually call `buildCategoryTree` on the raw data before you can use this function
+
 export function getCategoryList(data: RawCategory[]): CategoryValues[] {
   const catTree = buildCategoryTree(data);
 
