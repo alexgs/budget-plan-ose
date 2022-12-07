@@ -11,9 +11,10 @@ function cloneToDepth(
   maxDepth: number
 ) {
   let children: CategoryTreeNode[] = [];
-  if (currentDepth <= maxDepth) {
+  const childrenDepth = currentDepth + 1;
+  if (childrenDepth <= maxDepth) {
     children = clone(node.children);
-    children.forEach((node) => cloneToDepth(node, currentDepth + 1, maxDepth));
+    children.forEach((node) => cloneToDepth(node, childrenDepth, maxDepth));
   }
   const output = clone(node);
   output.children = children;
