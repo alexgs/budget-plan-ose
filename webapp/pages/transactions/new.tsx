@@ -9,7 +9,7 @@ import { FinancialAccount } from '@prisma/client';
 import { FC } from 'react';
 import useSWR from 'swr';
 
-import { getCategoryList } from '../../client-lib';
+import { buildCategoryTree, getCategoryList } from '../../client-lib';
 import { RawCategory } from '../../client-lib/types';
 import { NewTransactionForm, Page } from '../../components';
 
@@ -40,7 +40,7 @@ const NewTransaction: FC = () => {
     value: account.id,
     label: account.description,
   }));
-  const categories = getCategoryList(categoriesData);
+  const categories = getCategoryList(buildCategoryTree(categoriesData));
 
   return (
     <Page>

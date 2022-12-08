@@ -2,8 +2,7 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { buildCategoryTree } from './build-category-tree';
-import { CategoryTreeNode, CategoryValues, RawCategory } from './types';
+import { CategoryTreeNode, CategoryValues } from './types';
 
 function visitLeaves(
   output: CategoryValues[],
@@ -26,12 +25,8 @@ function visitLeaves(
   return output;
 }
 
-// TODO Change this so that the argument type is `CategoryTreeNode[]` (i.e. you have to manually call `buildCategoryTree` on the raw data before you can use this function
-
-export function getCategoryList(data: RawCategory[]): CategoryValues[] {
-  const catTree = buildCategoryTree(data);
-
+export function getCategoryList(data:  CategoryTreeNode[]): CategoryValues[] {
   const output: CategoryValues[] = [];
-  visitLeaves(output, catTree);
+  visitLeaves(output, data);
   return output;
 }

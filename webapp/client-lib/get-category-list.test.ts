@@ -2,8 +2,9 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
+import { buildCategoryTree } from './build-category-tree';
 import { getCategoryList } from './get-category-list';
-import { CategoryValues, RawCategory } from './types';
+import { CategoryTreeNode, CategoryValues, RawCategory } from './types';
 
 describe('Function `getCategoryList`', () => {
   it('returns a parent and children in order', () => {
@@ -45,7 +46,8 @@ describe('Function `getCategoryList`', () => {
         updatedAt: new Date('2022-10-21T11:31:39.679Z'),
       },
     ];
-    const output: CategoryValues[] = getCategoryList(rawCategories);
+    const categories: CategoryTreeNode[] = buildCategoryTree(rawCategories);
+    const output: CategoryValues[] = getCategoryList(categories);
 
     const expectedValue: CategoryValues[] = [
       {
