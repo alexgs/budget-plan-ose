@@ -30,7 +30,6 @@ export const NavBar: FC<Props> = (props) => {
   const isXsScreen = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
   const { classes } = useStyles();
 
-  // TODO Tighten security so I'm the only one who can access this app
   const { data: session } = useSession();
   const content = session ? (
     <>

@@ -2,102 +2,54 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { useForm, yupResolver } from '@mantine/form';
-import { GetServerSideProps } from 'next';
+import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Alert, Loader } from '@mantine/core';
+import { FinancialAccount } from '@prisma/client';
 import { FC } from 'react';
+import useSWR from 'swr';
 
-import { getCategoryList } from '../../client-lib';
-import { NewTransactionFormHook } from '../../client-lib/types';
-import { Page } from '../../components';
-import {
-  SinglePaymentForm,
-  SplitPaymentForm,
-} from '../../components/NewTransactionForm';
-import { prisma } from '../../server-lib';
-import { newTransactionSchema } from '../../shared-lib';
+import { buildCategoryTree, getCategoryList } from '../../client-lib';
+import { RawCategory } from '../../client-lib/types';
+import { NewTransactionForm, Page } from '../../components';
 
-interface Props {
-  accounts: { label: string; value: string }[];
-  categories: { label: string; value: string }[];
-}
-
-const NewTransaction: FC<Props> = (props) => {
-  const form: NewTransactionFormHook = useForm({
-    initialValues: {
-      amounts: [
-        {
-          accountId: props.accounts[0].value,
-          amount: 0,
-          categoryId: props.categories[0].value,
-          isCredit: false as boolean,
-          status: 'pending',
-        },
-      ],
-      balance: 0, // Client-only field
-      date: new Date(),
-      description: '',
-      isCredit: false as boolean, // Client-only field
-      type: 'payment',
-    },
-    validate: yupResolver(newTransactionSchema),
-    validateInputOnChange: true,
-  });
-
-  function handleSplitClick() {
-    form.insertListItem('amounts', {
-      account: props.accounts[0].value,
-      amount: 0,
-      category: props.categories[0].value,
-      isCredit: false,
-      notes: '',
-    });
+const NewTransaction: FC = () => {
+  // Get accounts and categories
+  const { error: accountsError, data: accountsData } =
+    useSWR<FinancialAccount[]>('/api/accounts');
+  const { error: categoriesError, data: categoriesData } =
+    useSWR<RawCategory[]>('/api/categories');
+  if (accountsError || categoriesError) {
+    console.error(accountsError ?? categoriesError);
+    return (
+      <Alert
+        color="red"
+        icon={<FontAwesomeIcon icon={faTriangleExclamation} />}
+        title="Error!"
+      >
+        A network error occurred. Please check the console logs for details.
+      </Alert>
+    );
   }
 
-  function renderForm() {
-    if (form.values.amounts.length === 1) {
-      return (
-        <SinglePaymentForm
-          accounts={props.accounts}
-          categories={props.categories}
-          mantineForm={form}
-          onSplitClick={handleSplitClick}
-        />
-      );
-    } else {
-      return (
-        <SplitPaymentForm
-          accounts={props.accounts}
-          categories={props.categories}
-          mantineForm={form}
-          onSplitClick={handleSplitClick}
-        />
-      );
-    }
+  if (!accountsData || !categoriesData) {
+    return <Loader variant="bars" />;
   }
+
+  const accounts = accountsData.map((account) => ({
+    value: account.id,
+    label: account.description,
+  }));
+  const categories = getCategoryList(buildCategoryTree(categoriesData));
 
   return (
     <Page>
       <h1>Budget Plan</h1>
-      <div>{renderForm()}</div>
+      <div>
+        <NewTransactionForm accounts={accounts} categories={categories} />
+      </div>
     </Page>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  // TODO Use API instead of server-side props
-  const accountsTemp = await prisma.financialAccount.findMany();
-  const accounts = accountsTemp.map((account) => ({
-    value: account.id,
-    label: account.description,
-  }));
-
-  const categoriesTemp = await prisma.category.findMany();
-  const categories = getCategoryList(categoriesTemp).map((cat) => ({
-    value: cat.id,
-    label: cat.label,
-  }));
-
-  return { props: { accounts, categories } };
 };
 
 export default NewTransaction;

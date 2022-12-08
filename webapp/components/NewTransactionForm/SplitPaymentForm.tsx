@@ -2,6 +2,7 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
+import styled from '@emotion/styled';
 import { faSplit } from '@fortawesome/pro-regular-svg-icons';
 import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,7 +18,28 @@ import {
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { FC } from 'react';
-import { NewTransactionFormHook } from '../../client-lib/types';
+import { formatAmount } from '../../client-lib';
+import {
+  NewTransactionFormHook,
+  NewTransactionFormValues,
+} from '../../client-lib/types';
+import { space } from '../tokens';
+
+const AmountContainer = styled.div({
+  marginTop: space.lg,
+});
+
+const AmountRemainingAmount = styled.div({
+  backgroundColor: 'rgb(37, 38, 43)',
+  border: 'solid rgb(55, 58, 64) 1px',
+  borderRadius: 3,
+  fontSize: 14,
+  padding: '6px 12px',
+});
+
+const AmountRemainingLabel = styled.div({
+  fontSize: 14,
+});
 
 // TODO This is good for me (who isn't colorblind), but we should add a '+' or
 //   '-' prefix (or maybe some other FontAwesome icon) so there's another visual
@@ -33,13 +55,18 @@ interface Props {
   categories: { label: string; value: string }[];
   mantineForm: NewTransactionFormHook;
   onSplitClick: VoidFunction;
+  onSubmit: (values: NewTransactionFormValues) => void;
 }
 
 export const SplitPaymentForm: FC<Props> = (props) => {
+  function sumAllocations(): number {
+    const allocations = Object.values(props.mantineForm.values.amounts);
+    return allocations.reduce((output, current) => output + current.amount, 0);
+  }
+
   function renderAmounts() {
-    // TODO Fix restore amount.id field, even if it's a temp field (or we could use the index :shrug:)
     return props.mantineForm.values.amounts.map((amount, index) => (
-      <div key={amount.id}>
+      <AmountContainer key={`amount.${index}`}>
         <NativeSelect
           data={props.accounts}
           label="Account"
@@ -52,7 +79,7 @@ export const SplitPaymentForm: FC<Props> = (props) => {
           label="Category"
           my="sm"
           required
-          {...props.mantineForm.getInputProps(`amounts.${index}.category`)}
+          {...props.mantineForm.getInputProps(`amounts.${index}.categoryId`)}
         />
         <NumberInput
           decimalSeparator="."
@@ -73,15 +100,15 @@ export const SplitPaymentForm: FC<Props> = (props) => {
             type: 'checkbox',
           })}
         />
-      </div>
+      </AmountContainer>
     ));
   }
 
+  const amountRemaining = props.mantineForm.values.balance - sumAllocations();
   return (
     <form
-      onSubmit={props.mantineForm.onSubmit(
-        (values) => console.log(values), // TODO Send data to API
-        (values) => console.error(values)
+      onSubmit={props.mantineForm.onSubmit(props.onSubmit, (values) =>
+        console.error(values)
       )}
     >
       <DatePicker
@@ -92,7 +119,7 @@ export const SplitPaymentForm: FC<Props> = (props) => {
         required
         {
           // I really dislike this syntax; it's too much magic
-          ...props.mantineForm.getInputProps('transactionDate')
+          ...props.mantineForm.getInputProps('date')
         }
       />
       <NativeSelect
@@ -113,17 +140,26 @@ export const SplitPaymentForm: FC<Props> = (props) => {
         required
         {...props.mantineForm.getInputProps('description')}
       />
-      <NumberInput
-        decimalSeparator="."
-        hideControls
-        icon={<FontAwesomeIcon icon={faDollarSign} />}
-        label="Total Amount"
-        my="sm"
-        precision={2}
-        required
-        sx={props.mantineForm.values.isCredit ? amountStyle : {}}
-        {...props.mantineForm.getInputProps('amount')}
-      />
+      <Group position="apart">
+        <NumberInput
+          decimalSeparator="."
+          hideControls
+          icon={<FontAwesomeIcon icon={faDollarSign} />}
+          label="Total Amount"
+          my="sm"
+          precision={2}
+          required
+          style={{ width: '45%' }}
+          sx={props.mantineForm.values.isCredit ? amountStyle : {}}
+          {...props.mantineForm.getInputProps('balance')}
+        />
+        <div style={{ width: '45%' }}>
+          <AmountRemainingLabel>Amount Remaining:</AmountRemainingLabel>
+          <AmountRemainingAmount>
+            {formatAmount(amountRemaining * 100)}
+          </AmountRemainingAmount>
+        </div>
+      </Group>
       <Checkbox
         label="Credit or deposit"
         {...props.mantineForm.getInputProps('isCredit', { type: 'checkbox' })}

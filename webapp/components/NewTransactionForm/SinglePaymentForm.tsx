@@ -17,7 +17,10 @@ import {
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { FC } from 'react';
-import { NewTransactionFormHook } from '../../client-lib/types';
+import {
+  NewTransactionFormHook,
+  NewTransactionFormValues,
+} from '../../client-lib/types';
 
 const amountStyle = (theme: MantineTheme): CSSObject => ({
   '.mantine-NumberInput-icon': { color: theme.colors.green[6] },
@@ -29,14 +32,14 @@ interface Props {
   categories: { label: string; value: string }[];
   mantineForm: NewTransactionFormHook;
   onSplitClick: VoidFunction;
+  onSubmit: (values: NewTransactionFormValues) => void;
 }
 
 export const SinglePaymentForm: FC<Props> = (props) => {
   return (
     <form
-      onSubmit={props.mantineForm.onSubmit(
-        (values) => console.log(values), // TODO Send data to API
-        (values) => console.error(values)
+      onSubmit={props.mantineForm.onSubmit(props.onSubmit, (values) =>
+        console.error(values)
       )}
     >
       <DatePicker
@@ -80,7 +83,7 @@ export const SinglePaymentForm: FC<Props> = (props) => {
         label="Category"
         my="sm"
         required
-        {...props.mantineForm.getInputProps('amounts.0.category')}
+        {...props.mantineForm.getInputProps('amounts.0.categoryId')}
       />
       <NumberInput
         decimalSeparator="."

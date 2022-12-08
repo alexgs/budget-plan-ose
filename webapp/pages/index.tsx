@@ -7,13 +7,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader, Table } from '@mantine/core';
 import useSWR from 'swr';
 
-import { buildCategoryTree, parseCategoryTree } from '../client-lib';
-import { CategoryTreeNode } from '../client-lib/types';
-import { Page } from '../components';
+import { formatAmount, getCategoryList } from '../client-lib';
+import { AddCategory, Page } from '../components';
+import { space } from '../components/tokens';
 
 function HomePage() {
-  // TODO Tighten security so I'm the only one who can access this app
-
   // Get sorted categories and balances
   const { error, data: catData } = useSWR('/api/categories');
   if (error) {
@@ -33,12 +31,11 @@ function HomePage() {
     return <Loader variant="bars" />;
   }
 
-  const catTree: CategoryTreeNode[] = buildCategoryTree(catData);
-  const topLevelBalances = parseCategoryTree(catTree, 0);
+  const topLevelBalances = getCategoryList(catData);
   const rows = topLevelBalances.map((row) => (
-    <tr key={row.name}>
-      <td>{row.name}</td>
-      <td>{row.balance}</td>
+    <tr key={row.id}>
+      <td>{row.label}</td>
+      <td>{formatAmount(row.balance)}</td>
     </tr>
   ));
 
@@ -53,6 +50,9 @@ function HomePage() {
         </thead>
         <tbody>{rows}</tbody>
       </Table>
+      <div style={{ marginTop: space.xl }}>
+        <AddCategory />
+      </div>
     </Page>
   );
 }

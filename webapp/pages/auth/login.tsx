@@ -22,8 +22,8 @@ function Login(props: Props) {
   const session = useSession();
   if (session.data) {
     // TODO This logs an error in the console `Error: Abort fetching component
-    //   for route: "/budget"` and I can't figure out why. :-/
-    void router.push('/budget');
+    //   for route: "/"` and I can't figure out why. :-/
+    void router.push('/');
   }
 
   const { providers } = props;
