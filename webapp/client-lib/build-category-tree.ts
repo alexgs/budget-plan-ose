@@ -2,7 +2,7 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'lodash';
 import { CategoryTreeNode, RawCategory } from './types';
 
 // Adapted from https://javascript.plainenglish.io/how-to-build-a-tree-array-from-flat-array-in-javascript-8d0414ac1190

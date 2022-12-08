@@ -2,7 +2,7 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { clone } from 'lodash-es';
+import { clone } from 'lodash';
 import { CategoryTreeNode } from './types';
 
 function cloneToDepth(
@@ -11,24 +11,25 @@ function cloneToDepth(
   maxDepth: number
 ) {
   let children: CategoryTreeNode[] = [];
-  if (currentDepth <= maxDepth) {
+  const childrenDepth = currentDepth + 1;
+  if (childrenDepth <= maxDepth) {
     children = clone(node.children);
-    children.forEach((node) => cloneToDepth(node, currentDepth + 1, maxDepth));
+    children.forEach((node) => cloneToDepth(node, childrenDepth, maxDepth));
   }
   const output = clone(node);
   output.children = children;
   return output;
 }
 
-export function parseCategoryTree(
+export function cloneCategoryTree(
   tree: CategoryTreeNode[],
   rootNode: string
 ): CategoryTreeNode[];
-export function parseCategoryTree(
+export function cloneCategoryTree(
   tree: CategoryTreeNode[],
   depth: number
 ): CategoryTreeNode[];
-export function parseCategoryTree(
+export function cloneCategoryTree(
   tree: CategoryTreeNode[],
   rootOrDepth: number | string
 ): CategoryTreeNode[] {
