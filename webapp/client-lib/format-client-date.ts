@@ -13,4 +13,3 @@ export function formatClientDate(date: Date): string {
 function padTwoDigits(x: number): string {
   return x.toString(10).padStart(2, '0');
 }
-

@@ -169,7 +169,9 @@ export const DepositForm: FC<Props> = (props) => {
           style={{ width: '45%' }}
           {...form.getInputProps('totalAmount')}
         />
-        <div style={{ width: '45%' }}>Amount Remaining: {formatAmount(amountRemaining * 100)}</div>
+        <div style={{ width: '45%' }}>
+          Amount Remaining: {formatAmount(amountRemaining * 100)}
+        </div>
       </Group>
       <Table>
         <thead>
@@ -182,7 +184,9 @@ export const DepositForm: FC<Props> = (props) => {
         <tbody>{rows}</tbody>
       </Table>
       <Group position="right" mt="md">
-        <Button disabled={amountRemaining !== 0} type="submit">Save</Button>
+        <Button disabled={amountRemaining !== 0} type="submit">
+          Save
+        </Button>
       </Group>
     </form>
   );

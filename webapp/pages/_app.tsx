@@ -38,9 +38,7 @@ export default function App({
     <SessionProvider session={session}>
       <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
         <NotificationsProvider>
-          <SWRConfig value={{ fetcher: globalFetcher }}>
-            {content}
-          </SWRConfig>
+          <SWRConfig value={{ fetcher: globalFetcher }}>{content}</SWRConfig>
         </NotificationsProvider>
       </MantineProvider>
     </SessionProvider>

@@ -141,8 +141,8 @@ describe('Function `cloneCategoryTree`', () => {
       {
         ...tree[4],
         children: [],
-      }
+      },
     ];
     expect(output).toEqual(expectedValue);
   });
-})
+});
