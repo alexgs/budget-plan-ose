@@ -7,7 +7,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader, Table } from '@mantine/core';
 import useSWR from 'swr';
 
-import { formatAmount, getCategoryList } from '../client-lib';
+import {
+  buildCategoryTree,
+  formatAmount,
+  getCategoryList,
+} from '../client-lib';
 import { AddCategory, Page } from '../components';
 import { space } from '../components/tokens';
 
@@ -31,7 +35,7 @@ function HomePage() {
     return <Loader variant="bars" />;
   }
 
-  const topLevelBalances = getCategoryList(catData);
+  const topLevelBalances = getCategoryList(buildCategoryTree(catData));
   const rows = topLevelBalances.map((row) => (
     <tr key={row.id}>
       <td>{row.label}</td>

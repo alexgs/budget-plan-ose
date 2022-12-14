@@ -9,7 +9,7 @@ import { showNotification } from '@mantine/notifications';
 import { FC } from 'react';
 import useSWR from 'swr';
 
-import { getCategoryList } from '../../client-lib';
+import { buildCategoryTree, getCategoryList } from '../../client-lib';
 
 import { AddCategoryForm } from './AddCategoryForm';
 
@@ -36,7 +36,7 @@ export const AddCategoryModalContent: FC<Props> = (props) => {
     return <Loader variant="bars" />;
   }
 
-  const categories = getCategoryList(catData);
+  const categories = getCategoryList(buildCategoryTree(catData));
   const menuItems = categories.map((cat) => ({
     label: cat.label,
     value: cat.id,

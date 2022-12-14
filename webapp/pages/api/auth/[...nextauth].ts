@@ -34,9 +34,9 @@ export const authOptions = {
     signIn: signInCallback,
   },
   pages: {
-    error: '/auth/error',
+    // error: '/auth/error',
     signIn: '/auth/login',
-    signOut: '/auth/logout',
+    // signOut: '/auth/logout',
   },
   providers: [
     GithubProvider({

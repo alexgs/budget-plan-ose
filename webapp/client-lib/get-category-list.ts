@@ -11,6 +11,12 @@ function visitLeaves(
   depth: number = 0
 ) {
   cats.forEach((cat) => {
+    if (!cat.children) {
+      throw new Error(
+        'Invalid data in `getCategoryList`: `cat.children` is falsy. Did you forget to call `buildCategoryTree`?'
+      );
+    }
+
     const label = parentLabel ? parentLabel + '/' + cat.name : cat.name;
     const { id, balance } = cat;
     output.push({
@@ -25,7 +31,7 @@ function visitLeaves(
   return output;
 }
 
-export function getCategoryList(data:  CategoryTreeNode[]): CategoryValues[] {
+export function getCategoryList(data: CategoryTreeNode[]): CategoryValues[] {
   const output: CategoryValues[] = [];
   visitLeaves(output, data);
   return output;
