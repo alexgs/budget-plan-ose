@@ -26,6 +26,7 @@ model Category {
 
 model FinancialAccount {
   id          String              @id(map: "financial_accounts_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  accountType String              @default("account-types.other") @map("account_type")
   description String
   createdAt   DateTime            @default(now()) @map("created_at")
   updatedAt   DateTime            @default(now()) @map("updated_at")
