@@ -4,6 +4,7 @@ import { Alert, Loader, Table } from '@mantine/core';
 import React from 'react';
 import useSWR from 'swr';
 import { Page } from '../../components';
+import { getFriendlyAccountType } from '../../shared-lib';
 
 const AccountsPage: React.FC = () => {
   const { error, data: accountsData } = useSWR('/api/accounts');
@@ -27,7 +28,7 @@ const AccountsPage: React.FC = () => {
   const rows = accountsData.map((account: any) => (
     <tr key={account.id}>
       <td>{account.description}</td>
-      <td>{account.accountType}</td>
+      <td>{getFriendlyAccountType(account.accountType)}</td>
     </tr>
   ));
   // console.log(accountsData);
