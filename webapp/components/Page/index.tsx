@@ -5,6 +5,7 @@
 import {
   faMoneyBillWave,
   faPieChart,
+  faPiggyBank,
   faSackDollar,
 } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -64,6 +65,14 @@ export const Page: FC<PropsWithChildren> = (props) => {
               component="a"
               icon={<FontAwesomeIcon icon={faSackDollar} />}
               label="Record a Deposit"
+            />
+          </Link>
+          <Link href="/accounts" passHref>
+            <NavLink
+              active={router.pathname === '/accounts'}
+              component="a"
+              icon={<FontAwesomeIcon icon={faPiggyBank} />}
+              label="View Accounts"
             />
           </Link>
         </NavBar>
