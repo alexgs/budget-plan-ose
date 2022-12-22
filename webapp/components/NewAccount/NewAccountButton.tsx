@@ -27,13 +27,13 @@ export const NewAccountButton: React.FC = () => {
   return (
     <div>
       <Button variant="outline" onClick={handleNewAccountClick}>
-        Add Category
+        Add Account
       </Button>
       <Modal
         onClose={handleModalClose}
         opened={isVisible}
         overlayBlur={3}
-        title="Add new category"
+        title="Add new account"
       >
         {renderModalContent()}
       </Modal>
