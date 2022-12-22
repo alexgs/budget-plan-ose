@@ -3,7 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader, Table } from '@mantine/core';
 import React from 'react';
 import useSWR from 'swr';
-import { Page } from '../../components';
+import { NewAccountButton, Page } from '../../components';
+import { space } from '../../components/tokens';
 import { getFriendlyAccountType } from '../../shared-lib';
 
 const AccountsPage: React.FC = () => {
@@ -43,6 +44,9 @@ const AccountsPage: React.FC = () => {
         </thead>
         <tbody>{rows}</tbody>
       </Table>
+      <div style={{ marginTop: space.xl }}>
+        <NewAccountButton />
+      </div>
     </Page>
   );
 };

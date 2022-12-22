@@ -4,6 +4,10 @@
 
 import React from 'react';
 
-export const NewAccountForm: React.FC = () => {
+interface Props {
+  onClose: VoidFunction;
+}
+
+export const NewAccountForm: React.FC<Props> = (props) => {
   return <div>Hello form</div>
 }
