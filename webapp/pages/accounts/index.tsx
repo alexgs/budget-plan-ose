@@ -31,7 +31,6 @@ const AccountsPage: React.FC = () => {
       <td>{getFriendlyAccountType(account.accountType)}</td>
     </tr>
   ));
-  // console.log(accountsData);
 
   return (
     <Page>
