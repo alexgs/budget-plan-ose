@@ -3,8 +3,12 @@
  */
 
 import { Button, Modal } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import React, { useState } from 'react';
+import { AccountType } from '../../shared-lib/types';
 import { NewAccountForm } from './NewAccountForm';
+
+export interface NewAccountData { description: string, type: AccountType }
 
 export const NewAccountButton: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -13,15 +17,47 @@ export const NewAccountButton: React.FC = () => {
     setIsVisible(true);
   }
 
-  function handleModalClose(): void {
+  function handleModalCancel(): void {
+    setIsVisible(false);
+  }
+
+  function handleModalSave(values: NewAccountData): void {
+    void requestNewAccount(values.description, values.type);
     setIsVisible(false);
   }
 
   function renderModalContent() {
     if (isVisible) {
-      return <NewAccountForm onClose={handleModalClose} />;
+      return <NewAccountForm onCancel={handleModalCancel} onSave={handleModalSave} />;
     }
     return null;
+  }
+
+  async function requestNewAccount(description: string, accountType: AccountType) {
+    const responseData = await fetch('/api/accounts', {
+      body: JSON.stringify({
+        accountType,
+        description,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    })
+      .then((response) => response.json())
+      .catch((e) => {
+        console.error(e);
+        showNotification({
+          color: 'red',
+          message: 'Something went wrong! Please check the logs.',
+          title: 'Error',
+        });
+      });
+
+    showNotification({
+      message: `Saved new account "${responseData.description}"`,
+      title: 'Success',
+    });
   }
 
   return (
@@ -30,7 +66,7 @@ export const NewAccountButton: React.FC = () => {
         Add Account
       </Button>
       <Modal
-        onClose={handleModalClose}
+        onClose={handleModalCancel}
         opened={isVisible}
         overlayBlur={3}
         title="Add new account"

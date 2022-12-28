@@ -8,6 +8,7 @@ import React from 'react';
 import * as yup from 'yup';
 import { getFriendlyAccountType } from '../../shared-lib';
 import { ACCOUNT_TYPES } from '../../shared-lib/constants';
+import { NewAccountData } from './NewAccountButton';
 
 export const newAccountSchema = yup.object({
   description: yup.string().required(),
@@ -15,7 +16,8 @@ export const newAccountSchema = yup.object({
 });
 
 interface Props {
-  onClose: VoidFunction;
+  onCancel: VoidFunction;
+  onSave: (values: NewAccountData) => void;
 }
 
 export const NewAccountForm: React.FC<Props> = (props) => {
@@ -28,11 +30,11 @@ export const NewAccountForm: React.FC<Props> = (props) => {
     validateInputOnChange: true,
   });
 
-  // TODO
-  const isSaveButtonEnabled = true;
+  const isSaveButtonEnabled =
+    form.values.description.length > 0 && Object.keys(form.errors).length === 0;
 
-  function handleSubmit(values: Record<string, string>) {
-    // TODO
+  function handleSubmit(values: NewAccountData) {
+    props.onSave(values);
   }
 
   const accountTypeData = Object.values(ACCOUNT_TYPES).map((value) => {
@@ -62,7 +64,7 @@ export const NewAccountForm: React.FC<Props> = (props) => {
       />
       <Space h="xl" />
       <Group position="apart">
-        <Button color="pink.3" onClick={props.onClose} variant="outline">
+        <Button color="pink.3" onClick={props.onCancel} variant="outline">
           Cancel
         </Button>
         <Button
