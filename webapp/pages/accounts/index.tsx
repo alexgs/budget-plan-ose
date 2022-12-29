@@ -5,9 +5,7 @@ import React from 'react';
 import useSWR from 'swr';
 import { FinancialAccount } from '../../client-lib/types';
 import { NewAccountButton, Page } from '../../components';
-import {
-  EditAccountButton
-} from '../../components/NewAccount/EditAccountButton';
+import { EditAccountButton } from '../../components/NewAccount/EditAccountButton';
 import { space } from '../../components/tokens';
 import { getFriendlyAccountType } from '../../shared-lib';
 
@@ -34,7 +32,9 @@ const AccountsPage: React.FC = () => {
     <tr key={account.id}>
       <td>{account.description}</td>
       <td>{getFriendlyAccountType(account.accountType)}</td>
-      <td style={{ textAlign: 'right' }}><EditAccountButton /></td>
+      <td style={{ textAlign: 'right' }}>
+        <EditAccountButton data={account} />
+      </td>
     </tr>
   ));
 

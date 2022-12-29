@@ -6,6 +6,7 @@ import { Button, Group, NativeSelect, Space, TextInput } from '@mantine/core';
 import { useForm, yupResolver } from '@mantine/form';
 import React from 'react';
 import * as yup from 'yup';
+import { FinancialAccount } from '../../client-lib/types';
 import { getFriendlyAccountType } from '../../shared-lib';
 import { ACCOUNT_TYPES } from '../../shared-lib/constants';
 import { NewAccountData } from './NewAccountButton';
@@ -16,6 +17,7 @@ export const newAccountSchema = yup.object({
 });
 
 interface Props {
+  data?: FinancialAccount;
   onCancel: VoidFunction;
   onSave: (values: NewAccountData) => void;
 }
@@ -23,8 +25,8 @@ interface Props {
 export const NewAccountForm: React.FC<Props> = (props) => {
   const form = useForm({
     initialValues: {
-      description: '',
-      type: ACCOUNT_TYPES.CHECKING,
+      description: props.data?.description ?? '',
+      type: props.data?.accountType ?? ACCOUNT_TYPES.CHECKING,
     },
     validate: yupResolver(newAccountSchema),
     validateInputOnChange: true,
