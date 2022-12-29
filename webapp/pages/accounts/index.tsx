@@ -10,7 +10,7 @@ import { space } from '../../components/tokens';
 import { getFriendlyAccountType } from '../../shared-lib';
 
 const AccountsPage: React.FC = () => {
-  const { error, data: accountsData } = useSWR('/api/accounts');
+  const { error, data: accountsData } = useSWR('/api/accounts', { refreshInterval: 1000 });
   if (error) {
     console.error(error);
     return (
