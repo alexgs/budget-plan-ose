@@ -3,7 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader, Table } from '@mantine/core';
 import React from 'react';
 import useSWR from 'swr';
+import { FinancialAccount } from '../../client-lib/types';
 import { NewAccountButton, Page } from '../../components';
+import {
+  EditAccountButton
+} from '../../components/NewAccount/EditAccountButton';
 import { space } from '../../components/tokens';
 import { getFriendlyAccountType } from '../../shared-lib';
 
@@ -26,10 +30,11 @@ const AccountsPage: React.FC = () => {
     return <Loader variant="bars" />;
   }
 
-  const rows = accountsData.map((account: any) => (
+  const rows = accountsData.map((account: FinancialAccount) => (
     <tr key={account.id}>
       <td>{account.description}</td>
       <td>{getFriendlyAccountType(account.accountType)}</td>
+      <td style={{ textAlign: 'right' }}><EditAccountButton /></td>
     </tr>
   ));
 
@@ -40,6 +45,7 @@ const AccountsPage: React.FC = () => {
           <tr>
             <th>Account</th>
             <th>Type</th>
+            <th />
           </tr>
         </thead>
         <tbody>{rows}</tbody>
