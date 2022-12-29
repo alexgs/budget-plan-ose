@@ -7,8 +7,7 @@ import { unstable_getServerSession } from 'next-auth/next';
 import { InferType, ValidationError } from 'yup';
 import * as yup from 'yup';
 
-import { authOptions } from '../auth/[...nextauth]';
-import { prisma } from '../../../server-lib';
+import { nextAuthOptions, prisma } from '../../../server-lib';
 
 const newAccountSchema = yup.object({
   accountType: yup.string().required(), // TODO This can be a more specific filter
@@ -21,7 +20,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const session = await unstable_getServerSession(req, res, authOptions);
+  const session = await unstable_getServerSession(req, res, nextAuthOptions);
 
   if (session) {
     if (req.method === 'GET') {
