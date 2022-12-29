@@ -3,10 +3,8 @@
  */
 
 import { UseFormReturnType } from '@mantine/form';
-import { InferType } from 'yup';
 
-import { newTransactionSchema } from '../shared-lib';
-import { AccountType } from '../shared-lib/types';
+import { AccountType, NewTransactionSchema } from '../shared-lib/types';
 
 export interface CategoryTreeNode {
   id: string;
@@ -36,9 +34,7 @@ export interface FinancialAccount {
 export type NewTransactionFormHook =
   UseFormReturnType<NewTransactionFormValues>;
 
-export type NewTransactionFormValues = InferType<
-  typeof newTransactionSchema
-> & {
+export type NewTransactionFormValues = NewTransactionSchema & {
   balance: number; // Client-only field
   isCredit: boolean; // Client-only field
 };

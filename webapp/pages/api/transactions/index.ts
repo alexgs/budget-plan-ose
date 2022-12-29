@@ -9,8 +9,7 @@ import { InferType, ValidationError } from 'yup';
 
 import { nextAuthOptions, prisma } from '../../../server-lib';
 import { newTransactionSchema } from '../../../shared-lib';
-
-type NewTransactionSchema = InferType<typeof newTransactionSchema>;
+import { NewTransactionSchema } from '../../../shared-lib/types';
 
 function formatTransaction(
   txn: TransactionRecord & { amounts: TransactionAmount[] }
