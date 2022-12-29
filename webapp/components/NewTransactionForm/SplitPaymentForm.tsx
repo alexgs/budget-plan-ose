@@ -23,6 +23,8 @@ import {
   NewTransactionFormHook,
   NewTransactionFormValues,
 } from '../../client-lib/types';
+import { getFriendlyTransactionType } from '../../shared-lib';
+import { TRANSACTION_TYPES } from '../../shared-lib/constants';
 import { space } from '../tokens';
 
 const AmountContainer = styled.div({
@@ -105,6 +107,13 @@ export const SplitPaymentForm: FC<Props> = (props) => {
   }
 
   const amountRemaining = props.mantineForm.values.balance - sumAllocations();
+  const transactionTypeData = Object.values(TRANSACTION_TYPES).map((value) => {
+    return {
+      value,
+      label: getFriendlyTransactionType(value),
+    };
+  });
+
   return (
     <form
       onSubmit={props.mantineForm.onSubmit(props.onSubmit, (values) =>
@@ -123,11 +132,7 @@ export const SplitPaymentForm: FC<Props> = (props) => {
         }
       />
       <NativeSelect
-        data={[
-          { value: 'payment', label: 'Payment' },
-          { value: 'credit_card_charge', label: 'Credit card charge' },
-          { value: 'account_transfer', label: 'Account transfer' },
-        ]}
+        data={transactionTypeData}
         label="Type"
         my="sm"
         required

@@ -21,6 +21,11 @@ import {
   NewTransactionFormHook,
   NewTransactionFormValues,
 } from '../../client-lib/types';
+import {
+  getFriendlyAccountType,
+  getFriendlyTransactionType
+} from '../../shared-lib';
+import { ACCOUNT_TYPES, TRANSACTION_TYPES } from '../../shared-lib/constants';
 
 const amountStyle = (theme: MantineTheme): CSSObject => ({
   '.mantine-NumberInput-icon': { color: theme.colors.green[6] },
@@ -36,6 +41,13 @@ interface Props {
 }
 
 export const SinglePaymentForm: FC<Props> = (props) => {
+  const transactionTypeData = Object.values(TRANSACTION_TYPES).map((value) => {
+    return {
+      value,
+      label: getFriendlyTransactionType(value),
+    };
+  });
+
   return (
     <form
       onSubmit={props.mantineForm.onSubmit(props.onSubmit, (values) =>
@@ -54,11 +66,7 @@ export const SinglePaymentForm: FC<Props> = (props) => {
         }
       />
       <NativeSelect
-        data={[
-          { value: 'payment', label: 'Payment' },
-          { value: 'credit_card_charge', label: 'Credit card charge' },
-          { value: 'account_transfer', label: 'Account transfer' },
-        ]}
+        data={transactionTypeData}
         label="Type"
         my="sm"
         required
