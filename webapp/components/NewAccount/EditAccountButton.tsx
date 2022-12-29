@@ -5,6 +5,7 @@
 import { faPencil } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Modal, UnstyledButton } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import React, { useState } from 'react';
 
 import { FinancialAccount } from '../../client-lib/types';
@@ -38,7 +39,29 @@ export const EditAccountButton: React.FC<Props> = (props) => {
     return null;
   }
 
-  async function requestPatchAccount(accountId: string, values: NewAccountData) {}
+  async function requestPatchAccount(accountId: string, values: NewAccountData) {
+    const responseData = await fetch(`/api/accounts/${accountId}`, {
+      body: JSON.stringify(values),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    })
+      .then((response) => response.json())
+      .catch((e) => {
+        console.error(e);
+        showNotification({
+          color: 'red',
+          message: 'Something went wrong! Please check the logs.',
+          title: 'Error',
+        });
+      });
+
+    showNotification({
+      message: `Updated account "${responseData.description}"`,
+      title: 'Success',
+    });
+  }
 
   return (
     <div>
