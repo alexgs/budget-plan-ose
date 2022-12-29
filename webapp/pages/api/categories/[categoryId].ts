@@ -4,13 +4,14 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]';
+
+import { nextAuthOptions } from '../../../server-lib';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const session = await unstable_getServerSession(req, res, authOptions);
+  const session = await unstable_getServerSession(req, res, nextAuthOptions);
 
   if (session) {
     if (req.method === 'GET') {
