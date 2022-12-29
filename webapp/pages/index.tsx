@@ -17,7 +17,7 @@ import { space } from '../components/tokens';
 
 function HomePage() {
   // Get sorted categories and balances
-  const { error, data: catData } = useSWR('/api/categories');
+  const { error, data: catData } = useSWR('/api/categories', { refreshInterval: 1000 });
   if (error) {
     console.error(error);
     return (

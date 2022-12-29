@@ -3,8 +3,7 @@
  */
 
 import { ACCOUNT_TYPES } from './constants';
-
-type AccountType = typeof ACCOUNT_TYPES[keyof typeof ACCOUNT_TYPES];
+import { AccountType } from './types';
 
 export function getFriendlyAccountType(
   accountType: AccountType

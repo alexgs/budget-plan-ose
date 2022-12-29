@@ -44,7 +44,6 @@ export const AddCategoryModalContent: FC<Props> = (props) => {
   menuItems.unshift({ label: 'None', value: '' });
 
   function handleModalSave(values: { categoryName: string; parentId: string }) {
-    alert(JSON.stringify(values, null, 2));
     void requestNewCategory(values.categoryName, values.parentId);
     props.onClose();
   }

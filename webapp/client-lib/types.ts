@@ -6,6 +6,7 @@ import { UseFormReturnType } from '@mantine/form';
 import { InferType } from 'yup';
 
 import { newTransactionSchema } from '../shared-lib';
+import { AccountType } from '../shared-lib/types';
 
 export interface CategoryTreeNode {
   id: string;
@@ -24,6 +25,12 @@ export interface CategoryValues {
   id: string; // UUID of this category
   isLeaf: boolean;
   label: string; // Slash-separated joining of category's name with parent's name
+}
+
+export interface FinancialAccount {
+  accountType: AccountType;
+  description: string;
+  id: string;
 }
 
 export type NewTransactionFormHook =
