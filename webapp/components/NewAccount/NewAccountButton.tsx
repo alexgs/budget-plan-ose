@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { AccountType } from '../../shared-lib/types';
 import { NewAccountForm } from './NewAccountForm';
 
-export interface NewAccountData { description: string, type: AccountType }
+export interface NewAccountData { description: string, accountType: AccountType }
 
 export const NewAccountButton: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -22,7 +22,7 @@ export const NewAccountButton: React.FC = () => {
   }
 
   function handleModalSave(values: NewAccountData): void {
-    void requestNewAccount(values.description, values.type);
+    void requestNewAccount(values.description, values.accountType);
     setIsVisible(false);
   }
 

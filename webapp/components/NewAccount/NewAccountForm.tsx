@@ -12,8 +12,8 @@ import { ACCOUNT_TYPES } from '../../shared-lib/constants';
 import { NewAccountData } from './NewAccountButton';
 
 export const newAccountSchema = yup.object({
+  accountType: yup.string().required(),
   description: yup.string().required(),
-  type: yup.string().required(),
 });
 
 interface Props {
@@ -25,8 +25,8 @@ interface Props {
 export const NewAccountForm: React.FC<Props> = (props) => {
   const form = useForm({
     initialValues: {
+      accountType: props.data?.accountType ?? ACCOUNT_TYPES.CHECKING,
       description: props.data?.description ?? '',
-      type: props.data?.accountType ?? ACCOUNT_TYPES.CHECKING,
     },
     validate: yupResolver(newAccountSchema),
     validateInputOnChange: true,
@@ -62,7 +62,7 @@ export const NewAccountForm: React.FC<Props> = (props) => {
         label="Type"
         my="sm"
         required
-        {...form.getInputProps('type')}
+        {...form.getInputProps('accountType')}
       />
       <Space h="xl" />
       <Group position="apart">
