@@ -7,7 +7,11 @@ import { unstable_getServerSession } from 'next-auth/next';
 import { InferType, ValidationError } from 'yup';
 import * as yup from 'yup';
 
-import { nextAuthOptions, prisma } from '../../../server-lib';
+import {
+  ensureSystemCategories,
+  nextAuthOptions,
+  prisma,
+} from '../../../server-lib';
 
 const newCategorySchema = yup.object({
   name: yup.string().required(),
@@ -46,6 +50,8 @@ export default async function handler(
         return;
       }
 
+      // TODO Use "repository" pattern to hide data access
+      await ensureSystemCategories();
       const newCategory = await prisma.category.create({
         data: payload,
       });

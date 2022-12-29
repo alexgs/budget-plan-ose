@@ -4,3 +4,4 @@
 
 export { default as prisma } from './prismadb';
 export { nextAuthOptions } from './next-auth-options';
+export { ensureSystemCategories } from './ensure-system-categories'
