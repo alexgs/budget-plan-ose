@@ -5,16 +5,13 @@
 import { ACCOUNT_TYPES, SYSTEM_IDS } from '../../shared-lib';
 import { database } from '../index';
 
-export async function ensureSystemAccounts() {
-  await ensureCategoryTransferAccount();
-}
+const categoryTransferAccountData = {
+  accountType: ACCOUNT_TYPES.OTHER,
+  description: 'Category transfers',
+  id: SYSTEM_IDS.ACCOUNTS.CATEGORY_TRANSFER,
+  isSystem: true,
+};
 
-async function ensureCategoryTransferAccount() {
-  const data = {
-    accountType: ACCOUNT_TYPES.OTHER,
-    description: 'Category transfers',
-    id: SYSTEM_IDS.ACCOUNTS.CATEGORY_TRANSFER,
-    isSystem: true,
-  };
-  await database.ensureAccount(data);
+export async function ensureSystemAccounts() {
+  await database.ensureAccount(categoryTransferAccountData);
 }

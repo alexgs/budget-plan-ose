@@ -6,7 +6,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
 import { ValidationError } from 'yup';
 
-import { database, nextAuthOptions } from '../../../server-lib';
+import { nextAuthOptions, service } from '../../../server-lib';
 import { SchemaTypes, schemaObjects } from '../../../shared-lib';
 
 export default async function handler(
@@ -17,7 +17,7 @@ export default async function handler(
 
   if (session) {
     if (req.method === 'GET') {
-      const categories = await database.getPublicCategories();
+      const categories = await service.getPublicCategories();
       res.send(categories);
     } else if (req.method === 'POST') {
       let payload: SchemaTypes.NewCategory = { name: '' };
@@ -39,7 +39,7 @@ export default async function handler(
         return;
       }
 
-      const newCategory = await database.createCategory(payload);
+      const newCategory = await service.createCategory(payload);
       res.send(newCategory);
     } else {
       res

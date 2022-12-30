@@ -3,18 +3,14 @@
  */
 
 import { SYSTEM_IDS } from '../../shared-lib';
-import { prisma } from '../index';
+import { database } from '../index';
 
 /**
  * Returns all categories except those with system IDs
  */
 export async function getPublicCategories() {
-  return prisma.category.findMany({
-    where: {
-      NOT: [
-        { id: SYSTEM_IDS.CATEGORIES.ACCOUNT_TRANSFER },
-        { id: SYSTEM_IDS.CATEGORIES.CATEGORY_TRANSFER },
-      ],
-    },
-  });
+  return database.getCategoriesExceptIds([
+    SYSTEM_IDS.CATEGORIES.ACCOUNT_TRANSFER,
+    SYSTEM_IDS.CATEGORIES.CATEGORY_TRANSFER
+  ]);
 }
