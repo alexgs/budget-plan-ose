@@ -6,7 +6,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
 import { ValidationError } from 'yup';
 
-import { database, nextAuthOptions, prisma } from '../../../server-lib';
+import { database, nextAuthOptions } from '../../../server-lib';
 import { SchemaTypes, schemaObjects } from '../../../shared-lib';
 
 export default async function handler(
@@ -17,7 +17,7 @@ export default async function handler(
 
   if (session) {
     if (req.method === 'GET') {
-      const accounts = await prisma.financialAccount.findMany();
+      const accounts = await database.getPublicAccounts();
       res.send(accounts);
     } else if (req.method === 'POST') {
       let payload: SchemaTypes.NewAccount = { accountType: '', description: '' };
