@@ -4,17 +4,11 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
-import { InferType, ValidationError } from 'yup';
-import * as yup from 'yup';
+import { ValidationError } from 'yup';
 
-import { nextAuthOptions, prisma } from '../../../server-lib';
-
-const newAccountSchema = yup.object({
-  accountType: yup.string().required(), // TODO This can be a more specific filter
-  description: yup.string().required(),
-});
-
-type NewAccountSchema = InferType<typeof newAccountSchema>;
+import { database, nextAuthOptions, prisma } from '../../../server-lib';
+import { schema } from '../../../shared-lib';
+import { Schema } from '../../../shared-lib/types';
 
 export default async function handler(
   req: NextApiRequest,
@@ -27,9 +21,9 @@ export default async function handler(
       const accounts = await prisma.financialAccount.findMany();
       res.send(accounts);
     } else if (req.method === 'POST') {
-      let payload: NewAccountSchema = { accountType: '', description: '' };
+      let payload: Schema.NewAccount = { accountType: '', description: '' };
       try {
-        payload = await newAccountSchema.validate(req.body);
+        payload = await schema.newAccount.validate(req.body);
       } catch (e: any) {
         if (e.name && e.name === 'ValidationError') {
           const error: ValidationError = e as ValidationError;
@@ -46,9 +40,7 @@ export default async function handler(
         return;
       }
 
-      const newAccount = await prisma.financialAccount.create({
-        data: payload,
-      });
+      const newAccount = await database.createAccount(payload);
       res.send(newAccount);
     } else {
       res.status(405).setHeader('Allow', 'GET POST').send('Method not allowed.');

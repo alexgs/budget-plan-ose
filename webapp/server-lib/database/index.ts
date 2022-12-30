@@ -3,8 +3,10 @@
  */
 
 
+import { createAccount } from './create-account';
 import { createCategory } from './create-category';
 
 export const database = {
+  createAccount,
   createCategory,
 };

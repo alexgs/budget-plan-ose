@@ -3,10 +3,12 @@
  */
 
 import { InferType } from 'yup';
+
 import { ACCOUNT_TYPES, TRANSACTION_TYPES } from './constants';
 import { schema } from './schema';
 
 export namespace Schema {
+  export type NewAccount = InferType<typeof schema.newAccount>;
   export type NewCategory = InferType<typeof schema.newCategory>;
   export type NewTransaction = InferType<typeof schema.newTransaction>;
 }
