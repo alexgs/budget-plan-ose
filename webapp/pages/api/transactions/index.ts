@@ -8,8 +8,7 @@ import { unstable_getServerSession } from 'next-auth/next';
 import { ValidationError } from 'yup';
 
 import { nextAuthOptions, prisma } from '../../../server-lib';
-import { schema } from '../../../shared-lib';
-import { Schema } from '../../../shared-lib/types';
+import { SchemaTypes, schemaObjects } from '../../../shared-lib';
 
 function formatTransaction(
   txn: TransactionRecord & { amounts: TransactionAmount[] }
@@ -46,7 +45,7 @@ export default async function handler(
     } else if (req.method === 'POST') {
       // --- VALIDATE PAYLOAD ---
 
-      let payload: Schema.NewTransaction = {
+      let payload: SchemaTypes.NewTransaction = {
         amounts: [
           {
             accountId: '',
@@ -61,7 +60,7 @@ export default async function handler(
         type: 'payment',
       };
       try {
-        payload = await schema.newTransaction.validate(req.body);
+        payload = await schemaObjects.newTransaction.validate(req.body);
       } catch (e: any) {
         if (e.name && e.name === 'ValidationError') {
           const error: ValidationError = e as ValidationError;

@@ -3,11 +3,11 @@
  */
 
 import { prisma } from '../index';
-import { Schema } from '../../shared-lib/types';
+import { SchemaTypes } from '../../shared-lib/types';
 
 import { ensureSystemCategories } from './ensure-system-categories';
 
-export async function createCategory(payload: Schema.NewCategory) {
+export async function createCategory(payload: SchemaTypes.NewCategory) {
   await ensureSystemCategories();
   return prisma.category.create({
     data: payload,

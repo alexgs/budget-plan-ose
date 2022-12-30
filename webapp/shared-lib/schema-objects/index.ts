@@ -6,7 +6,7 @@ import { newAccount } from './new-account';
 import { newCategory } from './new-category';
 import { newTransaction } from './new-transaction';
 
-export const schema = {
+export const schemaObjects = {
   newAccount,
   newCategory,
   newTransaction,

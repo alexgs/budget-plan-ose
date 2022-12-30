@@ -11,8 +11,7 @@ import {
   NewTransactionFormHook,
   NewTransactionFormValues,
 } from '../../client-lib/types';
-import { schema } from '../../shared-lib';
-import { TRANSACTION_TYPES } from '../../shared-lib/constants';
+import { TRANSACTION_TYPES, schemaObjects } from '../../shared-lib';
 import { SinglePaymentForm } from './SinglePaymentForm';
 import { SplitPaymentForm } from './SplitPaymentForm';
 
@@ -39,7 +38,7 @@ export const NewTransactionForm: FC<Props> = (props) => {
       isCredit: false as boolean, // Client-only field
       type: TRANSACTION_TYPES.PAYMENT as string,
     },
-    validate: yupResolver(schema.newTransaction),
+    validate: yupResolver(schemaObjects.newTransaction),
     validateInputOnChange: true,
   });
 

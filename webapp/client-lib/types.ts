@@ -4,7 +4,7 @@
 
 import { UseFormReturnType } from '@mantine/form';
 
-import { AccountType, Schema } from '../shared-lib/types';
+import { AccountType, SchemaTypes } from '../shared-lib/types';
 
 export interface CategoryTreeNode {
   id: string;
@@ -34,7 +34,7 @@ export interface FinancialAccount {
 export type NewTransactionFormHook =
   UseFormReturnType<NewTransactionFormValues>;
 
-export type NewTransactionFormValues = Schema.NewTransaction & {
+export type NewTransactionFormValues = SchemaTypes.NewTransaction & {
   balance: number; // Client-only field
   isCredit: boolean; // Client-only field
 };
