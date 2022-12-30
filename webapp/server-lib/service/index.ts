@@ -3,9 +3,11 @@
  */
 
 import { createAccount } from './create-account';
+import { ensureSystemAccounts } from './ensure-system-accounts';
 import { getPublicAccounts } from './get-public-accounts';
 
 export const service = {
   createAccount,
+  ensureSystemAccounts,
   getPublicAccounts,
 };
