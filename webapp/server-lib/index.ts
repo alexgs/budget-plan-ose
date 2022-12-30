@@ -5,3 +5,4 @@
 export { database } from './database';
 export { nextAuthOptions } from './next-auth-options';
 export { default as prisma } from './prismadb';
+export { service } from './service';
