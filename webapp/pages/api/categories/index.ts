@@ -8,7 +8,7 @@ import { ValidationError } from 'yup';
 
 import { database, nextAuthOptions, prisma } from '../../../server-lib';
 import { schema } from '../../../shared-lib';
-import { NewCategorySchema } from '../../../shared-lib/types';
+import { Schema } from '../../../shared-lib/types';
 
 export default async function handler(
   req: NextApiRequest,
@@ -21,7 +21,7 @@ export default async function handler(
       const categories = await prisma.category.findMany();
       res.send(categories);
     } else if (req.method === 'POST') {
-      let payload: NewCategorySchema = { name: '' };
+      let payload: Schema.NewCategory = { name: '' };
       try {
         payload = await schema.newCategory.validate(req.body);
       } catch (e: any) {

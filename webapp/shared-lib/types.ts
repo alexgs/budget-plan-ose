@@ -7,8 +7,11 @@ import { ACCOUNT_TYPES, TRANSACTION_TYPES } from './constants';
 import { newTransactionSchema } from './new-transaction-schema';
 import { schema } from './schema';
 
+export namespace Schema {
+  export type NewCategory = InferType<typeof schema.newCategory>;
+  export type NewTransaction = InferType<typeof newTransactionSchema>;
+}
+
 export type AccountType = typeof ACCOUNT_TYPES[keyof typeof ACCOUNT_TYPES];
-export type NewCategorySchema = InferType<typeof schema.newCategory>;
-export type NewTransactionSchema = InferType<typeof newTransactionSchema>;
 export type TransactionType =
   typeof TRANSACTION_TYPES[keyof typeof TRANSACTION_TYPES];

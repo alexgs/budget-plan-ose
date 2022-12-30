@@ -5,11 +5,11 @@
 import { TransactionRecord, TransactionAmount } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
-import { InferType, ValidationError } from 'yup';
+import { ValidationError } from 'yup';
 
 import { nextAuthOptions, prisma } from '../../../server-lib';
 import { newTransactionSchema } from '../../../shared-lib';
-import { NewTransactionSchema } from '../../../shared-lib/types';
+import { Schema } from '../../../shared-lib/types';
 
 function formatTransaction(
   txn: TransactionRecord & { amounts: TransactionAmount[] }
@@ -46,7 +46,7 @@ export default async function handler(
     } else if (req.method === 'POST') {
       // --- VALIDATE PAYLOAD ---
 
-      let payload: NewTransactionSchema = {
+      let payload: Schema.NewTransaction = {
         amounts: [
           {
             accountId: '',
