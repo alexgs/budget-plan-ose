@@ -5,7 +5,9 @@
 import { Button, Modal } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import React, { useState } from 'react';
-import { AccountType } from '../../shared-lib/types';
+
+import { AccountType } from '../../shared-lib';
+
 import { NewAccountForm } from './NewAccountForm';
 
 export interface NewAccountData { description: string, accountType: AccountType }

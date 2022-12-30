@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-export const newTransactionSchema = yup.object({
+export const newTransaction = yup.object({
   amounts: yup
     .array()
     .required()
