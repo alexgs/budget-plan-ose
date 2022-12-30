@@ -7,14 +7,18 @@ import React from 'react';
 import { NewTransactionFormHook } from '../../../client-lib/types';
 
 interface Props {
+  index?: number;
   mantineForm: NewTransactionFormHook;
 }
 
-export const CreditField: React.FC<Props> = (props) => (
-  <Checkbox
-    label="Credit or deposit"
-    {...props.mantineForm.getInputProps('amounts.0.isCredit', {
-      type: 'checkbox',
-    })}
-  />
-);
+export const CreditField: React.FC<Props> = (props) => {
+  const index = props.index ?? 0;
+  return (
+    <Checkbox
+      label="Credit or deposit"
+      {...props.mantineForm.getInputProps(`amounts.${index}.isCredit`, {
+        type: 'checkbox',
+      })}
+    />
+  );
+};

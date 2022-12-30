@@ -14,20 +14,24 @@ const amountStyle = (theme: MantineTheme): CSSObject => ({
 });
 
 interface Props {
+  index?: number;
   mantineForm: NewTransactionFormHook;
 }
 
-export const AmountField: React.FC<Props> = (props) => (
-  <NumberInput
-    decimalSeparator="."
-    hideControls
-    icon={<FontAwesomeIcon icon={faDollarSign} />}
-    label="Amount"
-    my="sm"
-    precision={2}
-    required
-    sx={props.mantineForm.values.amounts[0].isCredit ? amountStyle : {}}
-    {...props.mantineForm.getInputProps('amounts.0.amount')}
-  />
+export const AmountField: React.FC<Props> = (props) => {
+  const index = props.index ?? 0;
+  return (
+    <NumberInput
+      decimalSeparator="."
+      hideControls
+      icon={<FontAwesomeIcon icon={faDollarSign} />}
+      label="Amount"
+      my="sm"
+      precision={2}
+      required
+      sx={props.mantineForm.values.amounts[0].isCredit ? amountStyle : {}}
+      {...props.mantineForm.getInputProps(`amounts.${index}.amount`)}
+    />
 
-);
+  );
+}

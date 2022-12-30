@@ -8,15 +8,19 @@ import { NewTransactionFormHook } from '../../../client-lib/types';
 
 interface Props {
   accounts: { label: string; value: string }[];
+  index?: number;
   mantineForm: NewTransactionFormHook;
 }
 
-export const AccountField: React.FC<Props> = (props) => (
-  <NativeSelect
-    data={props.accounts}
-    label="Account"
-    my="sm"
-    required
-    {...props.mantineForm.getInputProps('amounts.0.accountId')}
-  />
-);
+export const AccountField: React.FC<Props> = (props) => {
+  const index = props.index ?? 0;
+  return (
+    <NativeSelect
+      data={props.accounts}
+      label="Account"
+      my="sm"
+      required
+      {...props.mantineForm.getInputProps(`amounts.${index}.accountId`)}
+    />
+  );
+};

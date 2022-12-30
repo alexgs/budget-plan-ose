@@ -3,26 +3,25 @@
  */
 
 import styled from '@emotion/styled';
-import { faSplit } from '@fortawesome/pro-regular-svg-icons';
 import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Button,
-  Checkbox,
-  CSSObject,
-  Group,
-  MantineTheme,
-  NativeSelect,
-  NumberInput,
-  TextInput,
-} from '@mantine/core';
+import { CSSObject, Group, MantineTheme, NumberInput } from '@mantine/core';
 import { FC } from 'react';
+
 import { formatAmount } from '../../client-lib';
 import {
   NewTransactionFormHook,
   NewTransactionFormValues,
 } from '../../client-lib/types';
 import { space } from '../tokens';
+
+import { SaveButton, SplitButton } from './Buttons';
+import {
+  AccountField,
+  AmountField,
+  CategoryField,
+  DescriptionField,
+} from './Fields';
 
 const AmountContainer = styled.div({
   marginTop: space.lg,
@@ -66,39 +65,21 @@ export const SplitPaymentForm: FC<Props> = (props) => {
   function renderAmounts() {
     return props.mantineForm.values.amounts.map((amount, index) => (
       <AmountContainer key={`amount.${index}`}>
-        <NativeSelect
-          data={props.accounts}
-          label="Account"
-          my="sm"
-          required
-          {...props.mantineForm.getInputProps(`amounts.${index}.accountId`)}
+        <AccountField
+          accounts={props.accounts}
+          index={index}
+          mantineForm={props.mantineForm}
         />
-        <NativeSelect
-          data={props.categories}
-          label="Category"
-          my="sm"
-          required
-          {...props.mantineForm.getInputProps(`amounts.${index}.categoryId`)}
+        <CategoryField
+          categories={props.categories}
+          index={index}
+          mantineForm={props.mantineForm}
         />
-        <NumberInput
-          decimalSeparator="."
-          hideControls
-          icon={<FontAwesomeIcon icon={faDollarSign} />}
-          label="Amount"
-          my="sm"
-          precision={2}
-          required
-          sx={
-            props.mantineForm.values.amounts[index].isCredit ? amountStyle : {}
-          }
-          {...props.mantineForm.getInputProps(`amounts.${index}.amount`)}
-        />
-        <Checkbox
-          label="Credit or deposit"
-          {...props.mantineForm.getInputProps(`amounts.${index}.isCredit`, {
-            type: 'checkbox',
-          })}
-        />
+        <AmountField index={index} mantineForm={props.mantineForm} />
+        {/*
+        TODO Credits don't work correctly on the split form, so disable them for now
+        <CreditField index={index} mantineForm={props.mantineForm} />
+        */}
       </AmountContainer>
     ));
   }
@@ -106,13 +87,7 @@ export const SplitPaymentForm: FC<Props> = (props) => {
   const amountRemaining = props.mantineForm.values.balance - sumAllocations();
   return (
     <>
-      <TextInput
-        label="Description"
-        placeholder="Payee or payer"
-        my="sm"
-        required
-        {...props.mantineForm.getInputProps('description')}
-      />
+      <DescriptionField mantineForm={props.mantineForm} />
       <Group position="apart">
         <NumberInput
           decimalSeparator="."
@@ -133,20 +108,17 @@ export const SplitPaymentForm: FC<Props> = (props) => {
           </AmountRemainingAmount>
         </div>
       </Group>
+      {/*
+      TODO Credits don't work correctly on the split form (see above)
       <Checkbox
         label="Credit or deposit"
         {...props.mantineForm.getInputProps('isCredit', { type: 'checkbox' })}
       />
+      */}
       {renderAmounts()}
       <Group position="apart">
-        <Group position="left" mt="md">
-          <Button onClick={props.onSplitClick} variant="outline">
-            <FontAwesomeIcon icon={faSplit} size="lg" />
-          </Button>
-        </Group>
-        <Group position="right" mt="md">
-          <Button type="submit">Save</Button>
-        </Group>
+        <SplitButton onSplitClick={props.onSplitClick} />
+        <SaveButton />
       </Group>
     </>
   );
