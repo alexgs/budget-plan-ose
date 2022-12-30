@@ -5,12 +5,14 @@
 
 import { createAccount } from './create-account';
 import { createCategory } from './create-category';
-import { getPublicAccounts } from './get-public-accounts';
+import { ensureAccount } from './ensure-account';
+import { getAccountsExceptIds } from './get-accounts-except-ids';
 import { getPublicCategories } from './get-public-categories';
 
 export const database = {
   createAccount,
   createCategory,
-  getPublicAccounts,
+  ensureAccount,
+  getAccountsExceptIds,
   getPublicCategories,
 };

@@ -3,7 +3,9 @@
  */
 
 import { createAccount } from './create-account';
+import { getPublicAccounts } from './get-public-accounts';
 
 export const service = {
   createAccount,
+  getPublicAccounts,
 };
