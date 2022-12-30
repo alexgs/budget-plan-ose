@@ -15,16 +15,11 @@ import {
   NumberInput,
   TextInput,
 } from '@mantine/core';
-import { DatePicker } from '@mantine/dates';
 import { FC } from 'react';
 import {
   NewTransactionFormHook,
   NewTransactionFormValues,
 } from '../../client-lib/types';
-import {
-  TRANSACTION_TYPES,
-  getFriendlyTransactionType,
-} from '../../shared-lib';
 
 const amountStyle = (theme: MantineTheme): CSSObject => ({
   '.mantine-NumberInput-icon': { color: theme.colors.green[6] },
@@ -40,37 +35,8 @@ interface Props {
 }
 
 export const SinglePaymentForm: FC<Props> = (props) => {
-  const transactionTypeData = Object.values(TRANSACTION_TYPES).map((value) => {
-    return {
-      value,
-      label: getFriendlyTransactionType(value),
-    };
-  });
-
   return (
-    <form
-      onSubmit={props.mantineForm.onSubmit(props.onSubmit, (values) =>
-        console.error(values)
-      )}
-    >
-      <DatePicker
-        allowFreeInput
-        inputFormat="YYYY-MM-DD"
-        label="Date"
-        my="sm"
-        required
-        {
-          // I really dislike this syntax; it's too much magic
-          ...props.mantineForm.getInputProps('date')
-        }
-      />
-      <NativeSelect
-        data={transactionTypeData}
-        label="Type"
-        my="sm"
-        required
-        {...props.mantineForm.getInputProps('type')}
-      />
+    <>
       <TextInput
         label="Description"
         placeholder="Payee or payer"
@@ -119,6 +85,6 @@ export const SinglePaymentForm: FC<Props> = (props) => {
           <Button type="submit">Save</Button>
         </Group>
       </Group>
-    </form>
+    </>
   );
 };

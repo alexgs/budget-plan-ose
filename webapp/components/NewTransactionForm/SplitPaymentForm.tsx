@@ -16,17 +16,12 @@ import {
   NumberInput,
   TextInput,
 } from '@mantine/core';
-import { DatePicker } from '@mantine/dates';
 import { FC } from 'react';
 import { formatAmount } from '../../client-lib';
 import {
   NewTransactionFormHook,
   NewTransactionFormValues,
 } from '../../client-lib/types';
-import {
-  TRANSACTION_TYPES,
-  getFriendlyTransactionType,
-} from '../../shared-lib';
 import { space } from '../tokens';
 
 const AmountContainer = styled.div({
@@ -109,37 +104,8 @@ export const SplitPaymentForm: FC<Props> = (props) => {
   }
 
   const amountRemaining = props.mantineForm.values.balance - sumAllocations();
-  const transactionTypeData = Object.values(TRANSACTION_TYPES).map((value) => {
-    return {
-      value,
-      label: getFriendlyTransactionType(value),
-    };
-  });
-
   return (
-    <form
-      onSubmit={props.mantineForm.onSubmit(props.onSubmit, (values) =>
-        console.error(values)
-      )}
-    >
-      <DatePicker
-        allowFreeInput
-        inputFormat="YYYY-MM-DD"
-        label="Date"
-        my="sm"
-        required
-        {
-          // I really dislike this syntax; it's too much magic
-          ...props.mantineForm.getInputProps('date')
-        }
-      />
-      <NativeSelect
-        data={transactionTypeData}
-        label="Type"
-        my="sm"
-        required
-        {...props.mantineForm.getInputProps('transactionType')}
-      />
+    <>
       <TextInput
         label="Description"
         placeholder="Payee or payer"
@@ -182,6 +148,6 @@ export const SplitPaymentForm: FC<Props> = (props) => {
           <Button type="submit">Save</Button>
         </Group>
       </Group>
-    </form>
+    </>
   );
 };

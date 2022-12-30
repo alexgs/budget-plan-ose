@@ -12,6 +12,7 @@ import {
   NewTransactionFormValues,
 } from '../../client-lib/types';
 import { TRANSACTION_TYPES, schemaObjects } from '../../shared-lib';
+import { DateField, TransactionTypeField } from './Fields';
 import { SinglePaymentForm } from './SinglePaymentForm';
 import { SplitPaymentForm } from './SplitPaymentForm';
 
@@ -100,9 +101,21 @@ export const NewTransactionForm: FC<Props> = (props) => {
       label: cat.label,
     }));
 
-  if (form.values.amounts.length === 1) {
+  function renderPaymentForm() {
+    if (form.values.amounts.length === 1) {
+      return (
+        <SinglePaymentForm
+          accounts={props.accounts}
+          categories={categoriesData}
+          mantineForm={form}
+          onSplitClick={handleSplitClick}
+          onSubmit={handleSubmit}
+        />
+      );
+    }
+
     return (
-      <SinglePaymentForm
+      <SplitPaymentForm
         accounts={props.accounts}
         categories={categoriesData}
         mantineForm={form}
@@ -113,12 +126,12 @@ export const NewTransactionForm: FC<Props> = (props) => {
   }
 
   return (
-    <SplitPaymentForm
-      accounts={props.accounts}
-      categories={categoriesData}
-      mantineForm={form}
-      onSplitClick={handleSplitClick}
-      onSubmit={handleSubmit}
-    />
+    <form
+      onSubmit={form.onSubmit(handleSubmit, (values) => console.error(values))}
+    >
+      <DateField mantineForm={form} />
+      <TransactionTypeField mantineForm={form} />
+      {renderPaymentForm()}
+    </form>
   );
 };
