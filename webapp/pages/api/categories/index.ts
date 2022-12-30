@@ -4,21 +4,11 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
-import { InferType, ValidationError } from 'yup';
-import * as yup from 'yup';
+import { ValidationError } from 'yup';
 
-import {
-  ensureSystemCategories,
-  nextAuthOptions,
-  prisma,
-} from '../../../server-lib';
-
-const newCategorySchema = yup.object({
-  name: yup.string().required(),
-  parentId: yup.string().nullable(),
-});
-
-type NewCategorySchema = InferType<typeof newCategorySchema>;
+import { database, nextAuthOptions, prisma } from '../../../server-lib';
+import { schema } from '../../../shared-lib';
+import { NewCategorySchema } from '../../../shared-lib/types';
 
 export default async function handler(
   req: NextApiRequest,
@@ -33,7 +23,7 @@ export default async function handler(
     } else if (req.method === 'POST') {
       let payload: NewCategorySchema = { name: '' };
       try {
-        payload = await newCategorySchema.validate(req.body);
+        payload = await schema.newCategory.validate(req.body);
       } catch (e: any) {
         if (e.name && e.name === 'ValidationError') {
           const error: ValidationError = e as ValidationError;
@@ -50,11 +40,7 @@ export default async function handler(
         return;
       }
 
-      // TODO Use "repository" pattern to hide data access
-      await ensureSystemCategories();
-      const newCategory = await prisma.category.create({
-        data: payload,
-      });
+      const newCategory = await database.createCategory(payload);
       res.send(newCategory);
     } else {
       res

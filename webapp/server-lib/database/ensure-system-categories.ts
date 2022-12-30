@@ -2,8 +2,8 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { SYSTEM_IDS } from '../shared-lib/constants';
-import { prisma } from './index';
+import { SYSTEM_IDS } from '../../shared-lib/constants';
+import { prisma } from '../index';
 
 export async function ensureSystemCategories() {
   await ensureAccountTransferCategory();
