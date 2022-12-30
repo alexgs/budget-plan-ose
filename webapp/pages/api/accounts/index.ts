@@ -6,7 +6,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
 import { ValidationError } from 'yup';
 
-import { database, nextAuthOptions } from '../../../server-lib';
+import { database, nextAuthOptions, service } from '../../../server-lib';
 import { SchemaTypes, schemaObjects } from '../../../shared-lib';
 
 export default async function handler(
@@ -39,7 +39,7 @@ export default async function handler(
         return;
       }
 
-      const newAccount = await database.createAccount(payload);
+      const newAccount = await service.createAccount(payload);
       res.send(newAccount);
     } else {
       res.status(405).setHeader('Allow', 'GET POST').send('Method not allowed.');
