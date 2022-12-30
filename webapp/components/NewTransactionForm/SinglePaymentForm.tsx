@@ -2,29 +2,21 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { faSplit } from '@fortawesome/pro-regular-svg-icons';
-import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Button,
-  Checkbox,
-  CSSObject,
-  Group,
-  MantineTheme,
-  NativeSelect,
-  NumberInput,
-  TextInput,
-} from '@mantine/core';
+import { CSSObject, Group, MantineTheme } from '@mantine/core';
 import { FC } from 'react';
 import {
   NewTransactionFormHook,
   NewTransactionFormValues,
 } from '../../client-lib/types';
 
-const amountStyle = (theme: MantineTheme): CSSObject => ({
-  '.mantine-NumberInput-icon': { color: theme.colors.green[6] },
-  input: { color: theme.colors.green[4] },
-});
+import { SaveButton, SplitButton } from './Buttons';
+import {
+  AccountField,
+  AmountField,
+  CategoryField,
+  CreditField,
+  DescriptionField,
+} from './Fields';
 
 interface Props {
   accounts: { label: string; value: string }[];
@@ -37,53 +29,17 @@ interface Props {
 export const SinglePaymentForm: FC<Props> = (props) => {
   return (
     <>
-      <TextInput
-        label="Description"
-        placeholder="Payee or payer"
-        my="sm"
-        required
-        {...props.mantineForm.getInputProps('description')}
+      <DescriptionField mantineForm={props.mantineForm} />
+      <AccountField accounts={props.accounts} mantineForm={props.mantineForm} />
+      <CategoryField
+        categories={props.categories}
+        mantineForm={props.mantineForm}
       />
-      <NativeSelect
-        data={props.accounts}
-        label="Account"
-        my="sm"
-        required
-        {...props.mantineForm.getInputProps('amounts.0.accountId')}
-      />
-      <NativeSelect
-        data={props.categories}
-        label="Category"
-        my="sm"
-        required
-        {...props.mantineForm.getInputProps('amounts.0.categoryId')}
-      />
-      <NumberInput
-        decimalSeparator="."
-        hideControls
-        icon={<FontAwesomeIcon icon={faDollarSign} />}
-        label="Amount"
-        my="sm"
-        precision={2}
-        required
-        sx={props.mantineForm.values.amounts[0].isCredit ? amountStyle : {}}
-        {...props.mantineForm.getInputProps('amounts.0.amount')}
-      />
-      <Checkbox
-        label="Credit or deposit"
-        {...props.mantineForm.getInputProps('amounts.0.isCredit', {
-          type: 'checkbox',
-        })}
-      />
+      <AmountField mantineForm={props.mantineForm} />
+      <CreditField mantineForm={props.mantineForm} />
       <Group position="apart">
-        <Group position="left" mt="md">
-          <Button onClick={props.onSplitClick} variant="outline">
-            <FontAwesomeIcon icon={faSplit} size="lg" />
-          </Button>
-        </Group>
-        <Group position="right" mt="md">
-          <Button type="submit">Save</Button>
-        </Group>
+        <SplitButton onSplitClick={props.onSplitClick} />
+        <SaveButton />
       </Group>
     </>
   );
