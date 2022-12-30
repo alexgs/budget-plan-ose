@@ -22,10 +22,9 @@ import {
   NewTransactionFormValues,
 } from '../../client-lib/types';
 import {
-  getFriendlyAccountType,
-  getFriendlyTransactionType
+  TRANSACTION_TYPES,
+  getFriendlyTransactionType,
 } from '../../shared-lib';
-import { ACCOUNT_TYPES, TRANSACTION_TYPES } from '../../shared-lib/constants';
 
 const amountStyle = (theme: MantineTheme): CSSObject => ({
   '.mantine-NumberInput-icon': { color: theme.colors.green[6] },

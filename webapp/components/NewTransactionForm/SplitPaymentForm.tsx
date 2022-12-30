@@ -23,8 +23,10 @@ import {
   NewTransactionFormHook,
   NewTransactionFormValues,
 } from '../../client-lib/types';
-import { getFriendlyTransactionType } from '../../shared-lib';
-import { TRANSACTION_TYPES } from '../../shared-lib/constants';
+import {
+  TRANSACTION_TYPES,
+  getFriendlyTransactionType,
+} from '../../shared-lib';
 import { space } from '../tokens';
 
 const AmountContainer = styled.div({
