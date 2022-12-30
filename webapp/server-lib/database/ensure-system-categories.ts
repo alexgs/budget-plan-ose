@@ -2,7 +2,7 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { SYSTEM_IDS } from '../../shared-lib/constants';
+import { SYSTEM_IDS } from '../../shared-lib';
 import { prisma } from '../index';
 
 export async function ensureSystemCategories() {
@@ -18,8 +18,8 @@ async function ensureAccountTransferCategory() {
     await prisma.category.create({
       data: {
         id: SYSTEM_IDS.CATEGORIES.ACCOUNT_TRANSFER,
+        isSystem: true,
         name: 'Account transfers',
-        // TODO Flag as system category
       },
     });
   }
@@ -33,8 +33,8 @@ async function ensureCategoryTransferCategory() {
     await prisma.category.create({
       data: {
         id: SYSTEM_IDS.CATEGORIES.CATEGORY_TRANSFER,
+        isSystem: true,
         name: 'Category transfers',
-        // TODO Flag as system category
       },
     });
   }

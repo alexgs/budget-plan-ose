@@ -17,6 +17,12 @@ export const TRANSACTION_TYPES = {
 export const UUID_NAMESPACE = 'bf362cfd-8a1e-430b-a790-be139388867d';
 
 export const SYSTEM_IDS = {
+  ACCOUNTS: {
+    CATEGORY_TRANSFER: uuidV5(
+      'system-ids.accounts.category-transfer',
+      UUID_NAMESPACE
+    ),
+  } as const,
   CATEGORIES: {
     ACCOUNT_TRANSFER: uuidV5(
       'system-ids.categories.account-transfer',
