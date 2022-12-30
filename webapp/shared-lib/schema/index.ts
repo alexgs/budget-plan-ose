@@ -3,7 +3,9 @@
  */
 
 import { newCategory } from './new-category';
+import { newTransaction } from './new-transaction';
 
 export const schema = {
   newCategory,
+  newTransaction,
 };

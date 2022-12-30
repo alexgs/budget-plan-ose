@@ -8,7 +8,7 @@ import { unstable_getServerSession } from 'next-auth/next';
 import { ValidationError } from 'yup';
 
 import { nextAuthOptions, prisma } from '../../../server-lib';
-import { newTransactionSchema } from '../../../shared-lib';
+import { schema } from '../../../shared-lib';
 import { Schema } from '../../../shared-lib/types';
 
 function formatTransaction(
@@ -61,7 +61,7 @@ export default async function handler(
         type: 'payment',
       };
       try {
-        payload = await newTransactionSchema.validate(req.body);
+        payload = await schema.newTransaction.validate(req.body);
       } catch (e: any) {
         if (e.name && e.name === 'ValidationError') {
           const error: ValidationError = e as ValidationError;
