@@ -3,14 +3,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader, Table } from '@mantine/core';
 import React from 'react';
 import useSWR from 'swr';
+
 import { FinancialAccount } from '../../client-lib/types';
-import { NewAccountButton, Page } from '../../components';
-import { EditAccountButton } from '../../components/NewAccount/EditAccountButton';
+import { EditAccountButton, NewAccountButton, Page } from '../../components';
 import { space } from '../../components/tokens';
 import { getFriendlyAccountType } from '../../shared-lib';
 
 const AccountsPage: React.FC = () => {
-  const { error, data: accountsData } = useSWR('/api/accounts', { refreshInterval: 1000 });
+  const { error, data: accountsData } = useSWR('/api/accounts', {
+    refreshInterval: 1000,
+  });
   if (error) {
     console.error(error);
     return (

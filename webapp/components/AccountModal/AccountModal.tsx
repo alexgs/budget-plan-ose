@@ -22,7 +22,7 @@ interface Props {
   onSave: (values: NewAccountData) => void;
 }
 
-export const NewAccountForm: React.FC<Props> = (props) => {
+export const AccountModal: React.FC<Props> = (props) => {
   const form = useForm({
     initialValues: {
       accountType: props.data?.accountType ?? ACCOUNT_TYPES.CHECKING,
