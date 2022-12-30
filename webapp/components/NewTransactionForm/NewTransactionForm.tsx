@@ -39,7 +39,7 @@ export const NewTransactionForm: FC<Props> = (props) => {
       isCredit: false as boolean, // Client-only field
       type: TRANSACTION_TYPES.PAYMENT as string,
     },
-    validate: yupResolver(schemaObjects.newTransaction),
+    validate: yupResolver(schemaObjects.newTransaction), // TODO Fix validation for `type` field
     validateInputOnChange: true,
   });
 
@@ -101,7 +101,16 @@ export const NewTransactionForm: FC<Props> = (props) => {
       label: cat.label,
     }));
 
-  function renderPaymentForm() {
+  function renderFormBody() {
+    if (form.values.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
+      return <div>Account transfer</div>
+    }
+
+    if (form.values.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
+      return <div>Category transfer</div>
+    }
+
+    // Transaction type is either "payment" or "credit card charge"
     if (form.values.amounts.length === 1) {
       return (
         <SinglePaymentForm
@@ -131,7 +140,7 @@ export const NewTransactionForm: FC<Props> = (props) => {
     >
       <DateField mantineForm={form} />
       <TransactionTypeField mantineForm={form} />
-      {renderPaymentForm()}
+      {renderFormBody()}
     </form>
   );
 };
