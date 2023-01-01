@@ -29,7 +29,7 @@ export const AmountField: React.FC<Props> = (props) => {
       my="sm"
       precision={2}
       required
-      sx={props.mantineForm.values.amounts[0].isCredit ? amountStyle : {}}
+      sx={props.mantineForm.values.amounts[index].isCredit ? amountStyle : {}}
       {...props.mantineForm.getInputProps(`amounts.${index}.amount`)}
     />
 

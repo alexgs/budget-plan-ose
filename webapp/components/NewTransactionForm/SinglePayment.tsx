@@ -2,7 +2,7 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { CSSObject, Group, MantineTheme } from '@mantine/core';
+import { Group } from '@mantine/core';
 import { FC } from 'react';
 import {
   NewTransactionFormHook,
