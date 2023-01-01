@@ -12,6 +12,7 @@ import {
   NewTransactionFormValues,
 } from '../../client-lib/types';
 import { TRANSACTION_TYPES, schemaObjects } from '../../shared-lib';
+import { AccountTransfer } from './AccountTransfer';
 import { DateField, TransactionTypeField } from './Fields';
 import { SinglePayment } from './SinglePayment';
 import { SplitPayment } from './SplitPayment';
@@ -103,7 +104,11 @@ export const NewTransactionForm: FC<Props> = (props) => {
 
   function renderFormBody() {
     if (form.values.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
-      return <div>Account transfer</div>
+      return <AccountTransfer
+        accounts={props.accounts}
+        mantineForm={form}
+        onSubmit={handleSubmit}
+      />
     }
 
     if (form.values.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
