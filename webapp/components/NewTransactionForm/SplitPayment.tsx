@@ -56,7 +56,7 @@ interface Props {
   onSubmit: (values: NewTransactionFormValues) => void;
 }
 
-export const SplitPaymentForm: FC<Props> = (props) => {
+export const SplitPayment: FC<Props> = (props) => {
   function sumAllocations(): number {
     const allocations = Object.values(props.mantineForm.values.amounts);
     return allocations.reduce((output, current) => output + current.amount, 0);

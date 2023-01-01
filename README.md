@@ -15,7 +15,7 @@ High level logic that is not otherwise expressed or captured in the schema.
 
 ## Design decisions
 
-- `SinglePaymentForm` and `SplitPaymentForm` are separate components because they have some slightly different logic. They are composed from the same building blocks -- form fields and buttons.
+- `SinglePayment` and `SplitPayment` are separate components because they have some slightly different logic. They are composed from the same building blocks -- form fields and buttons.
 - You can enter a transaction either on the transaction form or on the deposit screen.
   - The transaction form is for single-category credits, like a refund or reimbursement.
   - The deposit screen is for depositing paychecks and other forms of income, where there are amounts that go into a lot of categories.

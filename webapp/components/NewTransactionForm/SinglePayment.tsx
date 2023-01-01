@@ -26,7 +26,7 @@ interface Props {
   onSubmit: (values: NewTransactionFormValues) => void;
 }
 
-export const SinglePaymentForm: FC<Props> = (props) => {
+export const SinglePayment: FC<Props> = (props) => {
   return (
     <>
       <DescriptionField mantineForm={props.mantineForm} />

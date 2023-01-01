@@ -13,8 +13,8 @@ import {
 } from '../../client-lib/types';
 import { TRANSACTION_TYPES, schemaObjects } from '../../shared-lib';
 import { DateField, TransactionTypeField } from './Fields';
-import { SinglePaymentForm } from './SinglePaymentForm';
-import { SplitPaymentForm } from './SplitPaymentForm';
+import { SinglePayment } from './SinglePayment';
+import { SplitPayment } from './SplitPayment';
 
 interface Props {
   accounts: { value: string; label: string }[];
@@ -113,7 +113,7 @@ export const NewTransactionForm: FC<Props> = (props) => {
     // Transaction type is either "payment" or "credit card charge"
     if (form.values.amounts.length === 1) {
       return (
-        <SinglePaymentForm
+        <SinglePayment
           accounts={props.accounts}
           categories={categoriesData}
           mantineForm={form}
@@ -124,7 +124,7 @@ export const NewTransactionForm: FC<Props> = (props) => {
     }
 
     return (
-      <SplitPaymentForm
+      <SplitPayment
         accounts={props.accounts}
         categories={categoriesData}
         mantineForm={form}
