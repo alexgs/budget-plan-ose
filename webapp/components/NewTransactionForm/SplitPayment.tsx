@@ -2,24 +2,15 @@
  * Copyright 2022-23 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Checkbox, Group, NumberInput } from '@mantine/core';
+import { Checkbox, Group } from '@mantine/core';
 import { FC } from 'react';
 
-import { formatAmount } from '../../client-lib';
 import {
   NewTransactionFormHook,
   NewTransactionFormValues,
 } from '../../client-lib/types';
 
-import {
-  AmountContainer,
-  AmountRemainingAmount,
-  AmountRemainingLabel,
-  amountStyle,
-  sumAmounts,
-} from './Amounts';
+import { AmountContainer, SplitAmount } from './Amounts';
 import { SaveButton, SplitButton } from './Buttons';
 import {
   AccountField,
@@ -42,13 +33,6 @@ interface Props {
 }
 
 export const SplitPayment: FC<Props> = (props) => {
-  function calcAmountRemaining() {
-    if (props.mantineForm.values.isCredit) {
-      return props.mantineForm.values.balance - sumAmounts(props.mantineForm);
-    }
-    return props.mantineForm.values.balance + sumAmounts(props.mantineForm);
-  }
-
   function renderAmounts() {
     return props.mantineForm.values.amounts.map((amount, index) => (
       <AmountContainer key={`amount.${index}`}>
@@ -71,26 +55,7 @@ export const SplitPayment: FC<Props> = (props) => {
   return (
     <>
       <DescriptionField mantineForm={props.mantineForm} />
-      <Group position="apart">
-        <NumberInput
-          decimalSeparator="."
-          hideControls
-          icon={<FontAwesomeIcon icon={faDollarSign} />}
-          label="Total Amount"
-          my="sm"
-          precision={2}
-          required
-          style={{ width: '45%' }}
-          sx={props.mantineForm.values.isCredit ? amountStyle : {}}
-          {...props.mantineForm.getInputProps('balance')}
-        />
-        <div style={{ width: '45%' }}>
-          <AmountRemainingLabel>Amount Remaining:</AmountRemainingLabel>
-          <AmountRemainingAmount>
-            {formatAmount(calcAmountRemaining() * 100)}
-          </AmountRemainingAmount>
-        </div>
-      </Group>
+      <SplitAmount mantineForm={props.mantineForm} />
       <Checkbox
         label="Credit or deposit"
         {...props.mantineForm.getInputProps('isCredit', { type: 'checkbox' })}
