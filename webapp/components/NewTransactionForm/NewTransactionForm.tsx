@@ -5,6 +5,7 @@
 import { useForm, yupResolver } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import React from 'react';
+
 import { formatClientDate } from '../../client-lib';
 import {
   CategoryValues,
@@ -12,7 +13,9 @@ import {
   NewTransactionFormValues,
 } from '../../client-lib/types';
 import { TRANSACTION_TYPES, schemaObjects } from '../../shared-lib';
+
 import { AccountTransfer } from './AccountTransfer';
+import { CategoryTransfer } from './CategoryTransfer';
 import { DateField, TransactionTypeField } from './Fields';
 import { SinglePayment } from './SinglePayment';
 import { SplitPayment } from './SplitPayment';
@@ -44,7 +47,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
     validateInputOnChange: true,
   });
 
-  function ensureExactlyTwoAmounts() {
+  function ensureAtLeastTwoAmounts() {
     if (form.values.amounts.length < 2) {
       const countToAdd = 2 - form.values.amounts.length;
       for (let i = 0; i < countToAdd; i++) {
@@ -58,6 +61,10 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
         });
       }
     }
+  }
+
+  function ensureExactlyTwoAmounts() {
+    ensureAtLeastTwoAmounts();
     if (form.values.amounts.length > 2) {
       const countToRemove = form.values.amounts.length - 2;
       for (let i = 0; i < countToRemove; i++) {
@@ -87,6 +94,9 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
   ) {
     if (event.currentTarget.value === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
       ensureExactlyTwoAmounts();
+    }
+    if (event.currentTarget.value === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
+      ensureAtLeastTwoAmounts();
     }
   }
 
@@ -134,17 +144,17 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
 
   function renderFormBody() {
     if (form.values.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
-      return (
-        <AccountTransfer
-          accounts={props.accounts}
-          mantineForm={form}
-          onSubmit={handleSubmit}
-        />
-      );
+      return <AccountTransfer accounts={props.accounts} mantineForm={form} />;
     }
 
     if (form.values.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
-      return <div>Category transfer</div>;
+      return (
+        <CategoryTransfer
+          categories={categoriesData}
+          mantineForm={form}
+          onSplitClick={handleSplitClick}
+        />
+      );
     }
 
     // Transaction type is either "payment" or "credit card charge"
@@ -155,7 +165,6 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
           categories={categoriesData}
           mantineForm={form}
           onSplitClick={handleSplitClick}
-          onSubmit={handleSubmit}
         />
       );
     }
@@ -166,7 +175,6 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
         categories={categoriesData}
         mantineForm={form}
         onSplitClick={handleSplitClick}
-        onSubmit={handleSubmit}
       />
     );
   }

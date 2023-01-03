@@ -17,7 +17,6 @@ import { AccountField, AmountField, CreditField } from './Fields';
 interface Props {
   accounts: { label: string; value: string }[];
   mantineForm: NewTransactionFormHook;
-  onSubmit: (values: NewTransactionFormValues) => void;
 }
 
 export const AccountTransfer: React.FC<Props> = (props) => {

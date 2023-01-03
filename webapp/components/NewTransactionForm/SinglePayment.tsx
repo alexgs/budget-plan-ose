@@ -23,7 +23,6 @@ interface Props {
   categories: { label: string; value: string }[];
   mantineForm: NewTransactionFormHook;
   onSplitClick: VoidFunction;
-  onSubmit: (values: NewTransactionFormValues) => void;
 }
 
 export const SinglePayment: FC<Props> = (props) => {
