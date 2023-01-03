@@ -20,6 +20,7 @@ const transactionTypeData = Object.values(TRANSACTION_TYPES).map((value) => {
 
 interface Props {
   mantineForm: NewTransactionFormHook;
+  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export const TransactionTypeField: React.FC<Props> = (props) => (
@@ -27,6 +28,7 @@ export const TransactionTypeField: React.FC<Props> = (props) => (
     data={transactionTypeData}
     label="Type"
     my="sm"
+    onChangeCapture={props.onChange}
     required
     {...props.mantineForm.getInputProps('type')}
   />

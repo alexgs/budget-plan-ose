@@ -4,7 +4,7 @@
 
 import { useForm, yupResolver } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
-import { FC } from 'react';
+import React from 'react';
 import { formatClientDate } from '../../client-lib';
 import {
   CategoryValues,
@@ -22,7 +22,7 @@ interface Props {
   categories: CategoryValues[];
 }
 
-export const NewTransactionForm: FC<Props> = (props) => {
+export const NewTransactionForm: React.FC<Props> = (props) => {
   const form: NewTransactionFormHook = useForm({
     initialValues: {
       amounts: [
@@ -44,6 +44,28 @@ export const NewTransactionForm: FC<Props> = (props) => {
     validateInputOnChange: true,
   });
 
+  function ensureExactlyTwoAmounts() {
+    if (form.values.amounts.length < 2) {
+      const countToAdd = 2 - form.values.amounts.length;
+      for (let i = 0; i < countToAdd; i++) {
+        form.insertListItem('amounts', {
+          accountId: props.accounts[0].value,
+          amount: 0,
+          categoryId: props.categories[0].id,
+          isCredit: false,
+          notes: '',
+          status: 'pending',
+        });
+      }
+    }
+    if (form.values.amounts.length > 2) {
+      const countToRemove = form.values.amounts.length - 2;
+      for (let i = 0; i < countToRemove; i++) {
+        form.removeListItem('amounts', 2);
+      }
+    }
+  }
+
   function handleSplitClick() {
     form.insertListItem('amounts', {
       accountId: props.accounts[0].value,
@@ -58,6 +80,14 @@ export const NewTransactionForm: FC<Props> = (props) => {
   function handleSubmit(values: NewTransactionFormValues) {
     // TODO Display a loading modal
     void requestPostTransaction(values);
+  }
+
+  function handleTransactionTypeChange(
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) {
+    if (event.currentTarget.value === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
+      ensureExactlyTwoAmounts();
+    }
   }
 
   async function requestPostTransaction(values: NewTransactionFormValues) {
@@ -104,15 +134,17 @@ export const NewTransactionForm: FC<Props> = (props) => {
 
   function renderFormBody() {
     if (form.values.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
-      return <AccountTransfer
-        accounts={props.accounts}
-        mantineForm={form}
-        onSubmit={handleSubmit}
-      />
+      return (
+        <AccountTransfer
+          accounts={props.accounts}
+          mantineForm={form}
+          onSubmit={handleSubmit}
+        />
+      );
     }
 
     if (form.values.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
-      return <div>Category transfer</div>
+      return <div>Category transfer</div>;
     }
 
     // Transaction type is either "payment" or "credit card charge"
@@ -144,7 +176,10 @@ export const NewTransactionForm: FC<Props> = (props) => {
       onSubmit={form.onSubmit(handleSubmit, (values) => console.error(values))}
     >
       <DateField mantineForm={form} />
-      <TransactionTypeField mantineForm={form} />
+      <TransactionTypeField
+        mantineForm={form}
+        onChange={handleTransactionTypeChange}
+      />
       {renderFormBody()}
     </form>
   );
