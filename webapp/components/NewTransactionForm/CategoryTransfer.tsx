@@ -5,19 +5,11 @@
 import { Group } from '@mantine/core';
 import React from 'react';
 
-import {
-  NewTransactionFormHook,
-  NewTransactionFormValues,
-} from '../../client-lib/types';
+import { NewTransactionFormHook } from '../../client-lib/types';
 
 import { AmountContainer, SplitAmount } from './Amounts';
 import { SaveButton, SplitButton } from './Buttons';
-import {
-  AccountField,
-  AmountField,
-  CategoryField,
-  CreditField,
-} from './Fields';
+import { AmountField, CategoryField, CreditField } from './Fields';
 
 interface Props {
   categories: { label: string; value: string }[];
@@ -41,7 +33,7 @@ export const CategoryTransfer: React.FC<Props> = (props) => {
 
   return (
     <>
-      <SplitAmount mantineForm={props.mantineForm} />
+      <SplitAmount lockBalance={true} mantineForm={props.mantineForm} />
       {renderAmounts()}
       <Group position="apart">
         <SplitButton onSplitClick={props.onSplitClick} />

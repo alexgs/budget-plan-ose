@@ -5,10 +5,7 @@
 import { Group } from '@mantine/core';
 import React from 'react';
 
-import {
-  NewTransactionFormHook,
-  NewTransactionFormValues,
-} from '../../client-lib/types';
+import { NewTransactionFormHook } from '../../client-lib/types';
 
 import { AmountContainer, SplitAmount } from './Amounts';
 import { SaveButton } from './Buttons';
@@ -36,7 +33,7 @@ export const AccountTransfer: React.FC<Props> = (props) => {
 
   return (
     <>
-      <SplitAmount mantineForm={props.mantineForm} />
+      <SplitAmount lockBalance={true} mantineForm={props.mantineForm} />
       {renderAmounts()}
       <Group position="apart">
         <SaveButton />

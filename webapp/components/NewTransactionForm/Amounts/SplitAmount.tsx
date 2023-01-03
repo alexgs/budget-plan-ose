@@ -6,8 +6,11 @@ import styled from '@emotion/styled';
 import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Group, NumberInput } from '@mantine/core';
+import React from 'react';
+
 import { formatAmount } from '../../../client-lib';
 import { NewTransactionFormHook } from '../../../client-lib/types';
+
 import { amountStyle } from './amount-style';
 
 // TODO Use a `NumberInput` here and format it like the "Total Amount" field
@@ -38,6 +41,7 @@ const sumAmounts = (form: NewTransactionFormHook): number => {
 };
 
 interface Props {
+  lockBalance?: boolean;
   mantineForm: NewTransactionFormHook;
 }
 
@@ -54,6 +58,7 @@ export const SplitAmount: React.FC<Props> = (props) => {
       <Group position="apart">
         <NumberInput
           decimalSeparator="."
+          disabled={props.lockBalance}
           hideControls
           icon={<FontAwesomeIcon icon={faDollarSign} />}
           label="Total Amount"

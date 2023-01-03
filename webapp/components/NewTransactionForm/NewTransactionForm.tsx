@@ -94,9 +94,11 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
   ) {
     if (event.currentTarget.value === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
       ensureExactlyTwoAmounts();
+      form.values.balance = 0;
     }
     if (event.currentTarget.value === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
       ensureAtLeastTwoAmounts();
+      form.values.balance = 0;
     }
   }
 
