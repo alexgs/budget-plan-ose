@@ -8,7 +8,12 @@ import { unstable_getServerSession } from 'next-auth/next';
 import { ValidationError } from 'yup';
 
 import { nextAuthOptions, prisma } from '../../../server-lib';
-import { SchemaTypes, schemaObjects } from '../../../shared-lib';
+import {
+  AMOUNT_STATUS,
+  TRANSACTION_TYPES,
+  SchemaTypes,
+  schemaObjects,
+} from '../../../shared-lib';
 
 function formatTransaction(
   txn: TransactionRecord & { amounts: TransactionAmount[] }
@@ -52,12 +57,12 @@ export default async function handler(
             amount: 0,
             categoryId: '',
             isCredit: false,
-            status: 'pending',
+            status: AMOUNT_STATUS.PENDING,
           },
         ],
         date: new Date(),
         description: '',
-        type: 'payment',
+        type: TRANSACTION_TYPES.PAYMENT,
       };
       try {
         payload = await schemaObjects.newTransaction.validate(req.body);

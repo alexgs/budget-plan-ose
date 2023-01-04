@@ -3,6 +3,7 @@
  */
 
 import * as yup from 'yup';
+import { AMOUNT_STATUS } from '../constants';
 
 export const transactionAmount = yup.object({
   accountId: yup.string().required(),
@@ -10,8 +11,5 @@ export const transactionAmount = yup.object({
   categoryId: yup.string().required(),
   isCredit: yup.boolean().required(),
   notes: yup.string(),
-  status: yup
-    .string()
-    .matches(/^(pending|cleared|reconciled)$/)
-    .required(),
+  status: yup.string().oneOf(Object.values(AMOUNT_STATUS)).required(),
 });

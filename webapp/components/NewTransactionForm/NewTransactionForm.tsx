@@ -13,9 +13,10 @@ import {
   NewTransactionFormValues,
 } from '../../client-lib/types';
 import {
+  AMOUNT_STATUS,
   TRANSACTION_TYPES,
-  schemaObjects,
   TransactionType,
+  schemaObjects,
 } from '../../shared-lib';
 
 import { AccountTransfer } from './AccountTransfer';
@@ -38,7 +39,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
           amount: 0,
           categoryId: props.categories[0].id,
           isCredit: false as boolean,
-          status: 'pending',
+          status: AMOUNT_STATUS.PENDING,
         },
       ],
       balance: 0, // Client-only field
@@ -61,7 +62,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
           categoryId: props.categories[0].id,
           isCredit: false,
           notes: '',
-          status: 'pending',
+          status: AMOUNT_STATUS.PENDING,
         });
       }
     }
@@ -84,7 +85,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
       categoryId: props.categories[0].id,
       isCredit: false,
       notes: '',
-      status: 'pending',
+      status: AMOUNT_STATUS.PENDING,
     });
   }
 
