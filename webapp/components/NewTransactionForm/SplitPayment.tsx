@@ -5,10 +5,7 @@
 import { Checkbox, Group } from '@mantine/core';
 import React from 'react';
 
-import {
-  NewTransactionFormHook,
-  NewTransactionFormValues,
-} from '../../client-lib/types';
+import { NewTransactionFormHook } from '../../client-lib/types';
 
 import { AmountContainer, SplitAmount } from './Amounts';
 import { SaveButton, SplitButton } from './Buttons';

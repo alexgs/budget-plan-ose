@@ -5,9 +5,11 @@
 import { newAccount } from './new-account';
 import { newCategory } from './new-category';
 import { newTransaction } from './new-transaction';
+import { transactionAmount } from './transaction-amount';
 
 export const schemaObjects = {
   newAccount,
   newCategory,
   newTransaction,
+  transactionAmount,
 };

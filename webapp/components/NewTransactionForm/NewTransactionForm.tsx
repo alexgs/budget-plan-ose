@@ -12,7 +12,11 @@ import {
   NewTransactionFormHook,
   NewTransactionFormValues,
 } from '../../client-lib/types';
-import { TRANSACTION_TYPES, schemaObjects } from '../../shared-lib';
+import {
+  TRANSACTION_TYPES,
+  schemaObjects,
+  TransactionType,
+} from '../../shared-lib';
 
 import { AccountTransfer } from './AccountTransfer';
 import { CategoryTransfer } from './CategoryTransfer';
@@ -41,9 +45,9 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
       date: new Date(),
       description: '',
       isCredit: false as boolean, // Client-only field
-      type: TRANSACTION_TYPES.PAYMENT as string,
+      type: TRANSACTION_TYPES.PAYMENT as TransactionType,
     },
-    validate: yupResolver(schemaObjects.newTransaction), // TODO Fix validation for `type` field
+    validate: yupResolver(schemaObjects.newTransaction),
     validateInputOnChange: true,
   });
 
