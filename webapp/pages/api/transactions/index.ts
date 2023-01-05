@@ -2,12 +2,12 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { TransactionRecord, TransactionAmount } from '@prisma/client';
+import { TransactionAmount, TransactionRecord } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
 import { ValidationError } from 'yup';
 
-import { nextAuthOptions, prisma } from '../../../server-lib';
+import { nextAuthOptions, prisma, service } from '../../../server-lib';
 import {
   AMOUNT_STATUS,
   TRANSACTION_TYPES,
@@ -91,42 +91,23 @@ export default async function handler(
           .send('Error: payload failed validation. Please check server logs.');
       }
 
+      // --- BUSINESS LOGIC ---
+
       // TODO Set category and description for transfers
       // TODO Don't let the `amount.notes` field be undefined; it should be defined or null
       // TODO For payments, check that each `amount` item has a different category
 
-      // --- BUSINESS LOGIC ---
+      let result: TransactionRecord & {amounts: TransactionAmount[]} | null = null;
+      if (payload.type === TRANSACTION_TYPES.PAYMENT) {
+        result = await service.processPayment(payload);
+      }
 
-      // TODO All of the DB updates in here should be wrapped in a single DB transaction
+      if (result) {
+        res.send(formatTransaction(result));
+      } else {
+        res.status(500).send(`Unknown transaction type: ${payload.type}`)
+      }
 
-      const { amounts, ...record } = payload;
-
-      // Update category balance for each amount
-      await Promise.all(
-        amounts.map((amount) => {
-          const operation = amount.isCredit ? 'increment' : 'decrement';
-          return prisma.category.update({
-            where: { id: amount.categoryId },
-            data: {
-              balance: { [operation]: amount.amount },
-            },
-          });
-        })
-      );
-
-      // Save transaction data and send response
-      const newTransaction = await prisma.transactionRecord.create({
-        data: {
-          ...record,
-          amounts: {
-            createMany: {
-              data: amounts,
-            },
-          },
-        },
-        include: { amounts: true },
-      });
-      res.send(formatTransaction(newTransaction));
     } else {
       res
         .status(405)
