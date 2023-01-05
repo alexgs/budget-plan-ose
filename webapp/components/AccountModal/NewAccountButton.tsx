@@ -2,24 +2,20 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { faPencil } from '@fortawesome/pro-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Modal, UnstyledButton } from '@mantine/core';
+import { Button, Modal } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import React, { useState } from 'react';
 
-import { FinancialAccount } from '../../client-lib/types';
-import { NewAccountData } from './NewAccountButton';
-import { NewAccountForm } from './NewAccountForm';
+import { AccountType } from '../../shared-lib';
 
-interface Props {
-  data: FinancialAccount;
-}
+import { AccountModal } from './AccountModal';
 
-export const EditAccountButton: React.FC<Props> = (props) => {
+export interface NewAccountData { description: string, accountType: AccountType }
+
+export const NewAccountButton: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
-  function handleEditAccountClick() {
+  function handleNewAccountClick(): void {
     setIsVisible(true);
   }
 
@@ -28,24 +24,27 @@ export const EditAccountButton: React.FC<Props> = (props) => {
   }
 
   function handleModalSave(values: NewAccountData): void {
-    void requestPatchAccount(props.data.id, values);
+    void requestNewAccount(values.description, values.accountType);
     setIsVisible(false);
   }
 
   function renderModalContent() {
     if (isVisible) {
-      return <NewAccountForm data={props.data} onCancel={handleModalCancel} onSave={handleModalSave} />;
+      return <AccountModal onCancel={handleModalCancel} onSave={handleModalSave} />;
     }
     return null;
   }
 
-  async function requestPatchAccount(accountId: string, values: NewAccountData) {
-    const responseData = await fetch(`/api/accounts/${accountId}`, {
-      body: JSON.stringify(values),
+  async function requestNewAccount(description: string, accountType: AccountType) {
+    const responseData = await fetch('/api/accounts', {
+      body: JSON.stringify({
+        accountType,
+        description,
+      }),
       headers: {
         'Content-Type': 'application/json',
       },
-      method: 'PATCH',
+      method: 'POST',
     })
       .then((response) => response.json())
       .catch((e) => {
@@ -58,21 +57,21 @@ export const EditAccountButton: React.FC<Props> = (props) => {
       });
 
     showNotification({
-      message: `Updated account "${responseData.description}"`,
+      message: `Saved new account "${responseData.description}"`,
       title: 'Success',
     });
   }
 
   return (
     <div>
-      <UnstyledButton onClick={handleEditAccountClick}>
-        <FontAwesomeIcon icon={faPencil} />
-      </UnstyledButton>
+      <Button variant="outline" onClick={handleNewAccountClick}>
+        Add Account
+      </Button>
       <Modal
         onClose={handleModalCancel}
         opened={isVisible}
         overlayBlur={3}
-        title="Edit account"
+        title="Add new account"
       >
         {renderModalContent()}
       </Modal>

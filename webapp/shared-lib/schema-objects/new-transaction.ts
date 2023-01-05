@@ -1,26 +1,10 @@
 import * as yup from 'yup';
+import { TRANSACTION_TYPES } from '../constants';
+import { transactionAmount } from './transaction-amount';
 
 export const newTransaction = yup.object({
-  amounts: yup
-    .array()
-    .required()
-    .of(
-      yup.object({
-        accountId: yup.string().required(),
-        amount: yup.number().required(),
-        categoryId: yup.string().required(),
-        isCredit: yup.boolean().required(),
-        notes: yup.string(),
-        status: yup
-          .string()
-          .matches(/^(pending|cleared|reconciled)$/)
-          .required(),
-      })
-    ),
+  amounts: yup.array().of(transactionAmount).required(),
   date: yup.date().required(), // TODO Better client error message for this field
   description: yup.string().required(),
-  type: yup
-    .string()
-    .matches(/^(payment|credit_card|account_transfer)$/)
-    .required(),
+  type: yup.string().oneOf(Object.values(TRANSACTION_TYPES)).required(),
 });

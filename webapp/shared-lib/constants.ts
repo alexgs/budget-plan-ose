@@ -1,5 +1,11 @@
 import { v5 as uuidV5 } from 'uuid';
 
+export const AMOUNT_STATUS = {
+  CLEARED: 'amount-status.cleared',
+  PENDING: 'amount-status.pending',
+  RECONCILED: 'amount-status.reconciled',
+}
+
 export const ACCOUNT_TYPES = {
   CREDIT_CARD: 'account-types.credit-card',
   CHECKING: 'account-types.checking',

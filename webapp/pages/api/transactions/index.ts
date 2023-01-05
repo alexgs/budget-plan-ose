@@ -8,7 +8,12 @@ import { unstable_getServerSession } from 'next-auth/next';
 import { ValidationError } from 'yup';
 
 import { nextAuthOptions, prisma } from '../../../server-lib';
-import { SchemaTypes, schemaObjects } from '../../../shared-lib';
+import {
+  AMOUNT_STATUS,
+  TRANSACTION_TYPES,
+  SchemaTypes,
+  schemaObjects,
+} from '../../../shared-lib';
 
 function formatTransaction(
   txn: TransactionRecord & { amounts: TransactionAmount[] }
@@ -52,12 +57,12 @@ export default async function handler(
             amount: 0,
             categoryId: '',
             isCredit: false,
-            status: 'pending',
+            status: AMOUNT_STATUS.PENDING,
           },
         ],
         date: new Date(),
         description: '',
-        type: 'payment',
+        type: TRANSACTION_TYPES.PAYMENT,
       };
       try {
         payload = await schemaObjects.newTransaction.validate(req.body);
@@ -85,7 +90,10 @@ export default async function handler(
           .status(400)
           .send('Error: payload failed validation. Please check server logs.');
       }
-      // TODO Check that each `amount` item has a different category
+
+      // TODO Set category and description for transfers
+      // TODO Don't let the `amount.notes` field be undefined; it should be defined or null
+      // TODO For payments, check that each `amount` item has a different category
 
       // --- BUSINESS LOGIC ---
 

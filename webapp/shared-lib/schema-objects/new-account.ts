@@ -3,9 +3,9 @@
  */
 
 import * as yup from 'yup';
+import { ACCOUNT_TYPES } from '../constants';
 
 export const newAccount = yup.object({
-  accountType: yup.string().required(), // TODO This can be a more specific filter
+  accountType: yup.string().oneOf(Object.values(ACCOUNT_TYPES)).required(),
   description: yup.string().required(),
 });
-

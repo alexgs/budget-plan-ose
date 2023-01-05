@@ -4,7 +4,7 @@
 
 import { UseFormReturnType } from '@mantine/form';
 
-import { AccountType, SchemaTypes } from '../shared-lib/types';
+import { AccountType, SchemaTypes } from '../shared-lib';
 
 export interface CategoryTreeNode {
   id: string;
