@@ -16,6 +16,7 @@ import {
   AMOUNT_STATUS,
   TRANSACTION_TYPES,
   TransactionType,
+  getFriendlyTransactionType,
   schemaObjects,
 } from '../../shared-lib';
 
@@ -99,11 +100,21 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
   ) {
     if (event.currentTarget.value === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
       ensureExactlyTwoAmounts();
-      form.values.balance = 0;
+      form.setValues({
+        balance: 0,
+        description: getFriendlyTransactionType(
+          TRANSACTION_TYPES.ACCOUNT_TRANSFER
+        ),
+      });
     }
     if (event.currentTarget.value === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
       ensureAtLeastTwoAmounts();
-      form.values.balance = 0;
+      form.setValues({
+        balance: 0,
+        description: getFriendlyTransactionType(
+          TRANSACTION_TYPES.CATEGORY_TRANSFER
+        ),
+      });
     }
   }
 
@@ -137,7 +148,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
       });
 
     showNotification({
-      message: `Saved deposit "${responseData.description}"`,
+      message: `Saved transaction "${responseData.description}"`,
       title: 'Success',
     });
   }
