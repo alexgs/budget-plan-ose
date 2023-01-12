@@ -11,7 +11,7 @@ import { nextAuthOptions, prisma, service } from '../../../server-lib';
 import {
   AMOUNT_STATUS,
   TRANSACTION_TYPES,
-  SchemaTypes,
+  ApiSchema,
   schemaObjects,
 } from '../../../shared-lib';
 
@@ -50,7 +50,7 @@ export default async function handler(
     } else if (req.method === 'POST') {
       // --- VALIDATE PAYLOAD ---
 
-      let payload: SchemaTypes.NewTransaction = {
+      let payload: ApiSchema.NewTransaction = {
         amounts: [
           {
             accountId: '',

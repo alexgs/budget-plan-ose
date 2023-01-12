@@ -2,12 +2,12 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { ACCOUNT_TYPES, SchemaTypes } from '../../shared-lib';
+import { ACCOUNT_TYPES, ApiSchema } from '../../shared-lib';
 import { database } from '../database';
 
 import { service } from './index';
 
-export async function createAccount(payload: SchemaTypes.NewAccount) {
+export async function createAccount(payload: ApiSchema.NewAccount) {
   await service.ensureSystemAccounts();
 
   const account = await database.createAccount(payload);

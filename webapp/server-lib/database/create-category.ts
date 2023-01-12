@@ -3,9 +3,9 @@
  */
 
 import { prisma } from '../index';
-import { SchemaTypes } from '../../shared-lib';
+import { DbSchema } from '../../shared-lib';
 
-export async function createCategory(payload: SchemaTypes.NewCategory) {
+export async function createCategory(payload: DbSchema.NewCategory) {
   return prisma.category.create({
     data: payload,
   });
