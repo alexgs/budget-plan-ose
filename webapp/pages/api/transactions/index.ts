@@ -97,6 +97,9 @@ export default async function handler(
       if (payload.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
         result = await service.processAccountTransfer(payload);
       }
+      if (payload.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
+        result = await service.processCategoryTransfer(payload);
+      }
       if (payload.type === TRANSACTION_TYPES.CREDIT_CARD_CHARGE) {
         result = await service.processCreditCardCharge(payload);
       }

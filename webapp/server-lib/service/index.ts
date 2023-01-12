@@ -11,6 +11,7 @@ import { getPublicAccounts } from './get-public-accounts';
 import { getPublicCategories } from './get-public-categories';
 import { getReservationCategoryId } from './get-reservation-category-id';
 import { processAccountTransfer } from './process-account-transfer';
+import { processCategoryTransfer } from './process-category-transfer';
 import { processPayment } from './process-payment';
 import { processCreditCardCharge } from './process-credit-card-charge';
 
@@ -24,6 +25,7 @@ export const service = {
   getPublicCategories,
   getReservationCategoryId,
   processAccountTransfer,
+  processCategoryTransfer,
   processPayment,
   processCreditCardCharge,
 };
