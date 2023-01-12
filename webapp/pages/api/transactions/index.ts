@@ -94,6 +94,9 @@ export default async function handler(
       // TODO For payments, check that each `amount` item has a different category
 
       let result: Transaction | null = null;
+      if (payload.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
+        result = await service.processAccountTransfer(payload);
+      }
       if (payload.type === TRANSACTION_TYPES.CREDIT_CARD_CHARGE) {
         result = await service.processCreditCardCharge(payload);
       }
