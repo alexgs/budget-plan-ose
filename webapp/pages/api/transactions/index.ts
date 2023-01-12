@@ -2,22 +2,20 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { TransactionRecord, TransactionAmount } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
 import { ValidationError } from 'yup';
 
-import { nextAuthOptions, prisma } from '../../../server-lib';
+import { nextAuthOptions, service } from '../../../server-lib';
 import {
   AMOUNT_STATUS,
   TRANSACTION_TYPES,
-  SchemaTypes,
+  ApiSchema,
+  Transaction,
   schemaObjects,
 } from '../../../shared-lib';
 
-function formatTransaction(
-  txn: TransactionRecord & { amounts: TransactionAmount[] }
-) {
+function formatTransaction(txn: Transaction) {
   const utcDate = [
     txn.date.getUTCFullYear(),
     padTwoDigits(txn.date.getUTCMonth() + 1),
@@ -42,15 +40,13 @@ export default async function handler(
 
   if (session) {
     if (req.method === 'GET') {
-      const txns = await prisma.transactionRecord.findMany({
-        include: { amounts: true },
-      });
+      const txns = await service.getAllTransactions();
       const payload = txns.map((txn) => formatTransaction(txn));
       res.send(payload);
     } else if (req.method === 'POST') {
       // --- VALIDATE PAYLOAD ---
 
-      let payload: SchemaTypes.NewTransaction = {
+      let payload: ApiSchema.NewTransaction = {
         amounts: [
           {
             accountId: '',
@@ -91,42 +87,31 @@ export default async function handler(
           .send('Error: payload failed validation. Please check server logs.');
       }
 
+      // --- BUSINESS LOGIC ---
+
       // TODO Set category and description for transfers
       // TODO Don't let the `amount.notes` field be undefined; it should be defined or null
       // TODO For payments, check that each `amount` item has a different category
 
-      // --- BUSINESS LOGIC ---
+      let result: Transaction | null = null;
+      if (payload.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
+        result = await service.processAccountTransfer(payload);
+      }
+      if (payload.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
+        result = await service.processCategoryTransfer(payload);
+      }
+      if (payload.type === TRANSACTION_TYPES.CREDIT_CARD_CHARGE) {
+        result = await service.processCreditCardCharge(payload);
+      }
+      if (payload.type === TRANSACTION_TYPES.PAYMENT) {
+        result = await service.processPayment(payload);
+      }
 
-      // TODO All of the DB updates in here should be wrapped in a single DB transaction
-
-      const { amounts, ...record } = payload;
-
-      // Update category balance for each amount
-      await Promise.all(
-        amounts.map((amount) => {
-          const operation = amount.isCredit ? 'increment' : 'decrement';
-          return prisma.category.update({
-            where: { id: amount.categoryId },
-            data: {
-              balance: { [operation]: amount.amount },
-            },
-          });
-        })
-      );
-
-      // Save transaction data and send response
-      const newTransaction = await prisma.transactionRecord.create({
-        data: {
-          ...record,
-          amounts: {
-            createMany: {
-              data: amounts,
-            },
-          },
-        },
-        include: { amounts: true },
-      });
-      res.send(formatTransaction(newTransaction));
+      if (result) {
+        res.send(formatTransaction(result));
+      } else {
+        res.status(500).send(`Unknown transaction type: ${payload.type}`);
+      }
     } else {
       res
         .status(405)

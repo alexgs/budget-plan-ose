@@ -79,6 +79,8 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
     }
   }
 
+  // TODO function handleAccountChange() should change transaction type (and transaction type options) based on account type
+
   function handleSplitClick() {
     form.insertListItem('amounts', {
       accountId: props.accounts[0].value,

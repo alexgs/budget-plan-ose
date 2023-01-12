@@ -3,23 +3,35 @@
  */
 
 import { InferType } from 'yup';
+import {
+  FinancialAccount,
+  Prisma,
+  TransactionAmount,
+  TransactionRecord
+} from '@prisma/client';
 
 import { ACCOUNT_TYPES, TRANSACTION_TYPES } from './constants';
 import { schemaObjects } from './schema-objects';
 
-export namespace SchemaTypes {
+export namespace ApiSchema {
   export type NewAccount = InferType<typeof schemaObjects.newAccount>;
-  export type NewCategory = InferType<typeof schemaObjects.newCategory> & {
-    // TODO This might be a code smell. Maybe refactor to have a type based on
-    //   the Yup schema and another type based on the Prisma input object. :shrug:
-    isSystem?: boolean;
-  };
+  export type NewCategory = InferType<typeof schemaObjects.newCategory>;
   export type NewTransaction = InferType<typeof schemaObjects.newTransaction>;
-  export type TransactionAmount = InferType<
+  export type NewTransactionAmount = InferType<
     typeof schemaObjects.transactionAmount
   >;
+  export type NewTransactionRecord = Omit<NewTransaction, 'amounts'>;
 }
 
+export namespace DbSchema {
+  export type NewAccount = Prisma.FinancialAccountCreateInput;
+  export type NewAmount = Prisma.TransactionAmountCreateInput;
+  export type NewCategory = Prisma.CategoryCreateInput;
+  export type NewRecord = Prisma.TransactionRecordCreateInput;
+}
+
+export type Account = FinancialAccount;
 export type AccountType = typeof ACCOUNT_TYPES[keyof typeof ACCOUNT_TYPES];
+export type Transaction = TransactionRecord & { amounts: TransactionAmount[] };
 export type TransactionType =
   typeof TRANSACTION_TYPES[keyof typeof TRANSACTION_TYPES];

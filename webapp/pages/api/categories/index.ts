@@ -7,7 +7,7 @@ import { unstable_getServerSession } from 'next-auth/next';
 import { ValidationError } from 'yup';
 
 import { nextAuthOptions, service } from '../../../server-lib';
-import { SchemaTypes, schemaObjects } from '../../../shared-lib';
+import { ApiSchema, schemaObjects } from '../../../shared-lib';
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,7 +20,7 @@ export default async function handler(
       const categories = await service.getPublicCategories();
       res.send(categories);
     } else if (req.method === 'POST') {
-      let payload: SchemaTypes.NewCategory = { name: '' };
+      let payload: ApiSchema.NewCategory = { name: '' };
       try {
         payload = await schemaObjects.newCategory.validate(req.body);
       } catch (e: any) {
