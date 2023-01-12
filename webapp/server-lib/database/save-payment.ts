@@ -2,17 +2,13 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { TransactionAmount, TransactionRecord } from '@prisma/client';
-
 import { prisma } from '../index';
-import { SchemaTypes } from '../../shared-lib';
-
-type SchemaTransactionRecord = Omit<SchemaTypes.NewTransaction, 'amounts'>;
+import { ApiSchema, Transaction } from '../../shared-lib';
 
 export async function savePayment(
-  record: SchemaTransactionRecord,
-  amounts: SchemaTypes.TransactionAmount[]
-): Promise<TransactionRecord & { amounts: TransactionAmount[] }> {
+  record: ApiSchema.NewTransactionRecord,
+  amounts: ApiSchema.NewTransactionAmount[]
+): Promise<Transaction> {
   // TODO All of the DB updates in here should be wrapped in a single DB transaction
 
   // Update category balance for each amount

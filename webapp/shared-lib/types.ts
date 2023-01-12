@@ -3,7 +3,7 @@
  */
 
 import { InferType } from 'yup';
-import { Prisma } from '@prisma/client';
+import { Prisma, TransactionAmount, TransactionRecord } from '@prisma/client';
 
 import { ACCOUNT_TYPES, TRANSACTION_TYPES } from './constants';
 import { schemaObjects } from './schema-objects';
@@ -12,16 +12,20 @@ export namespace ApiSchema {
   export type NewAccount = InferType<typeof schemaObjects.newAccount>;
   export type NewCategory = InferType<typeof schemaObjects.newCategory>;
   export type NewTransaction = InferType<typeof schemaObjects.newTransaction>;
-  export type TransactionAmount = InferType<
+  export type NewTransactionAmount = InferType<
     typeof schemaObjects.transactionAmount
   >;
+  export type NewTransactionRecord = Omit<NewTransaction, 'amounts'>;
 }
 
 export namespace DbSchema {
   export type NewAccount = Prisma.FinancialAccountCreateInput;
+  export type NewAmount = Prisma.TransactionAmountCreateInput;
   export type NewCategory = Prisma.CategoryCreateInput;
+  export type NewRecord = Prisma.TransactionRecordCreateInput;
 }
 
 export type AccountType = typeof ACCOUNT_TYPES[keyof typeof ACCOUNT_TYPES];
+export type Transaction = TransactionRecord & { amounts: TransactionAmount[] };
 export type TransactionType =
   typeof TRANSACTION_TYPES[keyof typeof TRANSACTION_TYPES];
