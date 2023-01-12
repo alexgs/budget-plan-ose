@@ -15,12 +15,12 @@ export async function processAccountTransfer(
       `Expected \`payload.amounts.length\` to be 2 but got ${amounts.length} instead.`
     );
   }
-  if (amounts[0].isCredit === !amounts[1].isCredit) {
+  if (amounts[0].isCredit === amounts[1].isCredit) {
     throw new Error(
       `One amount must be a credit and the other amount must be a debit.`
     );
   }
-  if (amounts[0].amount === amounts[1].amount) {
+  if (amounts[0].amount !== amounts[1].amount) {
     throw new Error(`Credit and debit amounts must be the same.`);
   }
 

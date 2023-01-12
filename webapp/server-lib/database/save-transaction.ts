@@ -30,6 +30,10 @@ export async function saveTransaction(
       ...record,
       amounts: {
         createMany: {
+          // Sometimes `undefined` `notes` field is `null` in the database, and
+          // sometimes it's just empty. This seems to be something that Prisma
+          // controls and there's not much we can do to make it consistent.
+          // We'll just have to handle the inconsistency as needed.
           data: amounts,
         },
       },
