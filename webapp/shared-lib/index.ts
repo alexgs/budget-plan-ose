@@ -1,2 +1,5 @@
+export * from './constants';
 export { getFriendlyAccountType } from './get-friendly-account-type';
-export { newTransactionSchema } from './new-transaction-schema';
+export { getFriendlyTransactionType } from './get-friendly-transaction-type';
+export { schemaObjects } from './schema-objects';
+export * from './types';

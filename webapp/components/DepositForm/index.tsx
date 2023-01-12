@@ -17,6 +17,7 @@ import { FC, PropsWithChildren } from 'react';
 
 import { formatAmount, formatClientDate } from '../../client-lib';
 import { CategoryValues } from '../../client-lib/types';
+import { AMOUNT_STATUS } from '../../shared-lib';
 
 interface CategoryAmount {
   amount: number;
@@ -71,7 +72,7 @@ export const DepositForm: FC<Props> = (props) => {
           amount: Math.round(amount.amount * 100), // TODO Make this change in other txn form(s)
           categoryId: amount.categoryId,
           isCredit: true,
-          status: 'pending',
+          status: AMOUNT_STATUS.PENDING,
         };
       });
     const payload = {

@@ -4,17 +4,10 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
-import { InferType, ValidationError } from 'yup';
-import * as yup from 'yup';
+import { ValidationError } from 'yup';
 
-import { nextAuthOptions, prisma } from '../../../server-lib';
-
-const newCategorySchema = yup.object({
-  name: yup.string().required(),
-  parentId: yup.string().nullable(),
-});
-
-type NewCategorySchema = InferType<typeof newCategorySchema>;
+import { nextAuthOptions, service } from '../../../server-lib';
+import { ApiSchema, schemaObjects } from '../../../shared-lib';
 
 export default async function handler(
   req: NextApiRequest,
@@ -24,12 +17,12 @@ export default async function handler(
 
   if (session) {
     if (req.method === 'GET') {
-      const categories = await prisma.category.findMany();
+      const categories = await service.getPublicCategories();
       res.send(categories);
     } else if (req.method === 'POST') {
-      let payload: NewCategorySchema = { name: '' };
+      let payload: ApiSchema.NewCategory = { name: '' };
       try {
-        payload = await newCategorySchema.validate(req.body);
+        payload = await schemaObjects.newCategory.validate(req.body);
       } catch (e: any) {
         if (e.name && e.name === 'ValidationError') {
           const error: ValidationError = e as ValidationError;
@@ -46,9 +39,7 @@ export default async function handler(
         return;
       }
 
-      const newCategory = await prisma.category.create({
-        data: payload,
-      });
+      const newCategory = await service.createCategory(payload);
       res.send(newCategory);
     } else {
       res
