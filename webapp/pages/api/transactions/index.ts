@@ -6,7 +6,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
 import { ValidationError } from 'yup';
 
-import { nextAuthOptions, prisma, service } from '../../../server-lib';
+import { nextAuthOptions, service } from '../../../server-lib';
 import {
   AMOUNT_STATUS,
   TRANSACTION_TYPES,
@@ -40,9 +40,7 @@ export default async function handler(
 
   if (session) {
     if (req.method === 'GET') {
-      const txns = await prisma.transactionRecord.findMany({
-        include: { amounts: true },
-      });
+      const txns = await service.getAllTransactions();
       const payload = txns.map((txn) => formatTransaction(txn));
       res.send(payload);
     } else if (req.method === 'POST') {

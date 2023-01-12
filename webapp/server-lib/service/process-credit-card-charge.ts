@@ -29,5 +29,5 @@ export async function processCreditCardCharge(
     status: AMOUNT_STATUS.PENDING,
   };
 
-  return database.savePayment(record, [...amounts, reservationAmount]);
+  return database.saveTransaction(record, [...amounts, reservationAmount]);
 }

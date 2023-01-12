@@ -9,5 +9,5 @@ export async function processPayment(
   payload: ApiSchema.NewTransaction
 ): Promise<Transaction> {
   const { amounts, ...record } = payload;
-  return database.savePayment(record, amounts);
+  return database.saveTransaction(record, amounts);
 }

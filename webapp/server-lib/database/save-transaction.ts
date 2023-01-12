@@ -5,7 +5,7 @@
 import { prisma } from '../index';
 import { ApiSchema, Transaction } from '../../shared-lib';
 
-export async function savePayment(
+export async function saveTransaction(
   record: ApiSchema.NewTransactionRecord,
   amounts: ApiSchema.NewTransactionAmount[]
 ): Promise<Transaction> {

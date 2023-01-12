@@ -9,7 +9,8 @@ import { ensureCategory } from './ensure-category';
 import { getAccount } from './get-account';
 import { getAccountsExceptIds } from './get-accounts-except-ids';
 import { getCategoriesExceptIds } from './get-categories-except-ids';
-import { savePayment } from './save-payment';
+import { getTransactions } from './get-transactions';
+import { saveTransaction } from './save-transaction';
 
 export const database = {
   createAccount,
@@ -19,5 +20,6 @@ export const database = {
   getAccount,
   getAccountsExceptIds,
   getCategoriesExceptIds,
-  savePayment,
+  getTransactions,
+  saveTransaction,
 };
