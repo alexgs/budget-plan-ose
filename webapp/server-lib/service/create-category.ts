@@ -4,9 +4,10 @@
 
 import { SchemaTypes } from '../../shared-lib';
 import { database } from '../database';
-import { ensureSystemCategories } from './ensure-system-categories';
+
+import { service } from './index';
 
 export async function createCategory(payload: SchemaTypes.NewCategory) {
-  await ensureSystemCategories();
+  await service.ensureSystemCategories();
   return database.createCategory(payload);
 }

@@ -8,6 +8,7 @@ import { ensureSystemAccounts } from './ensure-system-accounts';
 import { ensureSystemCategories } from './ensure-system-categories';
 import { getPublicAccounts } from './get-public-accounts';
 import { getPublicCategories } from './get-public-categories';
+import { getReservationCategoryId } from './get-reservation-category-id';
 import { processPayment } from './process-payment';
 
 export const service = {
@@ -17,5 +18,6 @@ export const service = {
   ensureSystemCategories,
   getPublicAccounts,
   getPublicCategories,
+  getReservationCategoryId,
   processPayment,
 };
