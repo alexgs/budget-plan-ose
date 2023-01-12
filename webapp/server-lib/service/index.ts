@@ -10,6 +10,7 @@ import { getPublicAccounts } from './get-public-accounts';
 import { getPublicCategories } from './get-public-categories';
 import { getReservationCategoryId } from './get-reservation-category-id';
 import { processPayment } from './process-payment';
+import { processCreditCardCharge } from './process-credit-card-charge';
 
 export const service = {
   createAccount,
@@ -20,4 +21,5 @@ export const service = {
   getPublicCategories,
   getReservationCategoryId,
   processPayment,
+  processCreditCardCharge,
 };

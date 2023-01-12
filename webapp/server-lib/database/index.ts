@@ -6,6 +6,7 @@ import { createAccount } from './create-account';
 import { createCategory } from './create-category';
 import { ensureAccount } from './ensure-account';
 import { ensureCategory } from './ensure-category';
+import { getAccount } from './get-account';
 import { getAccountsExceptIds } from './get-accounts-except-ids';
 import { getCategoriesExceptIds } from './get-categories-except-ids';
 import { savePayment } from './save-payment';
@@ -15,6 +16,7 @@ export const database = {
   createCategory,
   ensureAccount,
   ensureCategory,
+  getAccount,
   getAccountsExceptIds,
   getCategoriesExceptIds,
   savePayment,

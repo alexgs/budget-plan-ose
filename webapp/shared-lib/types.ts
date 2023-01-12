@@ -3,7 +3,12 @@
  */
 
 import { InferType } from 'yup';
-import { Prisma, TransactionAmount, TransactionRecord } from '@prisma/client';
+import {
+  FinancialAccount,
+  Prisma,
+  TransactionAmount,
+  TransactionRecord
+} from '@prisma/client';
 
 import { ACCOUNT_TYPES, TRANSACTION_TYPES } from './constants';
 import { schemaObjects } from './schema-objects';
@@ -25,6 +30,7 @@ export namespace DbSchema {
   export type NewRecord = Prisma.TransactionRecordCreateInput;
 }
 
+export type Account = FinancialAccount;
 export type AccountType = typeof ACCOUNT_TYPES[keyof typeof ACCOUNT_TYPES];
 export type Transaction = TransactionRecord & { amounts: TransactionAmount[] };
 export type TransactionType =

@@ -2,7 +2,6 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { TransactionAmount, TransactionRecord } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
 import { ValidationError } from 'yup';
@@ -12,12 +11,11 @@ import {
   AMOUNT_STATUS,
   TRANSACTION_TYPES,
   ApiSchema,
+  Transaction,
   schemaObjects,
 } from '../../../shared-lib';
 
-function formatTransaction(
-  txn: TransactionRecord & { amounts: TransactionAmount[] }
-) {
+function formatTransaction(txn: Transaction) {
   const utcDate = [
     txn.date.getUTCFullYear(),
     padTwoDigits(txn.date.getUTCMonth() + 1),
@@ -97,7 +95,10 @@ export default async function handler(
       // TODO Don't let the `amount.notes` field be undefined; it should be defined or null
       // TODO For payments, check that each `amount` item has a different category
 
-      let result: TransactionRecord & {amounts: TransactionAmount[]} | null = null;
+      let result: Transaction | null = null;
+      if (payload.type === TRANSACTION_TYPES.CREDIT_CARD_CHARGE) {
+        result = await service.processCreditCardCharge(payload);
+      }
       if (payload.type === TRANSACTION_TYPES.PAYMENT) {
         result = await service.processPayment(payload);
       }
@@ -105,9 +106,8 @@ export default async function handler(
       if (result) {
         res.send(formatTransaction(result));
       } else {
-        res.status(500).send(`Unknown transaction type: ${payload.type}`)
+        res.status(500).send(`Unknown transaction type: ${payload.type}`);
       }
-
     } else {
       res
         .status(405)
