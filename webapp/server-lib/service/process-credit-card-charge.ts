@@ -16,6 +16,7 @@ import { service } from './index';
 export async function processCreditCardCharge(
   payload: ApiSchema.NewTransaction
 ): Promise<Transaction> {
+  // Txn comes in with credit card account and categories; we just need to make a reservation to pay off the charge
   const { amounts, ...record } = payload;
 
   // Create the `amount` for the credit card payment reservation

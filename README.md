@@ -19,6 +19,10 @@ High level logic that is not otherwise expressed or captured in the schema.
 - You can enter a transaction either on the transaction form or on the deposit screen.
   - The transaction form is for single-category credits, like a refund or reimbursement.
   - The deposit screen is for depositing paychecks and other forms of income, where there are amounts that go into a lot of categories.
+- Transaction dates are sent from the client to the API in YYYY-MM-DD form, because we're only concerned with the date when the transaction happens (not the exact timestamp). These are stored in the database in a simple `Date` field (as opposed to a full PostgreSQL `datetime` field). I haven't done extensive testing with this, but I think it works as intended (i.e. conversion to a JS `Date` object (i.e. timestamp) within the backend logic doesn't change the date).
+  - Given just a date in YYYY-MM-DD form, the server _should_ interpret that in its current timezone.
+  - When that is saved to the database, it should just take the date part.
+  - I think there might be a problem if the Node.js server and the database cluster are in different timezones, but let's not find out.
 
 ## Notes
 
