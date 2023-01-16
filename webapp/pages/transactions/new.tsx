@@ -36,17 +36,12 @@ const NewTransaction: FC = () => {
     return <Loader variant="bars" />;
   }
 
-  const accounts = accountsData.map((account) => ({
-    value: account.id,
-    label: account.description,
-  }));
   const categories = getCategoryList(buildCategoryTree(categoriesData));
-
   return (
     <Page>
       <h1>Budget Plan</h1>
       <div>
-        <NewTransactionForm accounts={accounts} categories={categories} />
+        <NewTransactionForm accounts={accountsData} categories={categories} />
       </div>
     </Page>
   );

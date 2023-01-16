@@ -4,6 +4,7 @@
 
 import { useForm, yupResolver } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
+import { FinancialAccount } from '@prisma/client';
 import React from 'react';
 
 import { formatClientDate } from '../../client-lib';
@@ -15,6 +16,7 @@ import {
 import {
   AMOUNT_STATUS,
   TRANSACTION_TYPES,
+  ApiSchema,
   TransactionType,
   getFriendlyTransactionType,
   schemaObjects,
@@ -27,16 +29,21 @@ import { SinglePayment } from './SinglePayment';
 import { SplitPayment } from './SplitPayment';
 
 interface Props {
-  accounts: { value: string; label: string }[];
+  accounts: FinancialAccount[];
   categories: CategoryValues[];
 }
 
 export const NewTransactionForm: React.FC<Props> = (props) => {
+  const accounts = props.accounts.map((account) => ({
+    value: account.id,
+    label: account.description,
+  }));
+
   const form: NewTransactionFormHook = useForm({
     initialValues: {
       amounts: [
         {
-          accountId: props.accounts[0].value,
+          accountId: accounts[0].value,
           amount: 0,
           categoryId: props.categories[0].id,
           isCredit: false as boolean,
@@ -58,7 +65,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
       const countToAdd = 2 - form.values.amounts.length;
       for (let i = 0; i < countToAdd; i++) {
         form.insertListItem('amounts', {
-          accountId: props.accounts[0].value,
+          accountId: accounts[0].value,
           amount: 0,
           categoryId: props.categories[0].id,
           isCredit: false,
@@ -83,7 +90,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
 
   function handleSplitClick() {
     form.insertListItem('amounts', {
-      accountId: props.accounts[0].value,
+      accountId: accounts[0].value,
       amount: 0,
       categoryId: props.categories[0].id,
       isCredit: false,
@@ -168,7 +175,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
 
   function renderFormBody() {
     if (form.values.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
-      return <AccountTransfer accounts={props.accounts} mantineForm={form} />;
+      return <AccountTransfer accounts={accounts} mantineForm={form} />;
     }
 
     if (form.values.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
@@ -185,7 +192,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
     if (form.values.amounts.length === 1) {
       return (
         <SinglePayment
-          accounts={props.accounts}
+          accounts={accounts}
           categories={categoriesData}
           mantineForm={form}
           onSplitClick={handleSplitClick}
@@ -195,7 +202,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
 
     return (
       <SplitPayment
-        accounts={props.accounts}
+        accounts={accounts}
         categories={categoriesData}
         mantineForm={form}
         onSplitClick={handleSplitClick}
