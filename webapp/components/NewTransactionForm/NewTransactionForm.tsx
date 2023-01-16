@@ -94,7 +94,16 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
 
   function handleSubmit(values: NewTransactionFormValues) {
     // TODO Display a loading modal
-    void requestPostTransaction(values);
+    const { balance, isCredit, ...record } = values;
+    const amounts = record.amounts.map((amount) => ({
+      ...amount,
+      amount: amount.amount * 100,
+    }));
+    const payload = {
+      ...record,
+      amounts,
+    };
+    void requestPostTransaction(payload);
   }
 
   function handleTransactionTypeChange(
@@ -120,20 +129,15 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
     }
   }
 
-  async function requestPostTransaction(values: NewTransactionFormValues) {
-    const { balance, isCredit, ...record } = values;
-    const amounts = record.amounts.map((amount) => ({
-      ...amount,
-      amount: amount.amount * 100,
-    }));
-    const payload = {
-      ...record,
-      amounts,
-      date: formatClientDate(record.date),
-    };
-
+  async function requestPostTransaction(payload: ApiSchema.NewTransaction) {
     const responseData = await fetch('/api/transactions', {
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        ...payload,
+        // Mantine makes us store the date as a `Date` object, but really the
+        //   API only deals with strings in YYYY-MM-DD (see project README for
+        //   more detail).
+        date: formatClientDate(payload.date),
+      }),
       headers: {
         'Content-Type': 'application/json',
       },
