@@ -10,17 +10,29 @@ interface Props {
   accounts: { label: string; value: string }[];
   index?: number;
   mantineForm: NewTransactionFormHook;
+  onAccountChange?: (accountId: string) => void;
 }
 
 export const AccountField: React.FC<Props> = (props) => {
   const index = props.index ?? 0;
+  const fieldPath = `amounts.${index}.accountId`;
+
+  function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    const value = event.currentTarget.value;
+    if (props.onAccountChange) {
+      props.onAccountChange(value);
+    }
+    props.mantineForm.setFieldValue(fieldPath, value);
+  }
+
   return (
     <NativeSelect
       data={props.accounts}
       label="Account"
       my="sm"
       required
-      {...props.mantineForm.getInputProps(`amounts.${index}.accountId`)}
+      {...props.mantineForm.getInputProps(fieldPath)}
+      onChange={handleChange}
     />
   );
 };
