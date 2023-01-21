@@ -2,10 +2,12 @@
  * Copyright 2022-23 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { Checkbox, Group } from '@mantine/core';
+import styled from '@emotion/styled';
+import { Checkbox, Group, useMantineTheme } from '@mantine/core';
 import React from 'react';
 
 import { NewTransactionFormHook } from '../../client-lib/types';
+import { font } from '../tokens';
 
 import { AmountContainer, SplitAmount } from './Amounts';
 import { SaveButton, SplitButton } from './Buttons';
@@ -21,22 +23,24 @@ import {
 //   '-' prefix (or maybe some other FontAwesome icon) so there's another visual
 //   indicator, too.
 
+const NoticeText = styled.div({
+  fontSize: font.size.small,
+});
+
 interface Props {
   accounts: { label: string; value: string }[];
   categories: { label: string; value: string }[];
   mantineForm: NewTransactionFormHook;
+  onAccountChange: (accountId: string) => void;
   onSplitClick: VoidFunction;
 }
 
 export const SplitPayment: React.FC<Props> = (props) => {
+  const theme = useMantineTheme();
+
   function renderAmounts() {
     return props.mantineForm.values.amounts.map((amount, index) => (
       <AmountContainer key={`amount.${index}`}>
-        <AccountField
-          accounts={props.accounts}
-          index={index}
-          mantineForm={props.mantineForm}
-        />
         <CategoryField
           categories={props.categories}
           index={index}
@@ -51,6 +55,15 @@ export const SplitPayment: React.FC<Props> = (props) => {
   return (
     <>
       <DescriptionField mantineForm={props.mantineForm} />
+      <AccountField
+        accounts={props.accounts}
+        mantineForm={props.mantineForm}
+        onAccountChange={props.onAccountChange}
+      />
+      <NoticeText style={{ color: theme.colors.gray[6] }}>
+        Multiple accounts for split transactions are disabled until we have a
+        solid use-case to implement.
+      </NoticeText>
       <SplitAmount mantineForm={props.mantineForm} />
       <Checkbox
         label="Credit or deposit"

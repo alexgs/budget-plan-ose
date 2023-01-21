@@ -118,6 +118,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
     const { balance, isCredit, ...record } = values;
     const amounts = record.amounts.map((amount) => ({
       ...amount,
+      accountId: record.amounts[0].accountId, // Remove this for multi-account
       amount: amount.amount * 100,
     }));
     const payload = {
@@ -220,6 +221,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
         accounts={accounts}
         categories={categoriesData}
         mantineForm={form}
+        onAccountChange={handleAccountChange}
         onSplitClick={handleSplitClick}
       />
     );
