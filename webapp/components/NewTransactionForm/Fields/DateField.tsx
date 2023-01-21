@@ -18,9 +18,6 @@ export const DateField: React.FC<Props> = (props) => (
     label="Date"
     my="sm"
     required
-    {
-      // I really dislike this syntax; it's too much magic
-      ...props.mantineForm.getInputProps('date')
-    }
+    {...props.mantineForm.getInputProps('date')}
   />
 );

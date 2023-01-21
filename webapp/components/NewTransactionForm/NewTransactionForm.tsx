@@ -4,6 +4,7 @@
 
 import { useForm, yupResolver } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
+import { FinancialAccount } from '@prisma/client';
 import React from 'react';
 
 import { formatClientDate } from '../../client-lib';
@@ -15,6 +16,8 @@ import {
 import {
   AMOUNT_STATUS,
   TRANSACTION_TYPES,
+  AccountType,
+  ApiSchema,
   TransactionType,
   getFriendlyTransactionType,
   schemaObjects,
@@ -27,16 +30,32 @@ import { SinglePayment } from './SinglePayment';
 import { SplitPayment } from './SplitPayment';
 
 interface Props {
-  accounts: { value: string; label: string }[];
+  accounts: FinancialAccount[];
   categories: CategoryValues[];
 }
 
 export const NewTransactionForm: React.FC<Props> = (props) => {
+  function getAccountType(accountId: string): AccountType {
+    const account = props.accounts.find(account => account.id === accountId);
+    if (account) {
+      return account.accountType as AccountType;
+    }
+    throw new Error(`Unknown account id ${accountId}.`);
+  }
+
+  const accounts = props.accounts.map((account) => ({
+    value: account.id,
+    label: account.description,
+  }));
+  const [currentAccountType, setCurrentAccountType] = React.useState(
+    getAccountType(accounts[0].value)
+  );
+
   const form: NewTransactionFormHook = useForm({
     initialValues: {
       amounts: [
         {
-          accountId: props.accounts[0].value,
+          accountId: accounts[0].value,
           amount: 0,
           categoryId: props.categories[0].id,
           isCredit: false as boolean,
@@ -58,7 +77,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
       const countToAdd = 2 - form.values.amounts.length;
       for (let i = 0; i < countToAdd; i++) {
         form.insertListItem('amounts', {
-          accountId: props.accounts[0].value,
+          accountId: accounts[0].value,
           amount: 0,
           categoryId: props.categories[0].id,
           isCredit: false,
@@ -79,11 +98,13 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
     }
   }
 
-  // TODO function handleAccountChange() should change transaction type (and transaction type options) based on account type
+  function handleAccountChange(accountId: string) {
+    setCurrentAccountType(getAccountType(accountId));
+  }
 
   function handleSplitClick() {
     form.insertListItem('amounts', {
-      accountId: props.accounts[0].value,
+      accountId: accounts[0].value,
       amount: 0,
       categoryId: props.categories[0].id,
       isCredit: false,
@@ -94,7 +115,16 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
 
   function handleSubmit(values: NewTransactionFormValues) {
     // TODO Display a loading modal
-    void requestPostTransaction(values);
+    const { balance, isCredit, ...record } = values;
+    const amounts = record.amounts.map((amount) => ({
+      ...amount,
+      amount: amount.amount * 100,
+    }));
+    const payload = {
+      ...record,
+      amounts,
+    };
+    void requestPostTransaction(payload);
   }
 
   function handleTransactionTypeChange(
@@ -120,20 +150,15 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
     }
   }
 
-  async function requestPostTransaction(values: NewTransactionFormValues) {
-    const { balance, isCredit, ...record } = values;
-    const amounts = record.amounts.map((amount) => ({
-      ...amount,
-      amount: amount.amount * 100,
-    }));
-    const payload = {
-      ...record,
-      amounts,
-      date: formatClientDate(record.date),
-    };
-
+  async function requestPostTransaction(payload: ApiSchema.NewTransaction) {
     const responseData = await fetch('/api/transactions', {
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        ...payload,
+        // Mantine makes us store the date as a `Date` object. The API only
+        //   deals with strings in YYYY-MM-DD (see project README for more
+        //   detail), so we need to format the date in the payload.
+        date: formatClientDate(payload.date),
+      }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -164,7 +189,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
 
   function renderFormBody() {
     if (form.values.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
-      return <AccountTransfer accounts={props.accounts} mantineForm={form} />;
+      return <AccountTransfer accounts={accounts} mantineForm={form} />;
     }
 
     if (form.values.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
@@ -181,9 +206,10 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
     if (form.values.amounts.length === 1) {
       return (
         <SinglePayment
-          accounts={props.accounts}
+          accounts={accounts}
           categories={categoriesData}
           mantineForm={form}
+          onAccountChange={handleAccountChange}
           onSplitClick={handleSplitClick}
         />
       );
@@ -191,7 +217,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
 
     return (
       <SplitPayment
-        accounts={props.accounts}
+        accounts={accounts}
         categories={categoriesData}
         mantineForm={form}
         onSplitClick={handleSplitClick}
@@ -205,6 +231,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
     >
       <DateField mantineForm={form} />
       <TransactionTypeField
+        currentAccountType={currentAccountType}
         mantineForm={form}
         onChange={handleTransactionTypeChange}
       />

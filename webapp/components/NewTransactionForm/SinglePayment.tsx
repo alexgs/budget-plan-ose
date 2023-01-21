@@ -22,6 +22,7 @@ interface Props {
   accounts: { label: string; value: string }[];
   categories: { label: string; value: string }[];
   mantineForm: NewTransactionFormHook;
+  onAccountChange: (accountId: string) => void;
   onSplitClick: VoidFunction;
 }
 
@@ -29,7 +30,11 @@ export const SinglePayment: FC<Props> = (props) => {
   return (
     <>
       <DescriptionField mantineForm={props.mantineForm} />
-      <AccountField accounts={props.accounts} mantineForm={props.mantineForm} />
+      <AccountField
+        accounts={props.accounts}
+        mantineForm={props.mantineForm}
+        onAccountChange={props.onAccountChange}
+      />
       <CategoryField
         categories={props.categories}
         mantineForm={props.mantineForm}

@@ -7,7 +7,7 @@ import { unstable_getServerSession } from 'next-auth/next';
 import { ValidationError } from 'yup';
 
 import { nextAuthOptions, service } from '../../../server-lib';
-import { ApiSchema, schemaObjects } from '../../../shared-lib';
+import { ACCOUNT_TYPES, ApiSchema, schemaObjects } from '../../../shared-lib';
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,7 +20,7 @@ export default async function handler(
       const accounts = await service.getPublicAccounts();
       res.send(accounts);
     } else if (req.method === 'POST') {
-      let payload: ApiSchema.NewAccount = { accountType: '', description: '' };
+      let payload: ApiSchema.NewAccount = { accountType: ACCOUNT_TYPES.OTHER, description: '' };
       try {
         payload = await schemaObjects.newAccount.validate(req.body);
       } catch (e: any) {
