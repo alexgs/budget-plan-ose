@@ -6,6 +6,7 @@ import { createAccount } from './create-account';
 import { createCategory } from './create-category';
 import { ensureSystemAccounts } from './ensure-system-accounts';
 import { ensureSystemCategories } from './ensure-system-categories';
+import { getAccountType } from './get-account-type';
 import { getAllTransactions } from './get-all-transactions';
 import { getPublicAccounts } from './get-public-accounts';
 import { getPublicCategories } from './get-public-categories';
@@ -20,6 +21,7 @@ export const service = {
   createCategory,
   ensureSystemAccounts,
   ensureSystemCategories,
+  getAccountType,
   getAllTransactions,
   getPublicAccounts,
   getPublicCategories,
