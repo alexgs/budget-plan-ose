@@ -140,10 +140,7 @@ export const DepositForm: FC<Props> = (props) => {
         label="Date"
         my="sm"
         required
-        {
-          // I really dislike this syntax; it's too much magic
-          ...form.getInputProps('date')
-        }
+        {...form.getInputProps('date')}
       />
       <TextInput
         label="Description"
