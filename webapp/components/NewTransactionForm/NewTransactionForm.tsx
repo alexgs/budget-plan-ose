@@ -36,7 +36,7 @@ interface Props {
 
 export const NewTransactionForm: React.FC<Props> = (props) => {
   function getAccountType(accountId: string): AccountType {
-    const account = props.accounts.find(account => account.id === accountId);
+    const account = props.accounts.find((account) => account.id === accountId);
     if (account) {
       return account.accountType as AccountType;
     }
@@ -116,11 +116,20 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
   function handleSubmit(values: NewTransactionFormValues) {
     // TODO Display a loading modal
     const { balance, isCredit, ...record } = values;
-    const amounts = record.amounts.map((amount) => ({
-      ...amount,
-      accountId: record.amounts[0].accountId, // Remove this for multi-account
-      amount: amount.amount * 100,
-    }));
+    const isChargeOrPayment =
+      record.type === TRANSACTION_TYPES.CREDIT_CARD_CHARGE ||
+      record.type === TRANSACTION_TYPES.PAYMENT;
+    const amounts = record.amounts.map((amount) => {
+      // For multi-account payments, remove this check and just use the amount's accountId in every case
+      const accountId = isChargeOrPayment
+        ? record.amounts[0].accountId
+        : amount.accountId;
+      return {
+        ...amount,
+        accountId,
+        amount: amount.amount * 100,
+      };
+    });
     const payload = {
       ...record,
       amounts,

@@ -2,8 +2,50 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { ApiSchema, SYSTEM_IDS, Transaction } from '../../shared-lib';
+import {
+  ACCOUNT_TYPES,
+  SYSTEM_IDS,
+  ApiSchema,
+  Transaction,
+} from '../../shared-lib';
 import { database } from '../database';
+import { service } from './index';
+
+// This interface is just the type as inferred from the Yup schema
+interface Amount {
+  notes?: string | undefined;
+  accountId: string;
+  amount: number;
+  categoryId: string;
+  isCredit: NonNullable<boolean | undefined>;
+  status: string;
+}
+
+/**
+ * Determines the category IDs for a pair of transaction amounts. Returns an
+ * array of category IDs corresponding to the input accounts. That is, result[0]
+ * is the category ID for amounts[0], and same for index 1.
+ */
+async function determineCategoryIds(
+  amounts: Amount[],
+  isCreditCardPayment: boolean
+): Promise<string[]> {
+  if (isCreditCardPayment) {
+    const accounts = await Promise.all(
+      amounts.map(async (amount) => await database.getAccount(amount.accountId))
+    );
+    const creditCardAccount = accounts[0].accountType === ACCOUNT_TYPES.CREDIT_CARD ? accounts[0] : accounts[1]
+    // const paymentAccount = accounts[0].accountType !== ACCOUNT_TYPES.CREDIT_CARD ? accounts[0] : accounts[1]
+
+    return amounts.map((amount) => {
+      if (!amount.isCredit) {
+        return service.getReservationCategoryId(creditCardAccount)
+      }
+      return SYSTEM_IDS.CATEGORIES.ACCOUNT_TRANSFER
+    });
+  }
+  return amounts.map(() => SYSTEM_IDS.CATEGORIES.ACCOUNT_TRANSFER);
+}
 
 export async function processAccountTransfer(
   payload: ApiSchema.NewTransaction
@@ -24,14 +66,23 @@ export async function processAccountTransfer(
     throw new Error(`Credit and debit amounts must be the same.`);
   }
 
+  const account0type = await service.getAccountType(amounts[0].accountId);
+  const account1type = await service.getAccountType(amounts[1].accountId);
+  const isCreditCardPayment =
+    (account0type === ACCOUNT_TYPES.CREDIT_CARD &&
+      account1type !== ACCOUNT_TYPES.CREDIT_CARD) ||
+    (account0type !== ACCOUNT_TYPES.CREDIT_CARD &&
+      account1type === ACCOUNT_TYPES.CREDIT_CARD);
+
+  const categoryIds = await determineCategoryIds(amounts, isCreditCardPayment);
   return database.saveTransaction(record, [
     {
       ...amounts[0],
-      categoryId: SYSTEM_IDS.CATEGORIES.ACCOUNT_TRANSFER,
+      categoryId: categoryIds[0],
     },
     {
       ...amounts[1],
-      categoryId: SYSTEM_IDS.CATEGORIES.ACCOUNT_TRANSFER,
-    }
+      categoryId: categoryIds[1],
+    },
   ]);
 }
