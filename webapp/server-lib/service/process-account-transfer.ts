@@ -35,7 +35,6 @@ async function determineCategoryIds(
       amounts.map(async (amount) => await database.getAccount(amount.accountId))
     );
     const creditCardAccount = accounts[0].accountType === ACCOUNT_TYPES.CREDIT_CARD ? accounts[0] : accounts[1]
-    // const paymentAccount = accounts[0].accountType !== ACCOUNT_TYPES.CREDIT_CARD ? accounts[0] : accounts[1]
 
     return amounts.map((amount) => {
       if (!amount.isCredit) {
@@ -66,6 +65,8 @@ export async function processAccountTransfer(
     throw new Error(`Credit and debit amounts must be the same.`);
   }
 
+  // See [ADR 1][1] for an explanation of this logic.
+  // [1]: https://app.clickup.com/8582989/v/dc/85xud-4647/85xud-187
   const account0type = await service.getAccountType(amounts[0].accountId);
   const account1type = await service.getAccountType(amounts[1].accountId);
   const isCreditCardPayment =

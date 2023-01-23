@@ -13,6 +13,9 @@ import { database } from '../database';
 
 import { service } from './index';
 
+// See [ADR 1][1] for an explanation of this logic.
+// [1]: https://app.clickup.com/8582989/v/dc/85xud-4647/85xud-187
+
 export async function processCreditCardCharge(
   payload: ApiSchema.NewTransaction
 ): Promise<Transaction> {
