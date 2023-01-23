@@ -10,6 +10,7 @@ import React from 'react';
 
 import { formatAmount } from '../../../client-lib';
 import { NewTransactionFormHook } from '../../../client-lib/types';
+import { dollarsToCents } from '../../../shared-lib';
 
 import { amountStyle } from './amount-style';
 
@@ -72,7 +73,7 @@ export const SplitAmount: React.FC<Props> = (props) => {
         <div style={{ width: '45%' }}>
           <AmountRemainingLabel>Amount Remaining:</AmountRemainingLabel>
           <AmountRemainingAmount>
-            {formatAmount(calcAmountRemaining() * 100)}
+            {formatAmount(dollarsToCents(calcAmountRemaining()))}
           </AmountRemainingAmount>
         </div>
       </Group>
