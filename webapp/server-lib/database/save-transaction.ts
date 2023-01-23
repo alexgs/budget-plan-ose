@@ -11,6 +11,11 @@ export async function saveTransaction(
 ): Promise<Transaction> {
   // TODO All of the DB updates in here should be wrapped in a single DB transaction
 
+  amounts = amounts.map((amount) => {
+    amount.amount = Math.round(amount.amount);
+    return amount;
+  });
+
   // Update category balance for each amount
   await Promise.all(
     amounts.map((amount) => {

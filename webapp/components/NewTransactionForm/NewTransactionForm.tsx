@@ -19,6 +19,7 @@ import {
   AccountType,
   ApiSchema,
   TransactionType,
+  dollarsToCents,
   getFriendlyTransactionType,
   schemaObjects,
 } from '../../shared-lib';
@@ -127,7 +128,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
       return {
         ...amount,
         accountId,
-        amount: amount.amount * 100,
+        amount: dollarsToCents(amount.amount),
       };
     });
     const payload = {
