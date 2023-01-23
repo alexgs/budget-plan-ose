@@ -9,14 +9,14 @@ const formatter = new Intl.NumberFormat('en-US', {
   currency: 'USD',
 });
 
-export function formatAmount(amount?: number | null) {
+export function formatAmount(cents?: number | null) {
   // If amount is undefined or null (but not zero), return null
-  if (amount == null) {
+  if (cents == null) {
     return null;
   }
 
-  const formattedAmount = formatter.format(amount / 100);
-  if (amount < 0) {
+  const formattedAmount = formatter.format(cents / 100);
+  if (cents < 0) {
     return <Text color="red">{formattedAmount}</Text>;
   }
 
