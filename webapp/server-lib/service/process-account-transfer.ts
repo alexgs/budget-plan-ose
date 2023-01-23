@@ -5,7 +5,6 @@
 import {
   ACCOUNT_TYPES,
   SYSTEM_IDS,
-  Account,
   ApiSchema,
   Transaction,
 } from '../../shared-lib';
@@ -22,15 +21,30 @@ interface Amount {
   status: string;
 }
 
-async function determineCategoryForAmount(
-  amount: Amount,
+/**
+ * Determines the category IDs for a pair of transaction amounts. Returns an
+ * array of category IDs corresponding to the input accounts. That is, result[0]
+ * is the category ID for amounts[0], and same for index 1.
+ */
+async function determineCategoryIds(
+  amounts: Amount[],
   isCreditCardPayment: boolean
-): Promise<string> {
-  if (isCreditCardPayment && !amount.isCredit) {
-    const account: Account = await database.getAccount(amount.accountId);
-    return service.getReservationCategoryId(account);
+): Promise<string[]> {
+  if (isCreditCardPayment) {
+    const accounts = await Promise.all(
+      amounts.map(async (amount) => await database.getAccount(amount.accountId))
+    );
+    const creditCardAccount = accounts[0].accountType === ACCOUNT_TYPES.CREDIT_CARD ? accounts[0] : accounts[1]
+    // const paymentAccount = accounts[0].accountType !== ACCOUNT_TYPES.CREDIT_CARD ? accounts[0] : accounts[1]
+
+    return amounts.map((amount) => {
+      if (!amount.isCredit) {
+        return service.getReservationCategoryId(creditCardAccount)
+      }
+      return SYSTEM_IDS.CATEGORIES.ACCOUNT_TRANSFER
+    });
   }
-  return SYSTEM_IDS.CATEGORIES.ACCOUNT_TRANSFER;
+  return amounts.map(() => SYSTEM_IDS.CATEGORIES.ACCOUNT_TRANSFER);
 }
 
 export async function processAccountTransfer(
@@ -60,14 +74,15 @@ export async function processAccountTransfer(
     (account0type !== ACCOUNT_TYPES.CREDIT_CARD &&
       account1type === ACCOUNT_TYPES.CREDIT_CARD);
 
+  const categoryIds = await determineCategoryIds(amounts, isCreditCardPayment);
   return database.saveTransaction(record, [
     {
       ...amounts[0],
-      categoryId: await determineCategoryForAmount(amounts[0], isCreditCardPayment),
+      categoryId: categoryIds[0],
     },
     {
       ...amounts[1],
-      categoryId: await determineCategoryForAmount(amounts[1], isCreditCardPayment),
-    }
+      categoryId: categoryIds[1],
+    },
   ]);
 }
