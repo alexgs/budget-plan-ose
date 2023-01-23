@@ -135,6 +135,10 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
       amounts,
     };
     void requestPostTransaction(payload);
+
+    const accountId = form.values.amounts[0].accountId;
+    form.reset();
+    form.setFieldValue('amounts.0.accountId', accountId);
   }
 
   function handleTransactionTypeChange(
