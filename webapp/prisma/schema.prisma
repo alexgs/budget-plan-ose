@@ -32,6 +32,7 @@ model FinancialAccount {
   updatedAt   DateTime            @default(now()) @map("updated_at")
   accountType String              @default("account-types.other") @map("account_type")
   isSystem    Boolean             @default(false) @map("is_system")
+  balance     Int                 @default(0)
   amounts     TransactionAmount[]
 
   @@map("financial_accounts")
