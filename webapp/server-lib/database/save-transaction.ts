@@ -11,15 +11,16 @@ export async function saveTransaction(
 ): Promise<Transaction> {
   // TODO All of the DB updates in here should be wrapped in a single DB transaction
 
-  amounts = amounts.map((amount) => {
-    amount.amount = Math.round(amount.amount);
-    return amount;
-  });
-
-  // Update category balance for each amount
+  // Update account and category balance for each amount
   await Promise.all(
-    amounts.map((amount) => {
+    amounts.map(async (amount) => {
       const operation = amount.isCredit ? 'increment' : 'decrement';
+      await prisma.financialAccount.update({
+        where: { id: amount.accountId },
+        data: {
+          balance: { [operation]: amount.amount },
+        },
+      });
       return prisma.category.update({
         where: { id: amount.categoryId },
         data: {

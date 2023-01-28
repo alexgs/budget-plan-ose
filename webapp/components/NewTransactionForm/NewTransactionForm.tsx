@@ -4,12 +4,12 @@
 
 import { useForm, yupResolver } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
-import { FinancialAccount } from '@prisma/client';
 import React from 'react';
 
 import { formatClientDate } from '../../client-lib';
 import {
   CategoryValues,
+  FinancialAccount,
   NewTransactionFormHook,
   NewTransactionFormValues,
 } from '../../client-lib/types';

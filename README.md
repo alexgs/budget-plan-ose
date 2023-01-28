@@ -23,6 +23,7 @@ High level logic that is not otherwise expressed or captured in the schema.
   - Given just a date in YYYY-MM-DD form, the server _should_ interpret that in its current timezone.
   - When that is saved to the database, it should just take the date part.
   - I think there might be a problem if the Node.js server and the database cluster are in different timezones, but let's not find out.
+- The logic for credit card charges and payments is explained in [ADR 1][3].
 - I'm using Mantine's form library. One consequence of this decision is that form state stores dollar amounts (not cents), so we always have to convert from dollars to cents when we're done with a form (e.g. when submitting the form and sending the data to the API). It's just one of those things, not really any way around it.
 
 ## Notes
@@ -37,3 +38,4 @@ High level logic that is not otherwise expressed or captured in the schema.
 
 [1]: https://github.com/alexgs/simple-docker-compose-project/
 [2]: https://developer.1password.com/docs/cli/secrets-environment-variables/#:~:text=You%20can%20check%20environment%20files%20into%20source%20control%20and%20use%20the%20same%20environment%20everywhere.
+[3]: https://app.clickup.com/8582989/v/dc/85xud-4647/85xud-187

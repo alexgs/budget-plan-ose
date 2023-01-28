@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader, Table } from '@mantine/core';
 import React from 'react';
 import useSWR from 'swr';
+import { formatAmount } from '../../client-lib';
 
 import { FinancialAccount } from '../../client-lib/types';
 import { EditAccountButton, NewAccountButton, Page } from '../../components';
@@ -33,6 +34,7 @@ const AccountsPage: React.FC = () => {
   const rows = accountsData.map((account: FinancialAccount) => (
     <tr key={account.id}>
       <td>{account.description}</td>
+      <td>{formatAmount(account.balance)}</td>
       <td>{getFriendlyAccountType(account.accountType)}</td>
       <td style={{ textAlign: 'right' }}>
         <EditAccountButton data={account} />
@@ -46,6 +48,7 @@ const AccountsPage: React.FC = () => {
         <thead>
           <tr>
             <th>Account</th>
+            <th>Balance</th>
             <th>Type</th>
             <th />
           </tr>

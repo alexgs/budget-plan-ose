@@ -3,6 +3,7 @@
  */
 
 import { UseFormReturnType } from '@mantine/form';
+import { FinancialAccount as PrismaFinancialAccount } from '@prisma/client';
 
 import { AccountType, ApiSchema } from '../shared-lib';
 
@@ -25,10 +26,8 @@ export interface CategoryValues {
   label: string; // Slash-separated joining of category's name with parent's name
 }
 
-export interface FinancialAccount {
-  accountType: AccountType;
-  description: string;
-  id: string;
+export interface FinancialAccount extends PrismaFinancialAccount {
+    accountType: AccountType;
 }
 
 export type NewTransactionFormHook =
