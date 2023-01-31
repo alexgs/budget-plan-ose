@@ -34,9 +34,5 @@ export const SYSTEM_IDS = {
       'system-ids.categories.account-transfer',
       UUID_NAMESPACE
     ),
-    CATEGORY_TRANSFER: uuidV5(
-      'system-ids.categories.category-transfer',
-      UUID_NAMESPACE
-    ),
   } as const,
 } as const;

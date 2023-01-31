@@ -11,6 +11,5 @@ import { database } from '../index';
 export async function getPublicCategories() {
   return database.getCategoriesExceptIds([
     SYSTEM_IDS.CATEGORIES.ACCOUNT_TRANSFER,
-    SYSTEM_IDS.CATEGORIES.CATEGORY_TRANSFER
   ]);
 }
