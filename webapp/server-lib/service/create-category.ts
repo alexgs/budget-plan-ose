@@ -21,20 +21,23 @@ export async function createCategory(
       payload.parentId
     );
     if (numSiblingCategories === 0) {
-      // (A) create a sibling category called "Misc."
+      // (A) Create a sibling category called "Misc."
       const miscCategoryPayload: ApiSchema.NewCategory = {
         name: 'Misc.',
         parentId: payload.parentId,
       };
       const miscCategory = await database.createCategory(miscCategoryPayload);
 
-      // (B) Move all existing transactions into the "Misc." category.
+      // (B) Move all existing transactions into the "Misc." category
       await database.moveTransactionsToNewCategory(
         payload.parentId,
         miscCategory.id
       );
 
-      // (C) Set the parent's balance to `null`.
+      // (C) Update balances for the "Misc." category and the parent.
+      const parentCategory = await database.getCategory(payload.parentId);
+      const currentBalance = parentCategory.balance;
+      await database.updateCategoryBalance(miscCategory.id, currentBalance);
       await database.updateCategoryBalance(payload.parentId, null);
     }
   }

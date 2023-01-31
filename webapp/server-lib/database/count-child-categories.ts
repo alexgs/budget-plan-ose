@@ -7,5 +7,5 @@ import { prisma } from '../index';
 export async function countChildCategories(
   categoryId: string
 ): Promise<number> {
-  return prisma.category.count({ where: { id: categoryId } });
+  return prisma.category.count({ where: { parentId: categoryId } });
 }
