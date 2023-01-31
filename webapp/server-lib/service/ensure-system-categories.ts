@@ -11,13 +11,6 @@ const accountTransferCategoryData: DbSchema.NewCategory = {
   name: 'Account transfers',
 };
 
-const categoryTransferCategoryData: DbSchema.NewCategory = {
-  id: SYSTEM_IDS.CATEGORIES.CATEGORY_TRANSFER,
-  isSystem: true,
-  name: 'Category transfers',
-};
-
 export async function ensureSystemCategories() {
   await database.ensureCategory(accountTransferCategoryData);
-  await database.ensureCategory(categoryTransferCategoryData);
 }
