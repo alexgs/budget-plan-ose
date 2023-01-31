@@ -4,6 +4,7 @@
 
 import { InferType } from 'yup';
 import {
+  Category as PrismaCategory,
   FinancialAccount,
   Prisma,
   TransactionAmount,
@@ -32,6 +33,7 @@ export namespace DbSchema {
 
 export type Account = FinancialAccount;
 export type AccountType = typeof ACCOUNT_TYPES[keyof typeof ACCOUNT_TYPES];
+export type Category = PrismaCategory;
 export type Transaction = TransactionRecord & { amounts: TransactionAmount[] };
 export type TransactionType =
   typeof TRANSACTION_TYPES[keyof typeof TRANSACTION_TYPES];

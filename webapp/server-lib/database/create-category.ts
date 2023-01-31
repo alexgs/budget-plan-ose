@@ -3,10 +3,13 @@
  */
 
 import { prisma } from '../index';
-import { DbSchema } from '../../shared-lib';
+import { Category, DbSchema } from '../../shared-lib';
 
-export async function createCategory(payload: DbSchema.NewCategory) {
+export async function createCategory(payload: DbSchema.NewCategory): Promise<Category> {
   return prisma.category.create({
-    data: payload,
+    data: {
+      balance: 0,
+      ...payload,
+    },
   });
 }
