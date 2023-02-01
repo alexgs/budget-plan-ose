@@ -4,6 +4,7 @@
 
 import { createAccount } from './create-account';
 import { createCategory } from './create-category';
+import { ensureDefaultChildCategory } from './ensure-default-child-category';
 import { ensureSystemAccounts } from './ensure-system-accounts';
 import { ensureSystemCategories } from './ensure-system-categories';
 import { getAccountType } from './get-account-type';
@@ -20,8 +21,6 @@ import { updateCategory } from './update-category';
 export const service = {
   createAccount,
   createCategory,
-  ensureSystemAccounts,
-  ensureSystemCategories,
   getAccountType,
   getAllTransactions,
   getPublicAccounts,
@@ -32,4 +31,8 @@ export const service = {
   processPayment,
   processCreditCardCharge,
   updateCategory,
+
+  /** @private */ ensureDefaultChildCategory,
+  /** @private */ ensureSystemAccounts,
+  /** @private */ ensureSystemCategories,
 };
