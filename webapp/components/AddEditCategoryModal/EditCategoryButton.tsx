@@ -6,6 +6,9 @@ import { faPencil } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Modal, UnstyledButton } from '@mantine/core';
 import React from 'react';
+
+import { ApiSchema } from '../../shared-lib';
+
 import { CategoryModal } from './CategoryModal';
 
 interface Props {}
@@ -17,13 +20,17 @@ export const EditCategoryButton: React.FC<Props> = (props) => {
     setIsVisible(true);
   }
 
-  function handleModalClose(): void {
+  function handleModalCancel(): void {
     setIsVisible(false);
   }
 
+  function handleModalSave(values: ApiSchema.NewCategory): void {}
+
   function renderModalContent() {
     if (isVisible) {
-      return <CategoryModal onClose={handleModalClose} />;
+      return (
+        <CategoryModal onCancel={handleModalCancel} onSave={handleModalSave} />
+      );
     }
     return null;
   }
@@ -34,7 +41,7 @@ export const EditCategoryButton: React.FC<Props> = (props) => {
         <FontAwesomeIcon icon={faPencil} />
       </UnstyledButton>
       <Modal
-        onClose={handleModalClose}
+        onClose={handleModalCancel}
         opened={isVisible}
         overlayBlur={3}
         title="Edit category"

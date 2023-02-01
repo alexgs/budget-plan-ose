@@ -3,7 +3,10 @@
  */
 
 import { Button, Modal } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import { FC, useState } from 'react';
+
+import { ApiSchema } from '../../shared-lib';
 
 import { CategoryModal } from './CategoryModal';
 
@@ -14,13 +17,47 @@ export const AddCategoryButton: FC = () => {
     setIsVisible(true);
   }
 
-  function handleModalClose(): void {
+  function handleModalCancel(): void {
     setIsVisible(false);
+  }
+
+  function handleModalSave(values: ApiSchema.NewCategory): void {
+    void requestNewCategory(values.name, values.parentId ?? '');
+    setIsVisible(false);
+  }
+
+  async function requestNewCategory(name: string, parentId: string) {
+    const responseData = await fetch('/api/categories', {
+      body: JSON.stringify({
+        name,
+        parentId: parentId.length === 0 ? null : parentId,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    })
+      .then((response) => response.json())
+      .catch((e) => {
+        console.error(e);
+        showNotification({
+          color: 'red',
+          message: 'Something went wrong! Please check the logs.',
+          title: 'Error',
+        });
+      });
+
+    showNotification({
+      message: `Saved new category "${responseData.name}"`,
+      title: 'Success',
+    });
   }
 
   function renderModalContent() {
     if (isVisible) {
-      return <CategoryModal onClose={handleModalClose} />;
+      return (
+        <CategoryModal onCancel={handleModalCancel} onSave={handleModalSave} />
+      );
     }
     return null;
   }
@@ -32,7 +69,7 @@ export const AddCategoryButton: FC = () => {
           Add Category
         </Button>
         <Modal
-          onClose={handleModalClose}
+          onClose={handleModalCancel}
           opened={isVisible}
           overlayBlur={3}
           title="Add new category"
