@@ -4,8 +4,11 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
+import { ValidationError } from 'yup';
+import * as yup from 'yup';
 
-import { nextAuthOptions } from '../../../server-lib';
+import { nextAuthOptions, service } from '../../../server-lib';
+import { ApiSchema, schemaObjects } from '../../../shared-lib';
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,11 +17,35 @@ export default async function handler(
   const session = await unstable_getServerSession(req, res, nextAuthOptions);
 
   if (session) {
-    if (req.method === 'GET') {
-      const { categoryId } = req.query;
-      res.send(`Hello category ${categoryId}`);
+    if (req.method === 'PATCH') {
+      let payload: ApiSchema.PatchCategory = {
+        name: '',
+        parentId: null,
+      };
+      let categoryId = '';
+      try {
+        categoryId = await yup.string().required().validate(req.query.categoryId);
+        payload = await schemaObjects.patchCategory.validate(req.body);
+      } catch (e: any) {
+        if (e.name && e.name === 'ValidationError') {
+          const error: ValidationError = e as ValidationError;
+          console.error(`>> POST /api/accounts/:id 400 ${error.errors} <<`);
+          res
+            .status(400)
+            .send(
+              'Error: payload failed validation. Please check server logs.'
+            );
+        } else {
+          console.error(`>> Unknown error: ${e} <<`);
+          res.status(500).send('Unknown error. Please check server logs.');
+        }
+        return;
+      }
+
+      const patchedCategory = await service.updateCategory(categoryId, payload);
+      res.send(patchedCategory);
     } else {
-      res.status(405).setHeader('Allow', 'GET').send('Method not allowed.');
+      res.status(405).setHeader('Allow', 'PATCH').send('Method not allowed.');
     }
   } else {
     res.status(400).send('Bad request.');
