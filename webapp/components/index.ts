@@ -3,7 +3,7 @@
  */
 
 export { EditAccountButton, NewAccountButton } from './AddEditAccountModal';
-export { AddCategory } from './AddCategory';
+export { AddCategory } from './AddEditCategoryModal';
 export { AddTransactionButton } from './AddTransactionButton';
 export { DepositForm } from './DepositForm';
 export { NewTransactionForm } from './NewTransactionForm';
