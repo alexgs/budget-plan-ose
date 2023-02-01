@@ -16,7 +16,7 @@ import {
   formatAmount,
   getCategoryList,
 } from '../client-lib';
-import { AddCategory, Page } from '../components';
+import { AddCategoryButton, Page } from '../components';
 import { space } from '../components/tokens';
 
 function HomePage() {
@@ -67,7 +67,7 @@ function HomePage() {
         <tbody>{rows}</tbody>
       </Table>
       <div style={{ marginTop: space.xl }}>
-        <AddCategory />
+        <AddCategoryButton />
       </div>
     </Page>
   );

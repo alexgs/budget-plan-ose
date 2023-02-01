@@ -7,7 +7,7 @@ import { FC, useState } from 'react';
 
 import { AddCategoryModalContent } from './ModalContent';
 
-export const AddCategory: FC = () => {
+export const AddCategoryButton: FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   function handleAddCategoryClick(): void {
