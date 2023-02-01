@@ -2,9 +2,13 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
+import {
+  faPencil,
+  faTriangleExclamation,
+} from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Alert, Loader, Table } from '@mantine/core';
+import { Alert, Loader, Table, UnstyledButton } from '@mantine/core';
+import React from 'react';
 import useSWR from 'swr';
 
 import {
@@ -17,7 +21,9 @@ import { space } from '../components/tokens';
 
 function HomePage() {
   // Get sorted categories and balances
-  const { error, data: catData } = useSWR('/api/categories', { refreshInterval: 1000 });
+  const { error, data: catData } = useSWR('/api/categories', {
+    refreshInterval: 1000,
+  });
   if (error) {
     console.error(error);
     return (
@@ -40,6 +46,11 @@ function HomePage() {
     <tr key={row.id}>
       <td>{row.label}</td>
       <td>{formatAmount(row.balance)}</td>
+      <td style={{ textAlign: 'right' }}>
+        <UnstyledButton>
+          <FontAwesomeIcon icon={faPencil} />
+        </UnstyledButton>
+      </td>
     </tr>
   ));
 
@@ -50,6 +61,7 @@ function HomePage() {
           <tr>
             <th>Category</th>
             <th>Balance</th>
+            <th />
           </tr>
         </thead>
         <tbody>{rows}</tbody>
