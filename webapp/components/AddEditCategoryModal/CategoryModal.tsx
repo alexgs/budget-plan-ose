@@ -9,12 +9,13 @@ import { FC } from 'react';
 import useSWR from 'swr';
 
 import { buildCategoryTree, getCategoryList } from '../../client-lib';
-import { NO_PARENT_CATEGORY, ApiSchema, Category } from '../../shared-lib';
+import { NO_PARENT_CATEGORY, ApiSchema } from '../../shared-lib';
 
 import { AddCategoryForm } from './AddCategoryForm';
+import { CategoryPayload } from './types';
 
 interface Props {
-  data?: Category;
+  data?: CategoryPayload;
   onCancel: VoidFunction;
   onSave: (values: ApiSchema.NewCategory) => void;
 }

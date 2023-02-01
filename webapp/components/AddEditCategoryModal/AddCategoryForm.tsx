@@ -7,11 +7,13 @@ import { useFormik } from 'formik';
 import { FC } from 'react';
 import * as Yup from 'yup';
 
-import { ApiSchema, Category } from '../../shared-lib';
+import { ApiSchema } from '../../shared-lib';
+
+import { CategoryPayload } from './types';
 
 interface Props {
   categoryMenuItems: { label: string; value: string }[];
-  data?: Category;
+  data?: CategoryPayload;
   onCancel: VoidFunction;
   onSave: (values: ApiSchema.NewCategory) => void;
 }
