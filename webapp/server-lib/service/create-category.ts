@@ -17,29 +17,7 @@ export async function createCategory(
   // just skip to creating the category.
 
   if (payload.parentId) {
-    const numSiblingCategories = await database.countChildCategories(
-      payload.parentId
-    );
-    if (numSiblingCategories === 0) {
-      // (A) Create a sibling category called "Misc."
-      const miscCategoryPayload: ApiSchema.NewCategory = {
-        name: 'Misc.',
-        parentId: payload.parentId,
-      };
-      const miscCategory = await database.createCategory(miscCategoryPayload);
-
-      // (B) Move all existing transactions into the "Misc." category
-      await database.moveTransactionsToNewCategory(
-        payload.parentId,
-        miscCategory.id
-      );
-
-      // (C) Update balances for the "Misc." category and the parent.
-      const parentCategory = await database.getCategory(payload.parentId);
-      const currentBalance = parentCategory.balance;
-      await database.updateCategoryBalance(miscCategory.id, currentBalance);
-      await database.updateCategoryBalance(payload.parentId, null);
-    }
+    await service.ensureDefaultChildCategory(payload.parentId);
   }
 
   return database.createCategory(payload);
