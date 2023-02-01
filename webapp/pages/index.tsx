@@ -16,7 +16,7 @@ import {
   formatAmount,
   getCategoryList,
 } from '../client-lib';
-import { AddCategoryButton, Page } from '../components';
+import { AddCategoryButton, EditCategoryButton, Page } from '../components';
 import { space } from '../components/tokens';
 
 function HomePage() {
@@ -47,9 +47,7 @@ function HomePage() {
       <td>{row.label}</td>
       <td>{formatAmount(row.balance)}</td>
       <td style={{ textAlign: 'right' }}>
-        <UnstyledButton>
-          <FontAwesomeIcon icon={faPencil} />
-        </UnstyledButton>
+        <EditCategoryButton />
       </td>
     </tr>
   ));
