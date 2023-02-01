@@ -5,7 +5,7 @@
 import { Button, Modal } from '@mantine/core';
 import { FC, useState } from 'react';
 
-import { AddCategoryModalContent } from './ModalContent';
+import { CategoryModal } from './CategoryModal';
 
 export const AddCategoryButton: FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -20,7 +20,7 @@ export const AddCategoryButton: FC = () => {
 
   function renderModalContent() {
     if (isVisible) {
-      return <AddCategoryModalContent onClose={handleModalClose} />;
+      return <CategoryModal onClose={handleModalClose} />;
     }
     return null;
   }

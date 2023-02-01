@@ -17,7 +17,7 @@ interface Props {
   onClose: VoidFunction;
 }
 
-export const AddCategoryModalContent: FC<Props> = (props) => {
+export const CategoryModal: FC<Props> = (props) => {
   const { error, data: catData } = useSWR('/api/categories');
   if (error) {
     console.error(error);
