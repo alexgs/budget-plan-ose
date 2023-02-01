@@ -15,6 +15,7 @@ import { processAccountTransfer } from './process-account-transfer';
 import { processCategoryTransfer } from './process-category-transfer';
 import { processPayment } from './process-payment';
 import { processCreditCardCharge } from './process-credit-card-charge';
+import { updateCategory } from './update-category';
 
 export const service = {
   createAccount,
@@ -30,4 +31,5 @@ export const service = {
   processCategoryTransfer,
   processPayment,
   processCreditCardCharge,
+  updateCategory,
 };
