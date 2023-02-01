@@ -4,4 +4,4 @@
 
 import { Category } from '../../shared-lib';
 
-export type CategoryPayload = Pick<Category, 'name' | 'parentId'>;
+export type CategoryPayload = Partial<Pick<Category, 'name' | 'parentId'>>;
