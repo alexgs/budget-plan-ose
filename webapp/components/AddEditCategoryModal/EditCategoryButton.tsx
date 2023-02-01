@@ -5,13 +5,17 @@
 import { faPencil } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Modal, UnstyledButton } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import React from 'react';
 
+import { CategoryValues } from '../../client-lib/types';
 import { ApiSchema } from '../../shared-lib';
 
 import { CategoryModal } from './CategoryModal';
 
-interface Props {}
+interface Props {
+  data: CategoryValues;
+}
 
 export const EditCategoryButton: React.FC<Props> = (props) => {
   const [isVisible, setIsVisible] = React.useState(false);
@@ -24,7 +28,34 @@ export const EditCategoryButton: React.FC<Props> = (props) => {
     setIsVisible(false);
   }
 
-  function handleModalSave(values: ApiSchema.NewCategory): void {}
+  function handleModalSave(values: ApiSchema.NewCategory): void {
+    void requestPatchCategory(props.data.id, values);
+    setIsVisible(false);
+  }
+
+  async function requestPatchCategory(categoryId: string, values: ApiSchema.NewCategory) {
+    const responseData = await fetch(`/api/categories/${categoryId}`, {
+      body: JSON.stringify(values),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+    })
+      .then((response) => response.json())
+      .catch((e) => {
+        console.error(e);
+        showNotification({
+          color: 'red',
+          message: 'Something went wrong! Please check the logs.',
+          title: 'Error',
+        });
+      });
+
+    showNotification({
+      message: `Updated category "${responseData.name}"`,
+      title: 'Success',
+    });
+  }
 
   function renderModalContent() {
     if (isVisible) {

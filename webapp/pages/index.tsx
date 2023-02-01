@@ -7,7 +7,7 @@ import {
   faTriangleExclamation,
 } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Alert, Loader, Table, UnstyledButton } from '@mantine/core';
+import { Alert, Loader, Table } from '@mantine/core';
 import React from 'react';
 import useSWR from 'swr';
 
@@ -47,7 +47,7 @@ function HomePage() {
       <td>{row.label}</td>
       <td>{formatAmount(row.balance)}</td>
       <td style={{ textAlign: 'right' }}>
-        <EditCategoryButton />
+        <EditCategoryButton data={row} />
       </td>
     </tr>
   ));
