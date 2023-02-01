@@ -13,7 +13,12 @@ import {
   formatAmount,
   getCategoryList,
 } from '../client-lib';
-import { AddCategoryButton, EditCategoryButton, Page } from '../components';
+import {
+  AddCategoryButton,
+  AddSubcategoryButton,
+  EditCategoryButton,
+  Page,
+} from '../components';
 import { space } from '../components/tokens';
 import { Category } from '../shared-lib';
 
@@ -52,7 +57,8 @@ function HomePage() {
       <tr key={row.id}>
         <td>{row.label}</td>
         <td>{formatAmount(row.balance)}</td>
-        <td style={{ textAlign: 'right' }}>
+        <td style={{ display: 'flex', justifyContent: 'space-around' }}>
+          <AddSubcategoryButton parentId={row.id} />
           <EditCategoryButton data={data} />
         </td>
       </tr>

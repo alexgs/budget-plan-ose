@@ -3,4 +3,5 @@
  */
 
 export { AddCategoryButton } from './AddCategoryButton';
+export { AddSubcategoryButton } from './AddSubcategoryButton';
 export { EditCategoryButton } from './EditCategoryButton';
