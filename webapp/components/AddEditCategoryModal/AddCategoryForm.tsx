@@ -7,19 +7,20 @@ import { useFormik } from 'formik';
 import { FC } from 'react';
 import * as Yup from 'yup';
 
-import { ApiSchema } from '../../shared-lib';
+import { ApiSchema, Category } from '../../shared-lib';
 
 interface Props {
+  categoryMenuItems: { label: string; value: string }[];
+  data?: Category;
   onCancel: VoidFunction;
   onSave: (values: ApiSchema.NewCategory) => void;
-  categoryMenuItems: { label: string; value: string }[];
 }
 
 export const AddCategoryForm: FC<Props> = (props) => {
   const formik = useFormik({
     initialValues: {
-      name: '',
-      parentId: '',
+      name: props.data?.name ?? '',
+      parentId: props.data?.parentId ?? '',
     },
     onSubmit: (values) => {
       props.onSave(values);

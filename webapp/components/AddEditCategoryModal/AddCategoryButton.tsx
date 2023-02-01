@@ -4,14 +4,14 @@
 
 import { Button, Modal } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { FC, useState } from 'react';
+import React from 'react';
 
-import { ApiSchema } from '../../shared-lib';
+import { NO_PARENT_CATEGORY, ApiSchema } from '../../shared-lib';
 
 import { CategoryModal } from './CategoryModal';
 
-export const AddCategoryButton: FC = () => {
-  const [isVisible, setIsVisible] = useState(false);
+export const AddCategoryButton: React.FC = () => {
+  const [isVisible, setIsVisible] = React.useState(false);
 
   function handleAddCategoryClick(): void {
     setIsVisible(true);
@@ -30,7 +30,7 @@ export const AddCategoryButton: FC = () => {
     const responseData = await fetch('/api/categories', {
       body: JSON.stringify({
         name,
-        parentId: parentId.length === 0 ? null : parentId,
+        parentId: parentId === NO_PARENT_CATEGORY ? null : parentId,
       }),
       headers: {
         'Content-Type': 'application/json',

@@ -2,10 +2,7 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import {
-  faPencil,
-  faTriangleExclamation,
-} from '@fortawesome/pro-regular-svg-icons';
+import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader, Table } from '@mantine/core';
 import React from 'react';
@@ -18,10 +15,11 @@ import {
 } from '../client-lib';
 import { AddCategoryButton, EditCategoryButton, Page } from '../components';
 import { space } from '../components/tokens';
+import { Category } from '../shared-lib';
 
 function HomePage() {
   // Get sorted categories and balances
-  const { error, data: catData } = useSWR('/api/categories', {
+  const { error, data: catData } = useSWR<Category[]>('/api/categories', {
     refreshInterval: 1000,
   });
   if (error) {
@@ -42,15 +40,24 @@ function HomePage() {
   }
 
   const topLevelBalances = getCategoryList(buildCategoryTree(catData));
-  const rows = topLevelBalances.map((row) => (
-    <tr key={row.id}>
-      <td>{row.label}</td>
-      <td>{formatAmount(row.balance)}</td>
-      <td style={{ textAlign: 'right' }}>
-        <EditCategoryButton data={row} />
-      </td>
-    </tr>
-  ));
+  const rows = topLevelBalances.map((row) => {
+    const data: Category | undefined = catData.find(
+      (value) => value.id === row.id
+    );
+    if (!data) {
+      // This is just for type safety, should never throw (in production)
+      throw new Error(`Unable to find data for category ID ${row.id}`);
+    }
+    return (
+      <tr key={row.id}>
+        <td>{row.label}</td>
+        <td>{formatAmount(row.balance)}</td>
+        <td style={{ textAlign: 'right' }}>
+          <EditCategoryButton data={data} />
+        </td>
+      </tr>
+    );
+  });
 
   return (
     <Page>

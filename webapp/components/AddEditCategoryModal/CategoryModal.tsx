@@ -9,7 +9,7 @@ import { FC } from 'react';
 import useSWR from 'swr';
 
 import { buildCategoryTree, getCategoryList } from '../../client-lib';
-import { ApiSchema, Category } from '../../shared-lib';
+import { NO_PARENT_CATEGORY, ApiSchema, Category } from '../../shared-lib';
 
 import { AddCategoryForm } from './AddCategoryForm';
 
@@ -43,13 +43,14 @@ export const CategoryModal: FC<Props> = (props) => {
     label: cat.label,
     value: cat.id,
   }));
-  menuItems.unshift({ label: 'None', value: '' });
+  menuItems.unshift({ label: 'None', value: NO_PARENT_CATEGORY });
 
   return (
     <AddCategoryForm
+      categoryMenuItems={menuItems}
+      data={props.data}
       onCancel={props.onCancel}
       onSave={props.onSave}
-      categoryMenuItems={menuItems}
     />
   );
 };

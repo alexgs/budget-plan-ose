@@ -8,13 +8,12 @@ import { Modal, UnstyledButton } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import React from 'react';
 
-import { CategoryValues } from '../../client-lib/types';
-import { ApiSchema } from '../../shared-lib';
+import { NO_PARENT_CATEGORY, ApiSchema, Category } from '../../shared-lib';
 
 import { CategoryModal } from './CategoryModal';
 
 interface Props {
-  data: CategoryValues;
+  data: Category;
 }
 
 export const EditCategoryButton: React.FC<Props> = (props) => {
@@ -33,9 +32,16 @@ export const EditCategoryButton: React.FC<Props> = (props) => {
     setIsVisible(false);
   }
 
-  async function requestPatchCategory(categoryId: string, values: ApiSchema.NewCategory) {
+  async function requestPatchCategory(
+    categoryId: string,
+    values: ApiSchema.NewCategory
+  ) {
     const responseData = await fetch(`/api/categories/${categoryId}`, {
-      body: JSON.stringify(values),
+      body: JSON.stringify({
+        name: values.name,
+        parentId:
+          values.parentId === NO_PARENT_CATEGORY ? null : values.parentId,
+      }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -60,7 +66,11 @@ export const EditCategoryButton: React.FC<Props> = (props) => {
   function renderModalContent() {
     if (isVisible) {
       return (
-        <CategoryModal onCancel={handleModalCancel} onSave={handleModalSave} />
+        <CategoryModal
+          data={props.data}
+          onCancel={handleModalCancel}
+          onSave={handleModalSave}
+        />
       );
     }
     return null;
