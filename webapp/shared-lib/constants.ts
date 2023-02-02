@@ -13,6 +13,8 @@ export const ACCOUNT_TYPES = {
   OTHER: 'account-types.other',
 } as const;
 
+export const NO_PARENT_CATEGORY = 'no-parent-category-id';
+
 export const TRANSACTION_TYPES = {
   PAYMENT: 'transaction-types.payment',
   CREDIT_CARD_CHARGE: 'transaction-types.credit-card-charge',

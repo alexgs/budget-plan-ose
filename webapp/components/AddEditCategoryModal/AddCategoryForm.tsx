@@ -7,39 +7,44 @@ import { useFormik } from 'formik';
 import { FC } from 'react';
 import * as Yup from 'yup';
 
+import { ApiSchema } from '../../shared-lib';
+
+import { CategoryPayload } from './types';
+
 interface Props {
-  onCancel: VoidFunction;
-  onSave: (values: { categoryName: string; parentId: string }) => void;
   categoryMenuItems: { label: string; value: string }[];
+  data?: CategoryPayload;
+  onCancel: VoidFunction;
+  onSave: (values: ApiSchema.NewCategory) => void;
 }
 
 export const AddCategoryForm: FC<Props> = (props) => {
   const formik = useFormik({
     initialValues: {
-      categoryName: '',
-      parentId: '',
+      name: props.data?.name ?? '',
+      parentId: props.data?.parentId ?? '',
     },
     onSubmit: (values) => {
       props.onSave(values);
     },
     validationSchema: Yup.object({
-      categoryName: Yup.string().required('Required'),
+      name: Yup.string().required('Required'),
     }),
   });
 
-  const isSaveButtonEnabled = !formik.errors.categoryName;
+  const isSaveButtonEnabled = !formik.errors.name;
 
   return (
     <form onSubmit={formik.handleSubmit}>
       <TextInput
-        error={formik.touched.categoryName && formik.errors.categoryName}
-        id="categoryName"
+        error={formik.touched.name && formik.errors.name}
+        id="name"
         label="Name"
-        name="categoryName"
+        name="name"
         onBlur={formik.handleBlur}
         onChange={formik.handleChange}
         placeholder="Rainy day fund"
-        value={formik.values.categoryName}
+        value={formik.values.name}
         withAsterisk
       />
       <Space h="lg" />

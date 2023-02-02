@@ -5,6 +5,7 @@
 import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader, Table } from '@mantine/core';
+import React from 'react';
 import useSWR from 'swr';
 
 import {
@@ -12,12 +13,20 @@ import {
   formatAmount,
   getCategoryList,
 } from '../client-lib';
-import { AddCategory, Page } from '../components';
+import {
+  AddCategoryButton,
+  AddSubcategoryButton,
+  EditCategoryButton,
+  Page,
+} from '../components';
 import { space } from '../components/tokens';
+import { Category } from '../shared-lib';
 
 function HomePage() {
   // Get sorted categories and balances
-  const { error, data: catData } = useSWR('/api/categories', { refreshInterval: 1000 });
+  const { error, data: catData } = useSWR<Category[]>('/api/categories', {
+    refreshInterval: 1000,
+  });
   if (error) {
     console.error(error);
     return (
@@ -36,12 +45,25 @@ function HomePage() {
   }
 
   const topLevelBalances = getCategoryList(buildCategoryTree(catData));
-  const rows = topLevelBalances.map((row) => (
-    <tr key={row.id}>
-      <td>{row.label}</td>
-      <td>{formatAmount(row.balance)}</td>
-    </tr>
-  ));
+  const rows = topLevelBalances.map((row) => {
+    const data: Category | undefined = catData.find(
+      (value) => value.id === row.id
+    );
+    if (!data) {
+      // This is just for type safety, should never throw (in production)
+      throw new Error(`Unable to find data for category ID ${row.id}`);
+    }
+    return (
+      <tr key={row.id}>
+        <td>{row.label}</td>
+        <td>{formatAmount(row.balance)}</td>
+        <td style={{ display: 'flex', justifyContent: 'space-around' }}>
+          <AddSubcategoryButton parentId={row.id} />
+          <EditCategoryButton data={data} />
+        </td>
+      </tr>
+    );
+  });
 
   return (
     <Page>
@@ -50,12 +72,13 @@ function HomePage() {
           <tr>
             <th>Category</th>
             <th>Balance</th>
+            <th />
           </tr>
         </thead>
         <tbody>{rows}</tbody>
       </Table>
       <div style={{ marginTop: space.xl }}>
-        <AddCategory />
+        <AddCategoryButton />
       </div>
     </Page>
   );

@@ -33,13 +33,6 @@ export const EditAccountButton: React.FC<Props> = (props) => {
     setIsVisible(false);
   }
 
-  function renderModalContent() {
-    if (isVisible) {
-      return <AccountModal data={props.data} onCancel={handleModalCancel} onSave={handleModalSave} />;
-    }
-    return null;
-  }
-
   async function requestPatchAccount(accountId: string, values: NewAccountData) {
     const responseData = await fetch(`/api/accounts/${accountId}`, {
       body: JSON.stringify(values),
@@ -62,6 +55,13 @@ export const EditAccountButton: React.FC<Props> = (props) => {
       message: `Updated account "${responseData.description}"`,
       title: 'Success',
     });
+  }
+
+  function renderModalContent() {
+    if (isVisible) {
+      return <AccountModal data={props.data} onCancel={handleModalCancel} onSave={handleModalSave} />;
+    }
+    return null;
   }
 
   return (

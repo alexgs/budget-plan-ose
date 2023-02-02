@@ -44,6 +44,7 @@ export default async function handler(
         return;
       }
 
+      // TODO Handler should only call service layer
       const patchedAccount = await prisma.financialAccount.update({
         where: { id: accountId },
         data: {
