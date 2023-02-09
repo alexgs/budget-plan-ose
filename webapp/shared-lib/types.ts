@@ -8,7 +8,7 @@ import {
   FinancialAccount,
   Prisma,
   TransactionAmount,
-  TransactionRecord
+  TransactionRecord,
 } from '@prisma/client';
 
 import { ACCOUNT_TYPES, TRANSACTION_TYPES } from './constants';
@@ -28,7 +28,10 @@ export namespace ApiSchema {
 export namespace DbSchema {
   export type NewAccount = Prisma.FinancialAccountCreateInput;
   export type NewAmount = Prisma.TransactionAmountCreateInput;
-  export type NewCategory = Prisma.CategoryCreateInput;
+  export type NewCategory = Prisma.XOR<
+    Prisma.CategoryCreateInput,
+    Prisma.CategoryUncheckedCreateInput
+  >;
   export type NewRecord = Prisma.TransactionRecordCreateInput;
 }
 

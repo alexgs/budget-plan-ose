@@ -5,7 +5,12 @@
 import { prisma } from '../index';
 import { Category, DbSchema } from '../../shared-lib';
 
-export async function createCategory(payload: DbSchema.NewCategory): Promise<Category> {
+export async function createCategory(
+  payload: DbSchema.NewCategory
+): Promise<Category> {
+  // Do the assignment like this so TypeScript is happy.
+  payload.parentId = payload.parentId?.length ? payload.parentId : undefined;
+
   return prisma.category.create({
     data: {
       balance: 0,
