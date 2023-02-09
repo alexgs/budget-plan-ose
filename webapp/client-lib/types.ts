@@ -3,9 +3,9 @@
  */
 
 import { UseFormReturnType } from '@mantine/form';
-import { InferType } from 'yup';
+import { FinancialAccount as PrismaFinancialAccount } from '@prisma/client';
 
-import { newTransactionSchema } from '../shared-lib';
+import { AccountType, ApiSchema } from '../shared-lib';
 
 export interface CategoryTreeNode {
   id: string;
@@ -26,12 +26,14 @@ export interface CategoryValues {
   label: string; // Slash-separated joining of category's name with parent's name
 }
 
+export interface FinancialAccount extends PrismaFinancialAccount {
+    accountType: AccountType;
+}
+
 export type NewTransactionFormHook =
   UseFormReturnType<NewTransactionFormValues>;
 
-export type NewTransactionFormValues = InferType<
-  typeof newTransactionSchema
-> & {
+export type NewTransactionFormValues = ApiSchema.NewTransaction & {
   balance: number; // Client-only field
   isCredit: boolean; // Client-only field
 };

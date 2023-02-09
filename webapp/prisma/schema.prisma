@@ -17,6 +17,7 @@ model Category {
   parentId  String?             @map("parent_id") @db.Uuid
   createdAt DateTime            @default(now()) @map("created_at")
   updatedAt DateTime            @default(now()) @map("updated_at")
+  isSystem  Boolean             @default(false) @map("is_system")
   parent    Category?           @relation("categoriesTocategories", fields: [parentId], references: [id], onDelete: Cascade, map: "categories_parent_id_fk")
   children  Category[]          @relation("categoriesTocategories")
   amounts   TransactionAmount[] @relation("categoriesTotransaction_amounts")
@@ -29,6 +30,9 @@ model FinancialAccount {
   description String
   createdAt   DateTime            @default(now()) @map("created_at")
   updatedAt   DateTime            @default(now()) @map("updated_at")
+  accountType String              @default("account-types.other") @map("account_type")
+  isSystem    Boolean             @default(false) @map("is_system")
+  balance     Int                 @default(0)
   amounts     TransactionAmount[]
 
   @@map("financial_accounts")
@@ -45,8 +49,8 @@ model TransactionAmount {
   status     String
   createdAt  DateTime          @default(now()) @map("created_at")
   updatedAt  DateTime          @default(now()) @map("updated_at")
-  account    FinancialAccount  @relation(fields: [accountId], references: [id], onDelete: Cascade, map: "transaction_amounts_financial_account_id_fk")
   category   Category          @relation("categoriesTotransaction_amounts", fields: [categoryId], references: [id], onDelete: Cascade, map: "transaction_amounts_category_id_fk")
+  account    FinancialAccount  @relation(fields: [accountId], references: [id], onDelete: Cascade, map: "transaction_amounts_financial_account_id_fk")
   record     TransactionRecord @relation(fields: [recordId], references: [id], onDelete: Cascade, map: "transaction_amounts_transaction_record_id_fk")
 
   @@map("transaction_amounts")

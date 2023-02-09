@@ -5,12 +5,11 @@
 import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader } from '@mantine/core';
-import { FinancialAccount } from '@prisma/client';
 import { FC } from 'react';
 import useSWR from 'swr';
 
 import { buildCategoryTree, getCategoryList } from '../../client-lib';
-import { RawCategory } from '../../client-lib/types';
+import { FinancialAccount, RawCategory } from '../../client-lib/types';
 import { NewTransactionForm, Page } from '../../components';
 
 const NewTransaction: FC = () => {
@@ -36,17 +35,12 @@ const NewTransaction: FC = () => {
     return <Loader variant="bars" />;
   }
 
-  const accounts = accountsData.map((account) => ({
-    value: account.id,
-    label: account.description,
-  }));
   const categories = getCategoryList(buildCategoryTree(categoriesData));
-
   return (
     <Page>
       <h1>Budget Plan</h1>
       <div>
-        <NewTransactionForm accounts={accounts} categories={categories} />
+        <NewTransactionForm accounts={accountsData} categories={categories} />
       </div>
     </Page>
   );

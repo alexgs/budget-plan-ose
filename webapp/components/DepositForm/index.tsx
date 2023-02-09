@@ -17,6 +17,7 @@ import { FC, PropsWithChildren } from 'react';
 
 import { formatAmount, formatClientDate } from '../../client-lib';
 import { CategoryValues } from '../../client-lib/types';
+import { AMOUNT_STATUS, dollarsToCents } from '../../shared-lib';
 
 interface CategoryAmount {
   amount: number;
@@ -68,10 +69,10 @@ export const DepositForm: FC<Props> = (props) => {
       .map((amount) => {
         return {
           accountId: values.accountId,
-          amount: Math.round(amount.amount * 100), // TODO Make this change in other txn form(s)
+          amount: dollarsToCents(amount.amount),
           categoryId: amount.categoryId,
           isCredit: true,
-          status: 'pending',
+          status: AMOUNT_STATUS.PENDING,
         };
       });
     const payload = {
@@ -139,10 +140,7 @@ export const DepositForm: FC<Props> = (props) => {
         label="Date"
         my="sm"
         required
-        {
-          // I really dislike this syntax; it's too much magic
-          ...form.getInputProps('date')
-        }
+        {...form.getInputProps('date')}
       />
       <TextInput
         label="Description"
@@ -170,7 +168,7 @@ export const DepositForm: FC<Props> = (props) => {
           {...form.getInputProps('totalAmount')}
         />
         <div style={{ width: '45%' }}>
-          Amount Remaining: {formatAmount(amountRemaining * 100)}
+          Amount Remaining: {formatAmount(dollarsToCents(amountRemaining))}
         </div>
       </Group>
       <Table>
