@@ -25,7 +25,7 @@ function getBackupFilename(databaseName: string): string {
   const now = new Date();
   const date = format(now, 'yyyy-MM-dd');
   const time = format(now, 'kk-mm-ss');
-  return `${database}_${date}_${time}.sql`;
+  return `${database}_${date}_${time}.pgsql`;
 }
 
 async function main() {
@@ -43,8 +43,8 @@ async function main() {
   const outputPath = path.join(BACKUP_DIR, filename);
   const backup =
     `PGPASSWORD=${DATABASE.PASSWORD} pg_dump --host=${DATABASE.HOST} ` +
-    `-p ${DATABASE.PORT} -U ${DATABASE.USER} -w ${DATABASE.NAME} ` +
-    `> ${outputPath}`;
+    `-p ${DATABASE.PORT} -U ${DATABASE.USER} -Fc ${DATABASE.NAME} ` +
+    `--schema=public > ${outputPath}`;
   shell.exec(backup);
 
   console.log(TEXT.INFO, `Backup saved to ${outputPath}.`);
