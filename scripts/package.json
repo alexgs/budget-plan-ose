@@ -12,6 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/alexgs/budget-plan.git"
   },
+  "type": "module",
   "scripts": {
     "check": "npx tsc --noEmit",
     "prettier": "npx prettier --check .",
@@ -21,7 +22,7 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "date-fns": "^2.23.0",
-    "dotenv": "^10.0.0",
+    "dotenv": "^16.0.3",
     "env-var": "^7.0.1",
     "shelljs": "^0.8.4",
     "ts-node": "^10.2.1",
