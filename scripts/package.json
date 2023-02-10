@@ -12,7 +12,6 @@
     "type": "git",
     "url": "git+https://github.com/alexgs/budget-plan.git"
   },
-  "type": "module",
   "scripts": {
     "check": "npx tsc --noEmit",
     "prettier": "npx prettier --check .",

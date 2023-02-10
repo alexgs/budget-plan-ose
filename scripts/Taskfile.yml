@@ -1,0 +1,13 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  SCRIPTS_WORKING_DIR: ./scripts
+
+tasks:
+  backup:
+    dir: "{{.SCRIPTS_WORKING_DIR}}"
+    cmds:
+      - "npx ts-node --project ./tsconfig.json ./src/backup-database.ts"
+    desc: Backup the database

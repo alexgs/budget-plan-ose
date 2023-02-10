@@ -32,7 +32,7 @@ async function main() {
   const DATABASE = {
     HOST: env.get('DATABASE_HOST').required().asString(),
     NAME: env.get('DATABASE_NAME').required().asString(),
-    PASSWORD: env.get('DATABASE_PASSWORD').required().asPortNumber(),
+    PASSWORD: env.get('DATABASE_PASSWORD').required().asString(),
     PORT: env.get('DATABASE_PORT').required().asPortNumber(),
     USER: env.get('DATABASE_USER').required().asString(),
   };
