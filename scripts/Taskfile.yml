@@ -9,5 +9,11 @@ tasks:
   backup:
     dir: "{{.SCRIPTS_WORKING_DIR}}"
     cmds:
-      - "npx ts-node ./src/backup-database.ts"
+      - "npx ts-node --transpile-only ./src/backup-database.ts"
     desc: Backup the database
+
+  restore:
+    dir: "{{.SCRIPTS_WORKING_DIR}}"
+    cmds:
+      - "npx ts-node --transpile-only ./src/restore-database-from-backup.ts"
+    desc: Restore the database from a backup
