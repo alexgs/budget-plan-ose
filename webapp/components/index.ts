@@ -14,3 +14,4 @@ export { NewTransactionForm } from './NewTransactionForm';
 export { NextAuthProvider } from './NextAuthProvider';
 export { Page } from './Page';
 export { TransactionAmountForm } from './TransactionAmountForm';
+export { TransactionTable } from './TransactionTable';
