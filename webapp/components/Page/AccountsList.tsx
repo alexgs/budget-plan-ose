@@ -37,6 +37,7 @@ export const AccountsList: React.FC = () => {
     return <Loader variant="bars" />;
   }
 
+  // TODO The "active" conditional doesn't work correctly
   const content = accountsData.map((account: FinancialAccount) => {
     const accountPath = `/accounts/${account.id}`;
     return (

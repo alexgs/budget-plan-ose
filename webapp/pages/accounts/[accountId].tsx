@@ -43,7 +43,7 @@ const placeholderData: TransactionRow[] = [
 const columnHelper = createColumnHelper<TransactionRow>();
 const columns = [
   columnHelper.accessor('date', {
-    cell: (info) => info.getValue(),
+    cell: (info) => info.getValue().toISOString(),
     header: () => <span>Date</span>,
   }),
   columnHelper.accessor('description', {
@@ -69,12 +69,25 @@ const AccountDetail: React.FC = () => {
     });
   }
 
+  function renderRows() {
+    return table.getRowModel().rows.map((row) => (
+      <tr key={row.id}>
+        {row.getVisibleCells().map((cell) => (
+          <td key={cell.id}>
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </td>
+        ))}
+      </tr>
+    ));
+  }
+
   return (
     <Page>
       <Table>
         <thead>
           <tr>{renderHeaders()}</tr>
         </thead>
+        <tbody>{renderRows()}</tbody>
       </Table>
     </Page>
   );
