@@ -10,38 +10,10 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import React from 'react';
+
 import { formatAmount, formatClientDate } from '../../client-lib';
+import { TransactionRow } from '../../client-lib/types';
 
-interface TransactionRow {
-  account: string;
-  amount: number;
-  category: string;
-  date: Date;
-  description: string;
-  order: number;
-  status: string;
-}
-
-const placeholderData: TransactionRow[] = [
-  {
-    account: 'Big bank checking',
-    amount: 1000,
-    category: 'Fun!',
-    date: new Date('2023-02-02'),
-    description: 'Cocaine',
-    order: 1000,
-    status: 'Pending',
-  },
-  {
-    account: 'Big bank savings',
-    amount: 4567,
-    category: 'Serious',
-    date: new Date('2023-02-04'),
-    description: 'Investment',
-    order: 1001,
-    status: 'Pending',
-  },
-];
 
 const columnHelper = createColumnHelper<TransactionRow>();
 const columns = [
@@ -71,10 +43,14 @@ const columns = [
   }),
 ];
 
-export const TransactionTable: React.FC = () => {
+interface Props {
+  data: TransactionRow[]
+}
+
+export const TransactionTable: React.FC<Props> = (props) => {
   const table = useReactTable({
     columns,
-    data: placeholderData,
+    data: props.data,
     getCoreRowModel: getCoreRowModel(),
   });
 
