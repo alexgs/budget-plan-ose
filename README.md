@@ -1,5 +1,19 @@
 # Budget Plan
 
+## Standard Operating Procedures
+
+### Environment variables
+
+- Create `develop.env` and `production.env` in the project root to store environment variables for local development and production deployments respectively.
+- Symlink `.env` to either `develop.env` or `production.env` as appropriate, and then symlink `webapp/.env` to `.env`.
+
+### DevOps stuff
+
+- Use the `.env` files as described above to control the target of these scripts.
+- To back up the database, run `task scripts:backup`.
+- To restore the database, run `task scripts:restore`. **Important:** Before running this script, make sure that the database structure exists (e.g., run `task flyway:migrate`)
+- To clone the production database to a local development server, run `task scripts:clone`.
+
 ## Rules of Operation
 
 High level logic that is not otherwise expressed or captured in the schema.
@@ -34,7 +48,6 @@ High level logic that is not otherwise expressed or captured in the schema.
 - ~~I set an alias `alias opt="op run --env-file=\"./$(echo $ENVIRONMENT).env\" -- task"` in my shell profile, to save myself typing. I also did `export ENVIRONMENT=develop` so conceivably we could do something similar in CI/CD pipeline, if it ever comes to that.~~
 - ~~The `psql` command and associated tasks (like `task db:psql`) don't seem to be working correctly with 1Password, so I have to manually substitute the environment variables.~~
 - Actually, it seems like 1Password doesn't work well with interactive tools, like `psql` but also like `task flyway`. I guess it's back to the old way for me. _C'est la vie_. I'll still be storing secrets in 1Password.
-- Symlink `webapp/.env` to `.env`, and symlink `.env` to either `develop.env` or `production.env` as appropriate.
 - I'm punting drag-and-drop reordering of categories from milestone 2 because it seems like a really big lift without a really big payoff
   - I can get by with manually reordering items in the database for now
   - I think DnD (not my usual kind of DnD but nice) will require a complete rebuild of the category table as a list (which I want to do but not right now)

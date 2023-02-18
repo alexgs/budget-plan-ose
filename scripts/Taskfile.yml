@@ -1,0 +1,25 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  SCRIPTS_WORKING_DIR: ./scripts
+
+tasks:
+  backup:
+    dir: "{{.SCRIPTS_WORKING_DIR}}"
+    cmds:
+      - "npx ts-node --transpile-only ./src/backup-database.ts"
+    desc: Backup the database
+
+  clone:
+    dir: "{{.SCRIPTS_WORKING_DIR}}"
+    cmds:
+      - "npx ts-node --transpile-only ./src/clone-prod-db-to-dev.ts"
+    desc: Clone the production database to local development
+
+  restore:
+    dir: "{{.SCRIPTS_WORKING_DIR}}"
+    cmds:
+      - "npx ts-node --transpile-only ./src/restore-database-from-backup.ts"
+    desc: Restore the database from a backup

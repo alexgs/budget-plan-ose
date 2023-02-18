@@ -5,6 +5,7 @@ version: '3'
 includes:
   db: ./database/Taskfile.yml
   flyway: ./flyway/Taskfile.yml
+  script: ./scripts/Taskfile.yml
   web: ./webapp/Taskfile.yml
 
 dotenv: ['.env']
