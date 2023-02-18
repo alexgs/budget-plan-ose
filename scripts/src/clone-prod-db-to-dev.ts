@@ -9,7 +9,7 @@ import inquirer from 'inquirer'; // We use an old version of `inquirer` to make 
 import path from 'path';
 import shell from 'shelljs';
 
-import { PROJECT_ROOT, TEXT } from './constants';
+import { DATABASE, PROJECT_ROOT, TEXT } from './constants';
 
 async function main() {
   // Parse *.env files
@@ -53,9 +53,26 @@ async function main() {
   ]);
 
   if (answer1.confirm) {
+    const tempFile = path.join(shell.tempdir(), `budget-plan-${Date.now()}.pgsql`);
+
     // Backup production DB to local temp file
+    console.log(TEXT.INFO, 'Downloading data from production database.');
+    const backup =
+      `PGPASSWORD=${productionEnv.DATABASE_PASSWORD} pg_dump --host=${productionEnv.DATABASE_HOST} ` +
+      `-p ${productionEnv.DATABASE_PORT} -U ${productionEnv.DATABASE_USER} -Fc ${productionEnv.DATABASE_NAME} ` +
+      `--schema=public > ${tempFile}`;
+    shell.exec(backup);
+
     // Restore local DB from local temp file
+    console.log(TEXT.INFO, 'Copying data into local database.');
+    const restore =
+      `PGPASSWORD=${developEnv.DATABASE_PASSWORD} pg_restore --host=${developEnv.DATABASE_HOST} ` +
+      `-p ${developEnv.DATABASE_PORT} -U ${developEnv.DATABASE_USER} -d ${developEnv.DATABASE_NAME} ` +
+      `-Fc --data-only ${tempFile}`;
+    shell.exec(restore);
+
     // Delete local temp file
+    shell.rm(tempFile);
   }
 }
 
