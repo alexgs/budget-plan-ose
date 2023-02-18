@@ -2,10 +2,16 @@
  * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { FC } from 'react';
+import React from 'react';
 
-const Transactions: FC = () => {
-  return <div>Hello transactions</div>;
+import { Page, TransactionTable } from '../../components';
+
+const Transactions: React.FC = () => {
+  return (
+    <Page>
+      <TransactionTable />
+    </Page>
+  );
 };
 
 export default Transactions;

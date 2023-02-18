@@ -7,7 +7,7 @@ import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  useReactTable
+  useReactTable,
 } from '@tanstack/react-table';
 import React from 'react';
 
@@ -87,6 +87,5 @@ export const TransactionTable: React.FC = () => {
       </thead>
       <tbody>{renderRows()}</tbody>
     </Table>
-
   );
-}
+};
