@@ -5,8 +5,10 @@
 import chalk from 'chalk';
 import fs from 'fs/promises';
 import inquirer from 'inquirer'; // We use an old version of `inquirer` to make it work with TypeScript and `ts-node`
+import path from 'path';
+import shell from 'shelljs';
 
-import { BACKUP_DIR, DATABASE } from './constants';
+import { BACKUP_DIR, DATABASE, TEXT } from './constants';
 
 async function main() {
   const unfilteredFiles = await fs.readdir(BACKUP_DIR);
@@ -22,6 +24,7 @@ async function main() {
       choices: files,
     },
   ]);
+  const backupFile = path.join(BACKUP_DIR, answer1.filename)
 
   console.log(
     '\nYou are about to overwrite the database',
@@ -29,7 +32,7 @@ async function main() {
     'on',
     chalk.yellow.bold(DATABASE.HOST),
     'with the data in',
-    `${chalk.cyan.bold(answer1.filename)}.`
+    `${chalk.cyan.bold(backupFile)}.`
   );
   const answer2 = await inquirer.prompt([
     {
@@ -39,7 +42,18 @@ async function main() {
       default: false,
     }
   ]);
-  console.log(`Your answer: ${answer2.confirm}`);
+
+  if (answer2.confirm) {
+    console.log(TEXT.INFO, `Restoring database ${DATABASE.NAME} from ${backupFile}.`);
+
+    const restore =
+      `PGPASSWORD=${DATABASE.PASSWORD} pg_restore --host=${DATABASE.HOST} ` +
+      `-p ${DATABASE.PORT} -U ${DATABASE.USER} -d ${DATABASE.NAME} ` +
+      `-Fc --data-only ${backupFile}`;
+    shell.exec(restore);
+
+    console.log(TEXT.INFO, `Database restored.`);
+  }
 }
 
 main()

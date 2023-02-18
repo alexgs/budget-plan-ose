@@ -11,7 +11,7 @@
 
 - Use the `.env` files as described above to control the target of these scripts.
 - To back up the database, run `task scripts:backup`.
-- To restore the database, run `task scripts:restore`.
+- To restore the database, run `task scripts:restore`. **Important:** Before running this script, make sure that the database structure exists (e.g., run `task flyway:migrate`)
 - To clone the production database to a local development server, run `task scripts:clone`.
 
 ## Rules of Operation
