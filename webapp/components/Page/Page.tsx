@@ -22,9 +22,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC, PropsWithChildren, useState } from 'react';
 
+import { AccountsList } from './AccountsList';
 import { NavBar } from './NavBar';
 
-// TODO Add things to navbar
 // TODO Use a real CSS grid for layout instead of Mantine's AppShell component
 
 export const Page: FC<PropsWithChildren> = (props) => {
@@ -75,6 +75,7 @@ export const Page: FC<PropsWithChildren> = (props) => {
               label="View Accounts"
             />
           </Link>
+          <AccountsList />
         </NavBar>
       }
       header={
