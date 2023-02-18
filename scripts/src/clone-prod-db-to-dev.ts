@@ -13,14 +13,26 @@ import { PROJECT_ROOT, TEXT } from './constants';
 
 async function main() {
   // Parse *.env files
-  const devEnvBuffer = await fs.readFile(
-    path.join(PROJECT_ROOT, 'develop.env')
-  );
+  let envFilesOk = true;
+  const devEnvPath = path.join(PROJECT_ROOT, 'develop.env');
+  if (!shell.test('-f', devEnvPath)) {
+    envFilesOk = false;
+    console.log(TEXT.ERROR, `Missing file ${devEnvPath}.`);
+  }
+  const prodEnvPath = path.join(PROJECT_ROOT, 'production.env');
+  if (!shell.test('-f', prodEnvPath)) {
+    envFilesOk = false;
+    console.log(TEXT.ERROR, `Missing file ${prodEnvPath}.`);
+  }
+
+  if (!envFilesOk) {
+    shell.exit(2);
+  }
+
+  const devEnvBuffer = await fs.readFile(devEnvPath);
   const developEnv = dotenv.parse(devEnvBuffer);
 
-  const prodEnvBuffer = await fs.readFile(
-    path.join(PROJECT_ROOT, 'production.env')
-  );
+  const prodEnvBuffer = await fs.readFile(prodEnvPath);
   const productionEnv = dotenv.parse(prodEnvBuffer);
 
   // Print instructions to use Flyway first
