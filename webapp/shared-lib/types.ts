@@ -23,6 +23,10 @@ export namespace ApiSchema {
   >;
   export type NewTransactionRecord = Omit<NewTransaction, 'amounts'>;
   export type PatchCategory = InferType<typeof schemaObjects.patchCategory>;
+  export type Transaction = Omit<TransactionRecord, 'date'> & {
+    date: string;
+    amounts: TransactionAmount[];
+  };
 }
 
 export namespace DbSchema {

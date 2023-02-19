@@ -47,3 +47,13 @@ export interface RawCategory {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface TransactionRow {
+  account: string;
+  amount: number;
+  category: string;
+  date: Date;
+  description: string;
+  order: number;
+  status: string;
+}

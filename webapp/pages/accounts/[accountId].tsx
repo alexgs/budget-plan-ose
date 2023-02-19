@@ -3,10 +3,14 @@
  */
 
 import React from 'react';
-import { Page } from '../../components';
+import { Page, TransactionTable } from '../../components';
 
 const AccountDetail: React.FC = () => {
-  return <Page>Hello account detail</Page>
+  return (
+    <Page>
+      <TransactionTable />
+    </Page>
+  );
 };
 
 export default AccountDetail;

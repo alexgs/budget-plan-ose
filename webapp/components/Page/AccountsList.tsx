@@ -37,6 +37,7 @@ export const AccountsList: React.FC = () => {
     return <Loader variant="bars" />;
   }
 
+  // TODO The "active" conditional doesn't work correctly
   const content = accountsData.map((account: FinancialAccount) => {
     const accountPath = `/accounts/${account.id}`;
     return (
@@ -54,6 +55,14 @@ export const AccountsList: React.FC = () => {
   return (
     <div>
       <Divider my="sm" />
+      <Link key="all-transactions" href="/transactions" passHref>
+        <NavLink
+          active={router.pathname === '/transactions'}
+          component="a"
+          label="All Transactions"
+          icon={<FontAwesomeIcon icon={faPiggyBank} />}
+        />
+      </Link>
       {content}
     </div>
   );
