@@ -37,10 +37,10 @@ const columns = [
     cell: (info) => formatAmount(info.getValue()),
     header: () => <span>Amount</span>,
   }),
-  columnHelper.accessor('status', {
-    cell: (info) => info.getValue(),
-    header: () => <span>Status</span>,
-  }),
+  // columnHelper.accessor('status', {
+  //   cell: (info) => info.getValue(),
+  //   header: () => <span>Status</span>,
+  // }),
 ];
 
 interface Props {
