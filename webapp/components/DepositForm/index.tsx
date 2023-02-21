@@ -17,7 +17,11 @@ import { FC, PropsWithChildren } from 'react';
 
 import { formatAmount, formatClientDate } from '../../client-lib';
 import { CategoryValues } from '../../client-lib/types';
-import { AMOUNT_STATUS, dollarsToCents } from '../../shared-lib';
+import {
+  AMOUNT_STATUS,
+  TRANSACTION_TYPES,
+  dollarsToCents,
+} from '../../shared-lib';
 
 interface CategoryAmount {
   amount: number;
@@ -49,6 +53,7 @@ export const DepositForm: FC<Props> = (props) => {
   }, {} as { [id: string]: CategoryAmount });
 
   const form = useForm<FormValues>({
+    // TODO These types need to be fixed
     initialValues: {
       amounts: initialAmounts,
       accountId: props.accounts[0].value,
@@ -79,7 +84,7 @@ export const DepositForm: FC<Props> = (props) => {
       amounts,
       date: formatClientDate(values.date),
       description: values.description,
-      type: 'payment', // TODO Should this be "deposit" to better reflect the intent of this "event"?
+      type: TRANSACTION_TYPES.PAYMENT, // TODO Should this be "deposit" to better reflect the intent of this "event"?
     };
     console.log(payload);
 

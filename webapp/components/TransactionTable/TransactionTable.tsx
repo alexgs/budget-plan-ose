@@ -8,7 +8,7 @@ import React from 'react';
 import { TransactionRow } from '../../client-lib/types';
 
 interface Props {
-  data: TransactionRow[];
+  // data: TransactionRow[];
 }
 
 export const TransactionTable: React.FC<Props> = (props) => {
@@ -16,12 +16,26 @@ export const TransactionTable: React.FC<Props> = (props) => {
     <Table>
       <thead>
         <tr>
-          <td>Nothing to see here</td>
+          <td /> {/* Checkbox, maybe other controls */}
+          <td>Date</td>
+          <td>Account</td>
+          <td>Description</td>
+          <td>Category</td>
+          <td>Notes</td>
+          <td>Amount</td>
+          <td /> {/* Status icons (pending, cleared, etc.), maybe other controls */}
         </tr>
       </thead>
       <tbody>
         <tr>
+          <td /> {/* Checkbox, maybe other controls */}
+          <td>Date</td>
+          <td>Account</td>
           <td>Nothing to see here</td>
+          <td>Category</td>
+          <td>Notes</td>
+          <td>Amount</td>
+          <td /> {/* Status icons (pending, cleared, etc.), maybe other controls */}
         </tr>
       </tbody>
     </Table>

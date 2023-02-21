@@ -1,0 +1,45 @@
+[
+  {
+    "description": "Deposit a paycheck (one account subrecord, multiple category subrecords)",
+    "payload": {
+      "accounts": [
+        {
+          "accountId": "bcbea4af-43c0-420b-82db-dc69b79d9592",
+          "amount": 10000,
+          "isCredit": true,
+          "status": "amount-status.pending"
+        }
+      ],
+      "categories": [
+        {
+          "amount": 2000,
+          "categoryId": "0354c585-92d2-4675-99e1-4314bf62aae5",
+          "isCredit": true
+        },
+        {
+          "amount": 1000,
+          "categoryId": "16ce3af0-bd6c-474e-bb91-aadb0696ce67",
+          "isCredit": true
+        },
+        {
+          "amount": 5000,
+          "categoryId": "69abbfa9-2ddb-4450-8153-19b9bbc8f12f",
+          "isCredit": true
+        },
+        {
+          "amount": 500,
+          "categoryId": "d3ea399e-2245-421b-8efe-752c039a959b",
+          "isCredit": true
+        },
+        {
+          "amount": 1500,
+          "categoryId": "b6cc8156-6325-444f-abdb-ccf948b87975",
+          "isCredit": true
+        }
+      ],
+      "date": "2023-02-21",
+      "description": "Paycheck",
+      "type": "transaction-types.payment"
+    }
+  }
+]
