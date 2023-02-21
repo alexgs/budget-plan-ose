@@ -8,6 +8,10 @@ import { ApiSchema, Transaction } from '../../shared-lib';
 export async function processPayment(
   payload: ApiSchema.NewTransaction
 ): Promise<Transaction> {
-  const { amounts, ...record } = payload;
-  return database.saveTransaction(record, amounts);
+  const { accounts, categories, ...record } = payload;
+  // TODO Add some validations, like
+  //   - there must be at least one account subrecord
+  //   - there must be at least one category subrecord
+  //   - the sum of the account subrecords must equal the sum of the category subrecord
+  return database.saveTransaction(record, accounts, categories);
 }
