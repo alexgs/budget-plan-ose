@@ -2,21 +2,22 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { ApiSchema, SYSTEM_IDS, Transaction } from '../../shared-lib';
+import {
+  AMOUNT_STATUS,
+  SYSTEM_IDS,
+  ApiSchema,
+  Transaction,
+} from '../../shared-lib';
 import { database } from '../database';
 
 export async function processCategoryTransfer(
   payload: ApiSchema.NewTransaction
 ): Promise<Transaction> {
-  const { amounts, ...record } = payload;
-
-  const finalAmounts = amounts.map((amount) => ({
-    ...amount,
-    accountId: SYSTEM_IDS.ACCOUNTS.CATEGORY_TRANSFER,
-  }));
+  // Ignore the account that came in with the payload; we'll figure it out ourselves
+  const { categories, ...record } = payload;
 
   // TODO There should also be a check for duplicate categories
-  const sum = finalAmounts.reduce((output, current) => {
+  const sum = categories.reduce((output, current) => {
     if (current.isCredit) {
       return output + current.amount;
     }
@@ -28,5 +29,16 @@ export async function processCategoryTransfer(
     );
   }
 
-  return database.saveTransaction(record, finalAmounts);
+  return database.saveTransaction(
+    record,
+    [
+      {
+        accountId: SYSTEM_IDS.ACCOUNTS.CATEGORY_TRANSFER,
+        amount: 0,
+        isCredit: false,
+        status: AMOUNT_STATUS.CLEARED,
+      },
+    ],
+    categories
+  );
 }

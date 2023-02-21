@@ -4,6 +4,7 @@ import { transactionAccount } from './transaction-account';
 import { transactionCategory } from './transaction-category';
 
 export const newTransaction = yup.object({
+  // TODO Validate that we have never have multiple accounts **AND** multiple categories
   accounts: yup.array().of(transactionAccount).required(),
   categories: yup.array().of(transactionCategory).required(),
   date: yup.date().required(), // TODO Better client error message for this field

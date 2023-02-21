@@ -7,19 +7,19 @@ import { ApiSchema, Transaction } from '../../shared-lib';
 
 export async function saveTransaction(
   record: ApiSchema.NewTransactionRecord,
-  accounts: ApiSchema.NewTransactionAccount[],
-  categories: ApiSchema.NewTransactionCategory[]
+  accountSubrecords: ApiSchema.NewTransactionAccount[],
+  categorySubrecords: ApiSchema.NewTransactionCategory[]
 ): Promise<Transaction> {
   // TODO All of the DB updates in here should be wrapped in a single DB transaction
 
   // Update all accounts affected by the transaction
   await Promise.all(
-    accounts.map(async (account) => {
-      const operation = account.isCredit ? 'increment' : 'decrement';
+    accountSubrecords.map(async (accountSubrecord) => {
+      const operation = accountSubrecord.isCredit ? 'increment' : 'decrement';
       return prisma.financialAccount.update({
-        where: { id: account.accountId },
+        where: { id: accountSubrecord.accountId },
         data: {
-          balance: { [operation]: account.amount },
+          balance: { [operation]: accountSubrecord.amount },
         },
       });
     })
@@ -27,12 +27,12 @@ export async function saveTransaction(
 
   // Update all categories affected by the transaction
   await Promise.all(
-    categories.map(async (category) => {
-      const operation = category.isCredit ? 'increment' : 'decrement';
+    categorySubrecords.map(async (categorySubrecord) => {
+      const operation = categorySubrecord.isCredit ? 'increment' : 'decrement';
       return prisma.category.update({
-        where: { id: category.categoryId },
+        where: { id: categorySubrecord.categoryId },
         data: {
-          balance: { [operation]: category.amount },
+          balance: { [operation]: categorySubrecord.amount },
         },
       });
     })
@@ -44,7 +44,7 @@ export async function saveTransaction(
       ...record,
       accounts: {
         createMany: {
-          data: accounts,
+          data: accountSubrecords,
         },
       },
       categories: {
@@ -53,7 +53,7 @@ export async function saveTransaction(
           // sometimes it's just empty. This seems to be something that Prisma
           // controls and there's not much we can do to make it consistent.
           // We'll just have to handle the inconsistency as needed.
-          data: categories,
+          data: categorySubrecords,
         },
       },
     },
