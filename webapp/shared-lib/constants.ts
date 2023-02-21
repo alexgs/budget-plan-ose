@@ -18,6 +18,7 @@ export const NO_PARENT_CATEGORY = 'no-parent-category-id';
 export const TRANSACTION_TYPES = {
   PAYMENT: 'transaction-types.payment',
   CREDIT_CARD_CHARGE: 'transaction-types.credit-card-charge',
+  CREDIT_CARD_PAYMENT: 'transaction-types.credit-card-payment',
   ACCOUNT_TRANSFER: 'transaction-types.account-transfer',
   CATEGORY_TRANSFER: 'transaction-types.category-transfer',
 } as const;
