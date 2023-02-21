@@ -12,17 +12,20 @@ import { Page, TransactionTable } from '../../components';
 import { Account, ApiSchema, Category } from '../../shared-lib';
 
 const Transactions: React.FC = () => {
-  const { error: txnError, data: txnData } = useSWR<ApiSchema.Transaction[]>('/api/transactions', {
-    refreshInterval: 1000,
-  });
+  const { error: txnError, data: txnData } = useSWR<ApiSchema.Transaction[]>(
+    '/api/transactions',
+    { refreshInterval: 1000 }
+  );
 
-  const { error: accountError, data: accountData } = useSWR<Account[]>('/api/accounts', {
-    refreshInterval: 1000,
-  });
+  const { error: accountError, data: accountData } = useSWR<Account[]>(
+    '/api/accounts',
+    { refreshInterval: 1000 }
+  );
 
-  const { error: categoryError, data: categoryData } = useSWR<Category[]>('/api/categories', {
-    refreshInterval: 1000,
-  });
+  const { error: categoryError, data: categoryData } = useSWR<Category[]>(
+    '/api/categories',
+    { refreshInterval: 1000 }
+  );
 
   const anyError = accountError ?? categoryError ?? txnError;
   if (anyError) {
@@ -44,7 +47,11 @@ const Transactions: React.FC = () => {
 
   return (
     <Page>
-      <TransactionTable />
+      <TransactionTable
+        accountData={accountData}
+        categoryData={categoryData}
+        txnData={txnData}
+      />
     </Page>
   );
 };

@@ -41,5 +41,74 @@
       "description": "Paycheck",
       "type": "transaction-types.payment"
     }
+  },
+  {
+    "description": "Basic purchase 1",
+    "payload": {
+      "accounts": [
+        {
+          "accountId": "bcbea4af-43c0-420b-82db-dc69b79d9592",
+          "amount": 1000,
+          "isCredit": false,
+          "status": "amount-status.pending"
+        }
+      ],
+      "categories": [
+        {
+          "amount": 1000,
+          "categoryId": "0354c585-92d2-4675-99e1-4314bf62aae5",
+          "isCredit": false
+        }
+      ],
+      "date": "2023-02-21",
+      "description": "Disney+",
+      "type": "transaction-types.payment"
+    }
+  },
+  {
+    "description": "Basic purchase 2",
+    "payload": {
+      "accounts": [
+        {
+          "accountId": "bcbea4af-43c0-420b-82db-dc69b79d9592",
+          "amount": 3716,
+          "isCredit": false,
+          "status": "amount-status.pending"
+        }
+      ],
+      "categories": [
+        {
+          "amount": 3716,
+          "categoryId": "d3ea399e-2245-421b-8efe-752c039a959b",
+          "isCredit": false
+        }
+      ],
+      "date": "2023-02-21",
+      "description": "HOA fees",
+      "type": "transaction-types.payment"
+    }
+  },
+  {
+    "description": "Credit card charge 1",
+    "payload": {
+      "accounts": [
+        {
+          "accountId": "36c07603-7dc2-4fc1-b685-4a76bc5448e9",
+          "amount": 749,
+          "isCredit": false,
+          "status": "amount-status.pending"
+        }
+      ],
+      "categories": [
+        {
+          "amount": 749,
+          "categoryId": "16ce3af0-bd6c-474e-bb91-aadb0696ce67",
+          "isCredit": false
+        }
+      ],
+      "date": "2023-02-19",
+      "description": "Steam",
+      "type": "transaction-types.credit-card-charge"
+    }
   }
 ]
