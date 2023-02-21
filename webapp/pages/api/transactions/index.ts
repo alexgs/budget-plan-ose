@@ -129,19 +129,19 @@ export default async function handler(
         ) {
           console.error(
             '>> POST /api/transactions 400 For a credit card payment, there ' +
-              'shall be two account subrecords and zero category subrecords ' +
-              '(the server will determine the category according to ADR1). <<'
+              'shall be two account subrecords and zero category subrecords. ' +
+              '(The server will determine the category according to ADR1). <<'
           );
           isValidPayload = false;
         }
       }
 
       if (payload.type === TRANSACTION_TYPES.PAYMENT) {
-        if (payload.accounts?.length < 2 || payload.categories?.length < 2) {
+        if (payload.accounts?.length < 1 || payload.categories?.length < 1) {
           console.error(
             '>> POST /api/transactions 400 For a payment, there shall be at ' +
-              'least two account subrecords and at least two category ' +
-              'subrecords. <<'
+              'least one account subrecord and at least one category ' +
+              'subrecord. <<'
           );
           isValidPayload = false;
         }
@@ -151,6 +151,7 @@ export default async function handler(
         res
           .status(400)
           .send('Error: payload failed validation. Please check server logs.');
+        // TODO We need to stop processing here
       }
 
       // --- BUSINESS LOGIC ---

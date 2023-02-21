@@ -15,6 +15,8 @@ export function getFriendlyTransactionType(
       return 'Transfer (between categories)';
     case TRANSACTION_TYPES.CREDIT_CARD_CHARGE:
       return 'Credit card charge';
+    case TRANSACTION_TYPES.CREDIT_CARD_PAYMENT:
+      return 'Credit card payment';
     case TRANSACTION_TYPES.PAYMENT:
       return 'Payment';
     default:

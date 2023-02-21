@@ -3,75 +3,37 @@
  */
 
 import { Table } from '@mantine/core';
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
 import React from 'react';
+import { formatAmount } from '../../client-lib';
 
-import { formatAmount, formatClientDate } from '../../client-lib';
-import { TransactionRow } from '../../client-lib/types';
-
-
-const columnHelper = createColumnHelper<TransactionRow>();
-const columns = [
-  columnHelper.accessor('date', {
-    cell: (info) => formatClientDate(info.getValue()),
-    header: () => <span>Date</span>,
-  }),
-  columnHelper.accessor('account', {
-    cell: (info) => info.getValue(),
-    header: () => <span>Account</span>,
-  }),
-  columnHelper.accessor('description', {
-    cell: (info) => info.getValue(),
-    header: () => <span>Description</span>,
-  }),
-  columnHelper.accessor('category', {
-    cell: (info) => info.getValue(),
-    header: () => <span>Category</span>,
-  }),
-  columnHelper.accessor('amount', {
-    cell: (info) => formatAmount(info.getValue()),
-    header: () => <span>Amount</span>,
-  }),
-  // columnHelper.accessor('status', {
-  //   cell: (info) => info.getValue(),
-  //   header: () => <span>Status</span>,
-  // }),
-];
+import { Account, ApiSchema, Category } from '../../shared-lib';
 
 interface Props {
-  data: TransactionRow[]
+  accountData: Account[];
+  categoryData: Category[];
+  txnData: ApiSchema.Transaction[];
 }
 
 export const TransactionTable: React.FC<Props> = (props) => {
-  const table = useReactTable({
-    columns,
-    data: props.data,
-    getCoreRowModel: getCoreRowModel(),
-  });
+  function getFriendlyAccountName(accountId: string) {
+    return props.accountData.find((account) => account.id === accountId)?.description ?? 'Unknown';
+  }
 
-  function renderHeaders() {
-    return table.getFlatHeaders().map((header) => {
-      return (
-        <th key={header.id}>
-          {flexRender(header.column.columnDef.header, header.getContext())}
-        </th>
-      );
-    });
+  function getFriendlyCategoryName(categoryId: string) {
+    return props.categoryData.find((category) => category.id === categoryId)?.name ?? 'Unknown';
   }
 
   function renderRows() {
-    return table.getRowModel().rows.map((row) => (
-      <tr key={row.id}>
-        {row.getVisibleCells().map((cell) => (
-          <td key={cell.id}>
-            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-          </td>
-        ))}
+    return props.txnData.map((txn) => (
+      <tr key={txn.id}>
+        <td />{/* Checkbox, maybe other controls */}
+        <td>{txn.date}</td>
+        <td>{getFriendlyAccountName(txn.accounts[0].accountId)}</td>
+        <td>{txn.description}</td>
+        <td>{getFriendlyCategoryName(txn.categories[0].categoryId)}</td>
+        <td />{/* Notes */}
+        <td>{formatAmount(txn.categories[0].amount)}</td>
+        <td />{/* Status icons (pending, cleared, etc.), maybe other controls */}
       </tr>
     ));
   }
@@ -79,9 +41,20 @@ export const TransactionTable: React.FC<Props> = (props) => {
   return (
     <Table>
       <thead>
-        <tr>{renderHeaders()}</tr>
+        <tr>
+          <th />{/* Checkbox, maybe other controls */}
+          <th>Date</th>
+          <th>Account</th>
+          <th>Description</th>
+          <th>Category</th>
+          <th>Notes</th>
+          <th>Amount</th>
+          <th />{/* Status icons (pending, cleared, etc.), maybe other controls */}
+        </tr>
       </thead>
-      <tbody>{renderRows()}</tbody>
+      <tbody>
+        {renderRows()}
+      </tbody>
     </Table>
   );
 };
