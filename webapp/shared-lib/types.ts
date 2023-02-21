@@ -7,7 +7,8 @@ import {
   Category as PrismaCategory,
   FinancialAccount,
   Prisma,
-  TransactionAmount,
+  TransactionAccount,
+  TransactionCategory,
   TransactionRecord,
 } from '@prisma/client';
 
@@ -18,20 +19,28 @@ export namespace ApiSchema {
   export type NewAccount = InferType<typeof schemaObjects.newAccount>;
   export type NewCategory = InferType<typeof schemaObjects.newCategory>;
   export type NewTransaction = InferType<typeof schemaObjects.newTransaction>;
-  export type NewTransactionAmount = InferType<
-    typeof schemaObjects.transactionAmount
+  export type NewTransactionAccount = InferType<
+    typeof schemaObjects.transactionAccount
   >;
-  export type NewTransactionRecord = Omit<NewTransaction, 'amounts'>;
+  export type NewTransactionCategory = InferType<
+    typeof schemaObjects.transactionCategory
+  >;
+  export type NewTransactionRecord = Omit<
+    NewTransaction,
+    'accounts' | 'categories'
+  >;
   export type PatchCategory = InferType<typeof schemaObjects.patchCategory>;
   export type Transaction = Omit<TransactionRecord, 'date'> & {
     date: string;
-    amounts: TransactionAmount[];
+    accounts: TransactionAccount[];
+    categories: TransactionCategory[];
   };
 }
 
 export namespace DbSchema {
   export type NewAccount = Prisma.FinancialAccountCreateInput;
-  export type NewAmount = Prisma.TransactionAmountCreateInput;
+  export type NewTxnAccount = Prisma.TransactionAccountCreateInput;
+  export type NewTxnCategory = Prisma.TransactionCategoryCreateInput;
   export type NewCategory = Prisma.XOR<
     Prisma.CategoryCreateInput,
     Prisma.CategoryUncheckedCreateInput
@@ -42,6 +51,9 @@ export namespace DbSchema {
 export type Account = FinancialAccount;
 export type AccountType = typeof ACCOUNT_TYPES[keyof typeof ACCOUNT_TYPES];
 export type Category = PrismaCategory;
-export type Transaction = TransactionRecord & { amounts: TransactionAmount[] };
+export type Transaction = TransactionRecord & {
+  accounts: TransactionAccount[];
+  categories: TransactionCategory[];
+};
 export type TransactionType =
   typeof TRANSACTION_TYPES[keyof typeof TRANSACTION_TYPES];

@@ -47,13 +47,19 @@ export default async function handler(
       // --- VALIDATE PAYLOAD ---
 
       let payload: ApiSchema.NewTransaction = {
-        amounts: [
+        accounts: [
           {
             accountId: '',
             amount: 0,
-            categoryId: '',
             isCredit: false,
             status: AMOUNT_STATUS.PENDING,
+          },
+        ],
+        categories: [
+          {
+            amount: 0,
+            categoryId: '',
+            isCredit: false,
           },
         ],
         date: new Date(),
@@ -79,10 +85,69 @@ export default async function handler(
         return;
       }
 
-      if (payload.amounts?.length === 0) {
-        console.error(
-          '>> POST /api/transactions 400 Field `payload.amounts` must contain at least item. <<'
-        );
+      // Validate that we have the correct type and number of subrecords for the given transaction type
+      let isValidPayload = true;
+      if (payload.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
+        if (
+          payload.accounts?.length !== 2 ||
+          payload.categories?.length !== 0
+        ) {
+          console.error(
+            '>> POST /api/transactions 400 For an account transfer, there ' +
+              'shall be two account subrecords and zero category subrecords. <<'
+          );
+          isValidPayload = false;
+        }
+      }
+
+      if (payload.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
+        if (payload.accounts?.length !== 0 || payload.categories?.length < 2) {
+          console.error(
+            '>> POST /api/transactions 400 For a category transfer, there ' +
+              'shall be zero account subrecords and at least two category ' +
+              'subrecords. <<'
+          );
+          isValidPayload = false;
+        }
+      }
+
+      if (payload.type === TRANSACTION_TYPES.CREDIT_CARD_CHARGE) {
+        if (payload.accounts?.length !== 1 || payload.categories?.length < 1) {
+          console.error(
+            '>> POST /api/transactions 400 For a credit card charge, there ' +
+              'shall be one account subrecord and at least one category ' +
+              'subrecord. <<'
+          );
+          isValidPayload = false;
+        }
+      }
+
+      if (payload.type === TRANSACTION_TYPES.CREDIT_CARD_PAYMENT) {
+        if (
+          payload.accounts?.length !== 2 ||
+          payload.categories?.length !== 0
+        ) {
+          console.error(
+            '>> POST /api/transactions 400 For a credit card payment, there ' +
+              'shall be two account subrecords and zero category subrecords ' +
+              '(the server will determine the category according to ADR1). <<'
+          );
+          isValidPayload = false;
+        }
+      }
+
+      if (payload.type === TRANSACTION_TYPES.PAYMENT) {
+        if (payload.accounts?.length < 2 || payload.categories?.length < 2) {
+          console.error(
+            '>> POST /api/transactions 400 For a payment, there shall be at ' +
+              'least two account subrecords and at least two category ' +
+              'subrecords. <<'
+          );
+          isValidPayload = false;
+        }
+      }
+
+      if (!isValidPayload) {
         res
           .status(400)
           .send('Error: payload failed validation. Please check server logs.');
@@ -90,9 +155,7 @@ export default async function handler(
 
       // --- BUSINESS LOGIC ---
 
-      // TODO Set category and description for transfers
-      // TODO Don't let the `amount.notes` field be undefined; it should be defined or null
-      // TODO For payments, check that each `amount` item has a different category
+      // TODO For payments and credit card charges, check that each `category` subrecord has a different category ID
 
       let result: Transaction | null = null;
       if (payload.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
@@ -103,6 +166,9 @@ export default async function handler(
       }
       if (payload.type === TRANSACTION_TYPES.CREDIT_CARD_CHARGE) {
         result = await service.processCreditCardCharge(payload);
+      }
+      if (payload.type === TRANSACTION_TYPES.CREDIT_CARD_PAYMENT) {
+        result = await service.processCreditCardPayment(payload);
       }
       if (payload.type === TRANSACTION_TYPES.PAYMENT) {
         result = await service.processPayment(payload);

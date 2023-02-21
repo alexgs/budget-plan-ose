@@ -10,62 +10,75 @@ datasource db {
 // --- APPLICATION SCHEMA ---
 
 model Category {
-  id        String              @id(map: "categories_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  balance   Int?
-  name      String
-  order     Int?
-  parentId  String?             @map("parent_id") @db.Uuid
-  createdAt DateTime            @default(now()) @map("created_at")
-  updatedAt DateTime            @default(now()) @map("updated_at")
-  isSystem  Boolean             @default(false) @map("is_system")
-  parent    Category?           @relation("categoriesTocategories", fields: [parentId], references: [id], onDelete: Cascade, map: "categories_parent_id_fk")
-  children  Category[]          @relation("categoriesTocategories")
-  amounts   TransactionAmount[] @relation("categoriesTotransaction_amounts")
+  id           String                @id(map: "categories_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  balance      Int?
+  name         String
+  order        Int?
+  parentId     String?               @map("parent_id") @db.Uuid
+  createdAt    DateTime              @default(now()) @map("created_at")
+  updatedAt    DateTime              @default(now()) @map("updated_at")
+  isSystem     Boolean               @default(false) @map("is_system")
+  parent       Category?             @relation("categoriesTocategories", fields: [parentId], references: [id], onDelete: Cascade, map: "categories_parent_id_fk")
+  children     Category[]            @relation("categoriesTocategories")
+  transactions TransactionCategory[] @relation("categoriesTotransaction_categories")
 
   @@map("categories")
 }
 
 model FinancialAccount {
-  id          String              @id(map: "financial_accounts_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id          String               @id(map: "financial_accounts_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   description String
-  createdAt   DateTime            @default(now()) @map("created_at")
-  updatedAt   DateTime            @default(now()) @map("updated_at")
-  accountType String              @default("account-types.other") @map("account_type")
-  isSystem    Boolean             @default(false) @map("is_system")
-  balance     Int                 @default(0)
-  amounts     TransactionAmount[]
+  createdAt   DateTime             @default(now()) @map("created_at")
+  updatedAt   DateTime             @default(now()) @map("updated_at")
+  accountType String               @default("account-types.other") @map("account_type")
+  isSystem    Boolean              @default(false) @map("is_system")
+  balance     Int                  @default(0)
+  transaction TransactionAccount[] @relation("financial_accountsTotransaction_accounts")
 
   @@map("financial_accounts")
 }
 
-model TransactionAmount {
-  id         String            @id(map: "transaction_amounts_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  accountId  String            @map("account_id") @db.Uuid
-  recordId   String            @map("transaction_record_id") @db.Uuid
-  notes      String?
-  amount     Int
-  isCredit   Boolean           @default(false) @map("is_credit")
-  categoryId String            @map("category_id") @db.Uuid
-  status     String
-  createdAt  DateTime          @default(now()) @map("created_at")
-  updatedAt  DateTime          @default(now()) @map("updated_at")
-  category   Category          @relation("categoriesTotransaction_amounts", fields: [categoryId], references: [id], onDelete: Cascade, map: "transaction_amounts_category_id_fk")
-  account    FinancialAccount  @relation(fields: [accountId], references: [id], onDelete: Cascade, map: "transaction_amounts_financial_account_id_fk")
-  record     TransactionRecord @relation(fields: [recordId], references: [id], onDelete: Cascade, map: "transaction_amounts_transaction_record_id_fk")
+model TransactionAccount {
+  id          String            @id(map: "transaction_accounts_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  accountId   String            @map("account_id") @db.Uuid
+  recordId    String            @map("transaction_record_id") @db.Uuid
+  amount      Int
+  isCredit    Boolean           @default(false) @map("is_credit")
+  status      String
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @default(now()) @map("updated_at")
+  account     FinancialAccount  @relation("financial_accountsTotransaction_accounts", fields: [accountId], references: [id], onDelete: Cascade, map: "transaction_accounts_financial_account_id_fk")
+  transaction TransactionRecord @relation("transaction_accountsTotransaction_records", fields: [recordId], references: [id], onDelete: Cascade, map: "transaction_accounts_transaction_record_id_fk")
 
-  @@map("transaction_amounts")
+  @@map("transaction_accounts")
+}
+
+model TransactionCategory {
+  id          String            @id(map: "transaction_categories_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  recordId    String            @map("transaction_record_id") @db.Uuid
+  notes       String?
+  amount      Int
+  isCredit    Boolean           @default(false) @map("is_credit")
+  categoryId  String            @map("category_id") @db.Uuid
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @default(now()) @map("updated_at")
+  category    Category          @relation("categoriesTotransaction_categories", fields: [categoryId], references: [id], onDelete: Cascade, map: "transaction_categories_category_id_fk")
+  transaction TransactionRecord @relation("transaction_categoriesTotransaction_records", fields: [recordId], references: [id], onDelete: Cascade, map: "transaction_categories_transaction_record_id_fk")
+
+  @@map("transaction_categories")
 }
 
 model TransactionRecord {
-  id          String              @id(map: "transaction_records_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  date        DateTime            @db.Date
-  order       Int                 @default(autoincrement())
+  id          String                @id(map: "transaction_records_pk") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  date        DateTime              @db.Date
+  order       Int                   @default(autoincrement())
   description String
   type        String
-  templateId  String?             @map("template_id") @db.Uuid
-  createdAt   DateTime            @default(now()) @map("created_at")
-  updatedAt   DateTime            @default(now()) @map("updated_at")
-  amounts     TransactionAmount[]
+  templateId  String?               @map("template_id") @db.Uuid
+  createdAt   DateTime              @default(now()) @map("created_at")
+  updatedAt   DateTime              @default(now()) @map("updated_at")
+  accounts    TransactionAccount[]  @relation("transaction_accountsTotransaction_records")
+  categories  TransactionCategory[] @relation("transaction_categoriesTotransaction_records")
 
   @@map("transaction_records")
 }

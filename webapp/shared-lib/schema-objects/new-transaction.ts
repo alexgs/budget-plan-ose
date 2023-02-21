@@ -1,9 +1,12 @@
 import * as yup from 'yup';
 import { TRANSACTION_TYPES } from '../constants';
-import { transactionAmount } from './transaction-amount';
+import { transactionAccount } from './transaction-account';
+import { transactionCategory } from './transaction-category';
 
 export const newTransaction = yup.object({
-  amounts: yup.array().of(transactionAmount).required(),
+  // TODO Validate that we have never have multiple accounts **AND** multiple categories
+  accounts: yup.array().of(transactionAccount).required(),
+  categories: yup.array().of(transactionCategory).required(),
   date: yup.date().required(), // TODO Better client error message for this field
   description: yup.string().required(),
   type: yup.string().oneOf(Object.values(TRANSACTION_TYPES)).required(),
