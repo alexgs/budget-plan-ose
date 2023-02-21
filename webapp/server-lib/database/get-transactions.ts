@@ -6,6 +6,6 @@ import { prisma } from '../index';
 
 export async function getTransactions() {
   return prisma.transactionRecord.findMany({
-    include: { amounts: true },
+    include: { accounts: true, categories: true },
   });
 }

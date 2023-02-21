@@ -7,43 +7,59 @@ import { ApiSchema, Transaction } from '../../shared-lib';
 
 export async function saveTransaction(
   record: ApiSchema.NewTransactionRecord,
-  amounts: ApiSchema.NewTransactionAmount[]
+  accounts: ApiSchema.NewTransactionAccount[],
+  categories: ApiSchema.NewTransactionCategory[]
 ): Promise<Transaction> {
   // TODO All of the DB updates in here should be wrapped in a single DB transaction
 
-  // Update account and category balance for each amount
+  // Update all accounts affected by the transaction
   await Promise.all(
-    amounts.map(async (amount) => {
-      const operation = amount.isCredit ? 'increment' : 'decrement';
-      await prisma.financialAccount.update({
-        where: { id: amount.accountId },
+    accounts.map(async (account) => {
+      const operation = account.isCredit ? 'increment' : 'decrement';
+      return prisma.financialAccount.update({
+        where: { id: account.accountId },
         data: {
-          balance: { [operation]: amount.amount },
+          balance: { [operation]: account.amount },
         },
       });
+    })
+  );
+
+  // Update all categories affected by the transaction
+  await Promise.all(
+    categories.map(async (category) => {
+      const operation = category.isCredit ? 'increment' : 'decrement';
       return prisma.category.update({
-        where: { id: amount.categoryId },
+        where: { id: category.categoryId },
         data: {
-          balance: { [operation]: amount.amount },
+          balance: { [operation]: category.amount },
         },
       });
     })
   );
 
   // Create the transaction record and amount(s)
-  return  prisma.transactionRecord.create({
+  return prisma.transactionRecord.create({
     data: {
       ...record,
-      amounts: {
+      accounts: {
+        createMany: {
+          data: accounts,
+        },
+      },
+      categories: {
         createMany: {
           // Sometimes `undefined` `notes` field is `null` in the database, and
           // sometimes it's just empty. This seems to be something that Prisma
           // controls and there's not much we can do to make it consistent.
           // We'll just have to handle the inconsistency as needed.
-          data: amounts,
+          data: categories,
         },
       },
     },
-    include: { amounts: true },
+    include: {
+      accounts: true,
+      categories: true,
+    },
   });
 }

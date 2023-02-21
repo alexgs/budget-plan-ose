@@ -22,7 +22,13 @@ export namespace ApiSchema {
   export type NewTransactionAccount = InferType<
     typeof schemaObjects.transactionAccount
   >;
-  export type NewTransactionRecord = Omit<NewTransaction, 'accounts' | 'categories'>;
+  export type NewTransactionCategory = InferType<
+    typeof schemaObjects.transactionCategory
+  >;
+  export type NewTransactionRecord = Omit<
+    NewTransaction,
+    'accounts' | 'categories'
+  >;
   export type PatchCategory = InferType<typeof schemaObjects.patchCategory>;
   export type Transaction = Omit<TransactionRecord, 'date'> & {
     date: string;
@@ -47,7 +53,7 @@ export type AccountType = typeof ACCOUNT_TYPES[keyof typeof ACCOUNT_TYPES];
 export type Category = PrismaCategory;
 export type Transaction = TransactionRecord & {
   accounts: TransactionAccount[];
-  categories: TransactionCategory;
+  categories: TransactionCategory[];
 };
 export type TransactionType =
   typeof TRANSACTION_TYPES[keyof typeof TRANSACTION_TYPES];
