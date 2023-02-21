@@ -13,7 +13,7 @@ import { database } from '../database';
 export async function processCategoryTransfer(
   payload: ApiSchema.NewTransaction
 ): Promise<Transaction> {
-  // Ignore the account that came in with the payload; we'll figure it out ourselves
+  // Ignore the account that came in with the payload; we don't need it
   const { categories, ...record } = payload;
 
   // TODO There should also be a check for duplicate categories
@@ -29,16 +29,5 @@ export async function processCategoryTransfer(
     );
   }
 
-  return database.saveTransaction(
-    record,
-    [
-      {
-        accountId: SYSTEM_IDS.ACCOUNTS.CATEGORY_TRANSFER,
-        amount: 0,
-        isCredit: false,
-        status: AMOUNT_STATUS.CLEARED,
-      },
-    ],
-    categories
-  );
+  return database.saveTransaction(record, [], categories);
 }

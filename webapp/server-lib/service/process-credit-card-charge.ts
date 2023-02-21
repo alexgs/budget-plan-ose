@@ -20,18 +20,18 @@ export async function processCreditCardCharge(
   payload: ApiSchema.NewTransaction
 ): Promise<Transaction> {
   // Txn comes in with credit card account and categories; we just need to make a reservation to pay off the charge
-  const { amounts, ...record } = payload;
+  const { accounts, categories, ...record } = payload;
 
-  // Create the `amount` for the credit card payment reservation
-  const account: Account = await database.getAccount(amounts[0].accountId);
-  const sum = amounts.reduce((output, current) => output + current.amount, 0);
-  const reservationAmount: ApiSchema.NewTransactionAmount = {
-    categoryId: service.getReservationCategoryId(account),
+  // Create a category subrecord for the credit card payment reservation. See
+  // [ADR 1][1] for an explanation of this logic.
+  // [1]: https://app.clickup.com/8582989/v/dc/85xud-4647/85xud-187
+  const account: Account = await database.getAccount(accounts[0].accountId);
+  const sum = categories.reduce((output, current) => output + current.amount, 0);
+  const reservationSubrecord: ApiSchema.NewTransactionCategory = {
     amount: sum,
-    accountId: SYSTEM_IDS.ACCOUNTS.CATEGORY_TRANSFER,
+    categoryId: service.getReservationCategoryId(account),
     isCredit: true,
-    status: AMOUNT_STATUS.PENDING,
   };
 
-  return database.saveTransaction(record, [...amounts, reservationAmount]);
+  return database.saveTransaction(record, accounts, [...categories, reservationSubrecord]);
 }

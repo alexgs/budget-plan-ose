@@ -4,7 +4,6 @@
 
 import {
   ACCOUNT_TYPES,
-  SYSTEM_IDS,
   ApiSchema,
   Transaction,
 } from '../../shared-lib';
@@ -12,22 +11,18 @@ import { database } from '../database';
 import { service } from './index';
 
 async function determineCategoryId(
-  accountSubrecords: ApiSchema.NewTransactionAccount[],
-  isCreditCardPayment: boolean
+  accountSubrecords: ApiSchema.NewTransactionAccount[]
 ): Promise<string> {
-  if (isCreditCardPayment) {
-    const accounts = await Promise.all(
-      accountSubrecords.map(
-        async (subrecord) => await database.getAccount(subrecord.accountId)
-      )
-    );
-    const creditCardAccount =
-      accounts[0].accountType === ACCOUNT_TYPES.CREDIT_CARD
-        ? accounts[0]
-        : accounts[1];
-    return service.getReservationCategoryId(creditCardAccount);
-  }
-  return SYSTEM_IDS.CATEGORIES.ACCOUNT_TRANSFER;
+  const accounts = await Promise.all(
+    accountSubrecords.map(
+      async (subrecord) => await database.getAccount(subrecord.accountId)
+    )
+  );
+  const creditCardAccount =
+    accounts[0].accountType === ACCOUNT_TYPES.CREDIT_CARD
+      ? accounts[0]
+      : accounts[1];
+  return service.getReservationCategoryId(creditCardAccount);
 }
 
 export async function processAccountTransfer(
@@ -60,12 +55,16 @@ export async function processAccountTransfer(
     (account0type !== ACCOUNT_TYPES.CREDIT_CARD &&
       account1type === ACCOUNT_TYPES.CREDIT_CARD);
 
-  const categoryId = await determineCategoryId(accounts, isCreditCardPayment);
-  return database.saveTransaction(record, accounts, [
-    {
-      categoryId,
-      amount: 0,
-      isCredit: false,
-    },
-  ]);
+  if (isCreditCardPayment) {
+    const categoryId = await determineCategoryId(accounts);
+    return database.saveTransaction(record, accounts, [
+      {
+        categoryId,
+        amount: accounts[0].amount,
+        isCredit: false,
+      },
+    ]);
+  }
+
+  return database.saveTransaction(record, accounts, []);
 }
