@@ -14,6 +14,7 @@ import { getPublicCategories } from './get-public-categories';
 import { getReservationCategoryId } from './get-reservation-category-id';
 import { processAccountTransfer } from './process-account-transfer';
 import { processCategoryTransfer } from './process-category-transfer';
+import { processCreditCardPayment } from './process-credit-card-payment';
 import { processPayment } from './process-payment';
 import { processCreditCardCharge } from './process-credit-card-charge';
 import { updateCategory } from './update-category';
@@ -30,6 +31,7 @@ export const service = {
   processCategoryTransfer,
   processPayment,
   processCreditCardCharge,
+  processCreditCardPayment,
   updateCategory,
 
   /** @private */ ensureDefaultChildCategory,

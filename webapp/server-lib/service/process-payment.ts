@@ -9,9 +9,7 @@ export async function processPayment(
   payload: ApiSchema.NewTransaction
 ): Promise<Transaction> {
   const { accounts, categories, ...record } = payload;
-  // TODO Add some validations, like
-  //   - there must be at least one account subrecord
-  //   - there must be at least one category subrecord
-  //   - the sum of the account subrecords must equal the sum of the category subrecord
+  // TODO Check that the sum of the account subrecords equals the sum of
+  //   the category subrecords
   return database.saveTransaction(record, accounts, categories);
 }
