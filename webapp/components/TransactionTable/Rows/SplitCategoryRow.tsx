@@ -27,7 +27,7 @@ export const SplitCategoryRow: React.FC<Props> = (props) => {
   function renderSubrecords() {
     if (isExpanded) {
       return props.txn.categories.map((subrecord) => (
-        <tr>
+        <tr key={subrecord.id}>
           <td />{/* Checkbox, maybe other controls */}
           <td />{/* Date */}
           <td />{/* Account name */}

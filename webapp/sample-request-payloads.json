@@ -162,5 +162,26 @@
       "description": "Split purchase",
       "type": "transaction-types.payment"
     }
+  },
+  {
+    "description": "Category transfer 1",
+    "payload": {
+      "accounts": [],
+      "categories": [
+        {
+          "amount": 500,
+          "categoryId": "b6cc8156-6325-444f-abdb-ccf948b87975",
+          "isCredit": false
+        },
+        {
+          "amount": 500,
+          "categoryId": "d3ea399e-2245-421b-8efe-752c039a959b",
+          "isCredit": true
+        }
+      ],
+      "date": "2023-02-22",
+      "description": "Transfer",
+      "type": "transaction-types.category-transfer"
+    }
   }
 ]

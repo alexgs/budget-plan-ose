@@ -5,9 +5,20 @@
 import { Table } from '@mantine/core';
 import React from 'react';
 
-import { Account, ApiSchema, Category } from '../../shared-lib';
+import {
+  TRANSACTION_TYPES,
+  Account,
+  ApiSchema,
+  Category,
+} from '../../shared-lib';
 
-import { BasicRow, SplitAccountRow, SplitCategoryRow } from './Rows';
+import {
+  AccountTransferRow,
+  BasicRow,
+  CategoryTransferRow,
+  SplitAccountRow,
+  SplitCategoryRow,
+} from './Rows';
 
 interface Props {
   accountData: Account[];
@@ -32,6 +43,28 @@ export const TransactionTable: React.FC<Props> = (props) => {
       if (txn.accounts.length > 1 && txn.categories.length === 1) {
         return (
           <SplitAccountRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            txn={txn}
+          />
+        );
+      }
+
+      if (txn.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
+        return (
+          <AccountTransferRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            txn={txn}
+          />
+        );
+      }
+
+      if (txn.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
+        return (
+          <CategoryTransferRow
             key={txn.id}
             accountData={props.accountData}
             categoryData={props.categoryData}

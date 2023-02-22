@@ -3,5 +3,7 @@
  */
 
 export { BasicRow } from './BasicRow';
+export { AccountTransferRow } from './AccountTransferRow';
+export { CategoryTransferRow } from './CategoryTransferRow';
 export { SplitAccountRow } from './SplitAccountRow';
 export { SplitCategoryRow } from './SplitCategoryRow';

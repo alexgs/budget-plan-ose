@@ -21,7 +21,7 @@ interface Props {
 
 // TODO Add animation to expanding and collapsing rows
 
-export const SplitAccountRow: React.FC<Props> = (props) => {
+export const AccountTransferRow: React.FC<Props> = (props) => {
   const [isExpanded, setExpanded] = React.useState<boolean>(false);
 
   function renderSubrecords() {
@@ -56,16 +56,11 @@ export const SplitAccountRow: React.FC<Props> = (props) => {
           />
         </td>
         <td>{props.txn.date}</td>
-        <td style={{ fontStyle: 'italic' }}>Split</td>
+        <td style={{ fontStyle: 'italic' }}>Transfer</td>
         <td>{props.txn.description}</td>
-        <td>
-          {getFriendlyCategoryName(
-            props.categoryData,
-            props.txn.categories[0].categoryId
-          )}
-        </td>
+        <td>{/* Category */}</td>
         <td />{/* Notes */}
-        <td style={{ fontStyle: 'italic' }}>Split</td>
+        <td>{/* Amount */}</td>
         <td />{/* Status icons (pending, cleared, etc.), maybe other controls */}
       </tr>
       {renderSubrecords()}
