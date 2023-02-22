@@ -4,9 +4,21 @@
 
 import { Table } from '@mantine/core';
 import React from 'react';
-import { formatAmount } from '../../client-lib';
 
-import { Account, ApiSchema, Category } from '../../shared-lib';
+import {
+  TRANSACTION_TYPES,
+  Account,
+  ApiSchema,
+  Category,
+} from '../../shared-lib';
+
+import {
+  AccountTransferRow,
+  BasicRow,
+  CategoryTransferRow,
+  SplitAccountRow,
+  SplitCategoryRow,
+} from './Rows';
 
 interface Props {
   accountData: Account[];
@@ -15,27 +27,62 @@ interface Props {
 }
 
 export const TransactionTable: React.FC<Props> = (props) => {
-  function getFriendlyAccountName(accountId: string) {
-    return props.accountData.find((account) => account.id === accountId)?.description ?? 'Unknown';
-  }
-
-  function getFriendlyCategoryName(categoryId: string) {
-    return props.categoryData.find((category) => category.id === categoryId)?.name ?? 'Unknown';
-  }
-
   function renderRows() {
-    return props.txnData.map((txn) => (
-      <tr key={txn.id}>
-        <td />{/* Checkbox, maybe other controls */}
-        <td>{txn.date}</td>
-        <td>{getFriendlyAccountName(txn.accounts[0].accountId)}</td>
-        <td>{txn.description}</td>
-        <td>{getFriendlyCategoryName(txn.categories[0].categoryId)}</td>
-        <td />{/* Notes */}
-        <td>{formatAmount(txn.categories[0].amount)}</td>
-        <td />{/* Status icons (pending, cleared, etc.), maybe other controls */}
-      </tr>
-    ));
+    return props.txnData.map((txn) => {
+      if (txn.accounts.length === 1 && txn.categories.length > 1) {
+        return (
+          <SplitCategoryRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            txn={txn}
+          />
+        );
+      }
+
+      if (txn.accounts.length > 1 && txn.categories.length === 1) {
+        return (
+          <SplitAccountRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            txn={txn}
+          />
+        );
+      }
+
+      if (txn.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
+        return (
+          <AccountTransferRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            txn={txn}
+          />
+        );
+      }
+
+      if (txn.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
+        return (
+          <CategoryTransferRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            txn={txn}
+          />
+        );
+      }
+
+      // Default option
+      return (
+        <BasicRow
+          key={txn.id}
+          accountData={props.accountData}
+          categoryData={props.categoryData}
+          txn={txn}
+        />
+      );
+    });
   }
 
   return (
@@ -52,9 +99,7 @@ export const TransactionTable: React.FC<Props> = (props) => {
           <th />{/* Status icons (pending, cleared, etc.), maybe other controls */}
         </tr>
       </thead>
-      <tbody>
-        {renderRows()}
-      </tbody>
+      <tbody>{renderRows()}</tbody>
     </Table>
   );
 };
