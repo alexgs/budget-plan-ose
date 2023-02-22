@@ -38,6 +38,7 @@ interface Props {
 export const TransactionTable: React.FC<Props> = (props) => {
   const [isNewTxnFormVisible, setNewTxnFormVisible] =
     React.useState<boolean>(false);
+  const [isSaving, setSaving] = React.useState<boolean>(false);
   const form: NewTransactionFormHook = useForm({
     initialValues: {
       accounts: [
@@ -70,8 +71,11 @@ export const TransactionTable: React.FC<Props> = (props) => {
   function handleSplitCategory() {}
 
   function handleSubmit(values: NewTransactionFormValues) {
-    // TODO Display a loading modal
+    setSaving(true);
     const { balance, isCredit, ...record } = values;
+    form.reset();
+    setSaving(false);
+    setNewTxnFormVisible(false);
   }
 
   function renderRows() {
@@ -138,6 +142,7 @@ export const TransactionTable: React.FC<Props> = (props) => {
         <FormRow
           accountData={props.accountData}
           categoryData={props.categoryData}
+          isSaving={isSaving}
           mantineForm={form}
           onSplitAccount={handleSplitAccount}
           onSplitCategory={handleSplitCategory}

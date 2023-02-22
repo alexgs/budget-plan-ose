@@ -2,7 +2,9 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { TextInput } from '@mantine/core';
+import { faFloppyDisk } from '@fortawesome/pro-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Loader, TextInput, UnstyledButton } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import React from 'react';
 
@@ -18,12 +20,21 @@ import {
 interface Props {
   accountData: Account[];
   categoryData: Category[];
+  isSaving: boolean;
   mantineForm: NewTransactionFormHook;
   onSplitAccount: VoidFunction;
   onSplitCategory: VoidFunction;
 }
 
 export const FormRow: React.FC<Props> = (props) => {
+  if (props.isSaving) {
+    return (
+      <tr><td colSpan={8} style={{ textAlign: 'center'}}>
+        <Loader variant="bars" />
+      </td></tr>
+    )
+  }
+
   return (
     <tr>
       <td>{/* Checkbox, maybe other controls */}</td>
@@ -62,9 +73,14 @@ export const FormRow: React.FC<Props> = (props) => {
           mantineForm={props.mantineForm}
           subrecordType={'category'}
         />
-        <CreditField mantineForm={props.mantineForm} />
+        <CreditField mantineForm={props.mantineForm} subrecordType={'category'} />
       </td>
-      <td>{/* Status icons and other controls */}</td>
+      <td>
+        <UnstyledButton type="submit">
+          <FontAwesomeIcon icon={faFloppyDisk} />
+        </UnstyledButton>
+
+      </td>
     </tr>
   );
 };
