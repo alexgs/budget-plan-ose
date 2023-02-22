@@ -3,4 +3,5 @@
  */
 
 export { BasicRow } from './BasicRow';
+export { SplitAccountRow } from './SplitAccountRow';
 export { SplitCategoryRow } from './SplitCategoryRow';

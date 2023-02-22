@@ -110,5 +110,57 @@
       "description": "Steam",
       "type": "transaction-types.credit-card-charge"
     }
+  },
+  {
+    "description": "Account transfer 1",
+    "payload": {
+      "accounts": [
+        {
+          "accountId": "b9a170b5-2719-4146-8c62-b7c7e32b7536",
+          "amount": 5000,
+          "isCredit": false,
+          "status": "amount-status.cleared"
+        },
+        {
+          "accountId": "bcbea4af-43c0-420b-82db-dc69b79d9592",
+          "amount": 5000,
+          "isCredit": true,
+          "status": "amount-status.cleared"
+        }
+      ],
+      "categories": [],
+      "date": "2023-02-22",
+      "description": "Cash deposit",
+      "type": "transaction-types.account-transfer"
+    }
+  },
+  {
+    "description": "Split account payment 1",
+    "payload": {
+      "accounts": [
+        {
+          "accountId": "b9a170b5-2719-4146-8c62-b7c7e32b7536",
+          "amount": 750,
+          "isCredit": false,
+          "status": "amount-status.pending"
+        },
+        {
+          "accountId": "bcbea4af-43c0-420b-82db-dc69b79d9592",
+          "amount": 750,
+          "isCredit": false,
+          "status": "amount-status.pending"
+        }
+      ],
+      "categories": [
+        {
+          "amount": 1500,
+          "categoryId": "16ce3af0-bd6c-474e-bb91-aadb0696ce67",
+          "isCredit": false
+        }
+      ],
+      "date": "2023-02-22",
+      "description": "Split purchase",
+      "type": "transaction-types.payment"
+    }
   }
 ]

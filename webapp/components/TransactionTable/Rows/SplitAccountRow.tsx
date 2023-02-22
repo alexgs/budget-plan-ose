@@ -21,20 +21,21 @@ interface Props {
 
 // TODO Add animation to expanding and collapsing rows
 
-export const SplitCategoryRow: React.FC<Props> = (props) => {
+export const SplitAccountRow: React.FC<Props> = (props) => {
   const [isExpanded, setExpanded] = React.useState<boolean>(false);
 
   function renderSubrecords() {
     if (isExpanded) {
-      return props.txn.categories.map((subrecord) => (
+      return props.txn.accounts.map((subrecord) => (
         <tr>
           <td />{/* Checkbox, maybe other controls */}
           <td />{/* Date */}
-          <td />{/* Account name */}
-          <td />{/* Description */}
           <td>
-            {getFriendlyCategoryName(props.categoryData, subrecord.categoryId)}
+            {/* Account name */}
+            {getFriendlyAccountName(props.accountData, subrecord.accountId)}
           </td>
+          <td />{/* Description */}
+          <td />{/* Category */}
           <td />{/* Notes */}
           <td>{formatAmount(subrecord.amount)}</td>
           <td />{/* Status icons (pending, cleared, etc.), maybe other controls */}
@@ -55,14 +56,14 @@ export const SplitCategoryRow: React.FC<Props> = (props) => {
           />
         </td>
         <td>{props.txn.date}</td>
+        <td style={{ fontStyle: 'italic' }}>Split</td>
+        <td>{props.txn.description}</td>
         <td>
-          {getFriendlyAccountName(
-            props.accountData,
-            props.txn.accounts[0].accountId
+          {getFriendlyCategoryName(
+            props.categoryData,
+            props.txn.categories[0].categoryId
           )}
         </td>
-        <td>{props.txn.description}</td>
-        <td style={{ fontStyle: 'italic' }}>Split</td>
         <td />{/* Notes */}
         <td style={{ fontStyle: 'italic' }}>Split</td>
         <td />{/* Status icons (pending, cleared, etc.), maybe other controls */}

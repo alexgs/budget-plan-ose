@@ -7,7 +7,7 @@ import React from 'react';
 
 import { Account, ApiSchema, Category } from '../../shared-lib';
 
-import { BasicRow, SplitCategoryRow } from './Rows';
+import { BasicRow, SplitAccountRow, SplitCategoryRow } from './Rows';
 
 interface Props {
   accountData: Account[];
@@ -21,6 +21,17 @@ export const TransactionTable: React.FC<Props> = (props) => {
       if (txn.accounts.length === 1 && txn.categories.length > 1) {
         return (
           <SplitCategoryRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            txn={txn}
+          />
+        );
+      }
+
+      if (txn.accounts.length > 1 && txn.categories.length === 1) {
+        return (
+          <SplitAccountRow
             key={txn.id}
             accountData={props.accountData}
             categoryData={props.categoryData}
