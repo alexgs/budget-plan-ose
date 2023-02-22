@@ -19,6 +19,31 @@ interface Props {
 }
 
 export const SplitCategoryRow: React.FC<Props> = (props) => {
+  const [isExpanded, setExpanded] = React.useState<boolean>(true);
+
+  function renderSubrecords() {
+    if (isExpanded) {
+      return props.txn.categories.map(subrecord => (
+        <tr>
+          <td />{/* Checkbox, maybe other controls */}
+          <td />{/* Date */}
+          <td />{/* Account name */}
+          <td />{/* Description */}
+          <td>
+            {getFriendlyCategoryName(
+              props.categoryData,
+              subrecord.categoryId
+            )}
+          </td>
+          <td />{/* Notes */}
+          <td>{formatAmount(subrecord.amount)}</td>
+          <td />{/* Status icons (pending, cleared, etc.), maybe other controls */}
+        </tr>
+      ))
+    }
+    return null;
+  }
+
   return (
     <>
       <tr>
@@ -31,31 +56,12 @@ export const SplitCategoryRow: React.FC<Props> = (props) => {
           )}
         </td>
         <td>{props.txn.description}</td>
-        <td>
-          {getFriendlyCategoryName(
-            props.categoryData,
-            props.txn.categories[0].categoryId
-          )}
-        </td>
+        <td style={{ fontStyle: 'italic' }}>Split</td>
         <td />{/* Notes */}
-        <td>{formatAmount(props.txn.categories[0].amount)}</td>
+        <td style={{ fontStyle: 'italic' }}>Split</td>
         <td />{/* Status icons (pending, cleared, etc.), maybe other controls */}
       </tr>
-      <tr>
-        <td />{/* Checkbox, maybe other controls */}
-        <td />{/* Date */}
-        <td />{/* Account name */}
-        <td />{/* Description */}
-        <td>
-          {getFriendlyCategoryName(
-            props.categoryData,
-            props.txn.categories[1].categoryId
-          )}
-        </td>
-        <td />{/* Notes */}
-        <td>{formatAmount(props.txn.categories[1].amount)}</td>
-        <td />{/* Status icons (pending, cleared, etc.), maybe other controls */}
-      </tr>
+      {renderSubrecords()}
     </>
   );
 };
