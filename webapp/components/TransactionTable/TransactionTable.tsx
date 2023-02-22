@@ -3,13 +3,21 @@
  */
 
 import { Table } from '@mantine/core';
+import { useForm, yupResolver } from '@mantine/form';
 import React from 'react';
 
 import {
+  NewTransactionFormHook,
+  NewTransactionFormValues,
+} from '../../client-lib/types';
+import {
+  AMOUNT_STATUS,
   TRANSACTION_TYPES,
   Account,
   ApiSchema,
   Category,
+  TransactionType,
+  schemaObjects,
 } from '../../shared-lib';
 
 import {
@@ -27,6 +35,38 @@ interface Props {
 }
 
 export const TransactionTable: React.FC<Props> = (props) => {
+  const form: NewTransactionFormHook = useForm({
+    initialValues: {
+      accounts: [
+        {
+          accountId: props.accountData[0].id,
+          amount: 0,
+          isCredit: false as boolean,
+          status: AMOUNT_STATUS.PENDING,
+        },
+      ],
+      balance: 0, // Client-only field
+      categories: [
+        {
+          amount: 0,
+          categoryId: props.categoryData[0].id,
+          isCredit: false as boolean,
+        },
+      ],
+      date: new Date(),
+      description: '',
+      isCredit: false as boolean, // Client-only field
+      type: TRANSACTION_TYPES.PAYMENT as TransactionType,
+    },
+    validate: yupResolver(schemaObjects.newTransaction),
+    validateInputOnChange: true,
+  });
+
+  function handleSubmit(values: NewTransactionFormValues) {
+    // TODO Display a loading modal
+    const { balance, isCredit, ...record } = values;
+  }
+
   function renderRows() {
     return props.txnData.map((txn) => {
       if (txn.accounts.length === 1 && txn.categories.length > 1) {
@@ -85,21 +125,36 @@ export const TransactionTable: React.FC<Props> = (props) => {
     });
   }
 
+  function renderTopRow() {
+    return (
+      <tr>
+        <td colSpan={8}>Add new transaction</td>
+      </tr>
+    );
+  }
+
   return (
-    <Table>
-      <thead>
-        <tr>
-          <th />{/* Checkbox, maybe other controls */}
-          <th>Date</th>
-          <th>Account</th>
-          <th>Description</th>
-          <th>Category</th>
-          <th>Notes</th>
-          <th>Amount</th>
-          <th />{/* Status icons (pending, cleared, etc.), maybe other controls */}
-        </tr>
-      </thead>
-      <tbody>{renderRows()}</tbody>
-    </Table>
+    <form
+      onSubmit={form.onSubmit(handleSubmit, (values) => console.error(values))}
+    >
+      <Table>
+        <thead>
+          <tr>
+            <th />{/* Checkbox, maybe other controls */}
+            <th>Date</th>
+            <th>Account</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Notes</th>
+            <th>Amount</th>
+            <th />{/* Status icons (pending, cleared, etc.), maybe other controls */}
+          </tr>
+        </thead>
+        <tbody>
+          {renderTopRow()}
+          {renderRows()}
+        </tbody>
+      </Table>
+    </form>
   );
 };
