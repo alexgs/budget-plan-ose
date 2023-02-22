@@ -3,3 +3,4 @@
  */
 
 export { BasicRow } from './BasicRow';
+export { SplitCategoryRow } from './SplitCategoryRow';

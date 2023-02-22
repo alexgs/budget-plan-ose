@@ -7,7 +7,7 @@ import React from 'react';
 
 import { Account, ApiSchema, Category } from '../../shared-lib';
 
-import { BasicRow } from './Rows';
+import { BasicRow, SplitCategoryRow } from './Rows';
 
 interface Props {
   accountData: Account[];
@@ -17,14 +17,28 @@ interface Props {
 
 export const TransactionTable: React.FC<Props> = (props) => {
   function renderRows() {
-    return props.txnData.map((txn) => (
-      <BasicRow
-        key={txn.id}
-        accountData={props.accountData}
-        categoryData={props.categoryData}
-        txn={txn}
-      />
-    ));
+    return props.txnData.map((txn) => {
+      if (txn.accounts.length === 1 && txn.categories.length > 1) {
+        return (
+          <SplitCategoryRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            txn={txn}
+          />
+        );
+      }
+
+      // Default option
+      return (
+        <BasicRow
+          key={txn.id}
+          accountData={props.accountData}
+          categoryData={props.categoryData}
+          txn={txn}
+        />
+      );
+    });
   }
 
   return (
@@ -41,9 +55,7 @@ export const TransactionTable: React.FC<Props> = (props) => {
           <th />{/* Status icons (pending, cleared, etc.), maybe other controls */}
         </tr>
       </thead>
-      <tbody>
-        {renderRows()}
-      </tbody>
+      <tbody>{renderRows()}</tbody>
     </Table>
   );
 };
