@@ -20,7 +20,7 @@ export const AccountField: React.FC<Props> = (props) => {
     label: account.description,
   }));
   const index = props.index ?? 0;
-  const fieldPath = `amounts.${index}.accountId`;
+  const fieldPath = `accounts.${index}.accountId`;
 
   function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
     const value = event.currentTarget.value;

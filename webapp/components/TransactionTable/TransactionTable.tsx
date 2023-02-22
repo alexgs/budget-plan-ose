@@ -4,8 +4,10 @@
 
 import { Button, Table } from '@mantine/core';
 import { useForm, yupResolver } from '@mantine/form';
+import { showNotification } from '@mantine/notifications';
 import React from 'react';
 
+import { formatClientDate } from '../../client-lib';
 import {
   NewTransactionFormHook,
   NewTransactionFormValues,
@@ -17,6 +19,7 @@ import {
   ApiSchema,
   Category,
   TransactionType,
+  dollarsToCents,
   schemaObjects,
 } from '../../shared-lib';
 
@@ -73,9 +76,49 @@ export const TransactionTable: React.FC<Props> = (props) => {
   function handleSubmit(values: NewTransactionFormValues) {
     setSaving(true);
     const { balance, isCredit, ...record } = values;
-    form.reset();
-    setSaving(false);
-    setNewTxnFormVisible(false);
+    if (record.accounts.length === 1 && record.categories.length === 1) {
+      record.categories[0].amount = dollarsToCents(record.categories[0].amount);
+      record.accounts[0].amount = record.categories[0].amount;
+      record.accounts[0].isCredit = record.categories[0].isCredit;
+    } else {
+      throw new Error('Unimplemented');
+    }
+
+    requestPostTransaction(record).then(() => {
+      form.reset();
+      setSaving(false);
+      setNewTxnFormVisible(false);
+    });
+  }
+
+  async function requestPostTransaction(payload: ApiSchema.NewTransaction) {
+    const responseData = await fetch('/api/transactions', {
+      body: JSON.stringify({
+        ...payload,
+        // Mantine makes us store the date as a `Date` object. The API only
+        //   deals with strings in YYYY-MM-DD (see project README for more
+        //   detail), so we need to format the date in the payload.
+        date: formatClientDate(payload.date),
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    })
+      .then((response) => response.json())
+      .catch((e) => {
+        console.error(e);
+        showNotification({
+          color: 'red',
+          message: 'Something went wrong! Please check the logs.',
+          title: 'Error',
+        });
+      });
+
+    showNotification({
+      message: `Saved transaction "${responseData.description}"`,
+      title: 'Success',
+    });
   }
 
   function renderRows() {

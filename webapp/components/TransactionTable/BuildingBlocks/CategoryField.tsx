@@ -33,7 +33,7 @@ export const CategoryField: React.FC<Props> = (props) => {
         my="sm"
         required
         searchable
-        {...props.mantineForm.getInputProps(`amounts.${index}.categoryId`)}
+        {...props.mantineForm.getInputProps(`categories.${index}.categoryId`)}
       />
     );
   }
@@ -43,7 +43,7 @@ export const CategoryField: React.FC<Props> = (props) => {
       data={categories}
       my="sm"
       required
-      {...props.mantineForm.getInputProps(`amounts.${index}.categoryId`)}
+      {...props.mantineForm.getInputProps(`categories.${index}.categoryId`)}
     />
   );
 };

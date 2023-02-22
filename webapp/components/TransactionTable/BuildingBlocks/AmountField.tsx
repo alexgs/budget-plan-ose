@@ -36,7 +36,7 @@ export const AmountField: React.FC<Props> = (props) => {
           ? amountStyle
           : {}
       }
-      {...props.mantineForm.getInputProps(`amounts.${index}.amount`)}
+      {...props.mantineForm.getInputProps(`${subrecordType}.${index}.amount`)}
     />
   );
 };
