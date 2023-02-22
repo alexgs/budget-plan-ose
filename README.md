@@ -39,6 +39,9 @@ High level logic that is not otherwise expressed or captured in the schema.
   - I think there might be a problem if the Node.js server and the database cluster are in different timezones, but let's not find out.
 - The logic for credit card charges and payments is explained in [ADR 1][3].
 - I'm using Mantine's form library. One consequence of this decision is that form state stores dollar amounts (not cents), so we always have to convert from dollars to cents when we're done with a form (e.g. when submitting the form and sending the data to the API). It's just one of those things, not really any way around it.
+- I tried using `@tanstack/react-table`, but I didn't like it
+  - The documentation is mostly examples, which is fine for the easy stuff, but examples and guides are better for more complicated stuff.
+  - A lot of the bells and whistles (e.g. expanding rows, pagination) were difficult to use or overkill (I'm paginating and filtering and stuff on the server)
 
 ## Notes
 
