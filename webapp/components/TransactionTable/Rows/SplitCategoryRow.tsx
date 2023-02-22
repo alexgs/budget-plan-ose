@@ -27,23 +27,20 @@ export const SplitCategoryRow: React.FC<Props> = (props) => {
 
   function renderSubrecords() {
     if (isExpanded) {
-      return props.txn.categories.map(subrecord => (
+      return props.txn.categories.map((subrecord) => (
         <tr>
           <td />{/* Checkbox, maybe other controls */}
           <td />{/* Date */}
           <td />{/* Account name */}
           <td />{/* Description */}
           <td>
-            {getFriendlyCategoryName(
-              props.categoryData,
-              subrecord.categoryId
-            )}
+            {getFriendlyCategoryName(props.categoryData, subrecord.categoryId)}
           </td>
           <td />{/* Notes */}
           <td>{formatAmount(subrecord.amount)}</td>
           <td />{/* Status icons (pending, cleared, etc.), maybe other controls */}
         </tr>
-      ))
+      ));
     }
     return null;
   }
@@ -53,7 +50,10 @@ export const SplitCategoryRow: React.FC<Props> = (props) => {
       <tr>
         <td>
           {/* Checkbox, maybe other controls */}
-          <ExpandRowButton onClick={() => setExpanded((prevState) => !prevState)} />
+          <ExpandRowButton
+            isExpanded={isExpanded}
+            onClick={() => setExpanded((prevState) => !prevState)}
+          />
         </td>
         <td>{props.txn.date}</td>
         <td>
