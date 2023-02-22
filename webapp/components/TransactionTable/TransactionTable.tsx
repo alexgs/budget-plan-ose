@@ -2,7 +2,7 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { Table } from '@mantine/core';
+import { Button, Table } from '@mantine/core';
 import { useForm, yupResolver } from '@mantine/form';
 import React from 'react';
 
@@ -24,6 +24,7 @@ import {
   AccountTransferRow,
   BasicRow,
   CategoryTransferRow,
+  FormRow,
   SplitAccountRow,
   SplitCategoryRow,
 } from './Rows';
@@ -35,6 +36,8 @@ interface Props {
 }
 
 export const TransactionTable: React.FC<Props> = (props) => {
+  const [isNewTxnFormVisible, setNewTxnFormVisible] =
+    React.useState<boolean>(false);
   const form: NewTransactionFormHook = useForm({
     initialValues: {
       accounts: [
@@ -61,6 +64,10 @@ export const TransactionTable: React.FC<Props> = (props) => {
     validate: yupResolver(schemaObjects.newTransaction),
     validateInputOnChange: true,
   });
+
+  function handleSplitAccount() {}
+
+  function handleSplitCategory() {}
 
   function handleSubmit(values: NewTransactionFormValues) {
     // TODO Display a loading modal
@@ -126,9 +133,28 @@ export const TransactionTable: React.FC<Props> = (props) => {
   }
 
   function renderTopRow() {
+    if (isNewTxnFormVisible) {
+      return (
+        <FormRow
+          accountData={props.accountData}
+          categoryData={props.categoryData}
+          mantineForm={form}
+          onSplitAccount={handleSplitAccount}
+          onSplitCategory={handleSplitCategory}
+        />
+      );
+    }
     return (
       <tr>
-        <td colSpan={8}>Add new transaction</td>
+        <td colSpan={8}>
+          <Button
+            variant="outline"
+            compact
+            onClick={() => setNewTxnFormVisible(true)}
+          >
+            Add New Transaction
+          </Button>
+        </td>
       </tr>
     );
   }
