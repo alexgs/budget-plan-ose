@@ -11,12 +11,16 @@ import {
   getFriendlyAccountName,
   getFriendlyCategoryName,
 } from '../../../shared-lib';
+import { ExpandRowButton } from '../BuildingBlocks';
 
 interface Props {
   accountData: Account[];
   categoryData: Category[];
   txn: ApiSchema.Transaction;
 }
+
+// TODO Rotate chevron when expanded
+// TODO Add animation to expanding and collapsing rows
 
 export const SplitCategoryRow: React.FC<Props> = (props) => {
   const [isExpanded, setExpanded] = React.useState<boolean>(true);
@@ -47,7 +51,10 @@ export const SplitCategoryRow: React.FC<Props> = (props) => {
   return (
     <>
       <tr>
-        <td />{/* Checkbox, maybe other controls */}
+        <td>
+          {/* Checkbox, maybe other controls */}
+          <ExpandRowButton onClick={() => setExpanded((prevState) => !prevState)} />
+        </td>
         <td>{props.txn.date}</td>
         <td>
           {getFriendlyAccountName(
