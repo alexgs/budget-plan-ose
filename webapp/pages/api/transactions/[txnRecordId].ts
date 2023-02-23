@@ -6,12 +6,17 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
 import { ValidationError } from 'yup';
 
-import { nextAuthOptions, service } from '../../../server-lib';
+import {
+  formatTransaction,
+  nextAuthOptions,
+  service,
+} from '../../../server-lib';
 import {
   AMOUNT_STATUS,
   TRANSACTION_TYPES,
   ApiSchema,
   schemaObjects,
+  Transaction,
 } from '../../../shared-lib';
 
 export default async function handler(
@@ -64,7 +69,8 @@ export default async function handler(
         return;
       }
 
-      const { errorMessage, isValidPayload } = service.validateTxnPayload(payload);
+      const { errorMessage, isValidPayload } =
+        service.validateTxnPayload(payload);
       if (!isValidPayload) {
         console.error(errorMessage);
         res
@@ -73,7 +79,12 @@ export default async function handler(
         return;
       }
 
+      // --- BUSINESS LOGIC ---
 
+      // TODO For payments and credit card charges, check that each `category` subrecord has a different category ID
+
+      let result: Transaction = service.updateTransaction(payload);
+      res.send(formatTransaction(result));
     } else {
       res.status(405).setHeader('Allow', 'PUT').send('Method not allowed.');
     }
