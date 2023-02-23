@@ -22,6 +22,7 @@ interface Props {
   categoryData: Category[];
   isSaving: boolean;
   mantineForm: NewTransactionFormHook;
+  onAccountChange: (accountId: string) => void;
   onSplitAccount: VoidFunction;
   onSplitCategory: VoidFunction;
 }
@@ -51,6 +52,7 @@ export const FormRow: React.FC<Props> = (props) => {
         <AccountField
           accountData={props.accountData}
           mantineForm={props.mantineForm}
+          onAccountChange={props.onAccountChange}
         />
       </td>
       <td>

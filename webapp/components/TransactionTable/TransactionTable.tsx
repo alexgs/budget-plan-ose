@@ -13,9 +13,11 @@ import {
   NewTransactionFormValues,
 } from '../../client-lib/types';
 import {
+  ACCOUNT_TYPES,
   AMOUNT_STATUS,
   TRANSACTION_TYPES,
   Account,
+  AccountType,
   ApiSchema,
   Category,
   TransactionType,
@@ -68,6 +70,23 @@ export const TransactionTable: React.FC<Props> = (props) => {
     validate: yupResolver(schemaObjects.newTransaction),
     validateInputOnChange: true,
   });
+
+  function getAccountType(accountId: string): AccountType {
+    const account = props.accountData.find((account) => account.id === accountId);
+    if (account) {
+      return account.accountType as AccountType;
+    }
+    throw new Error(`Unknown account id ${accountId}.`);
+  }
+
+  function handleAccountChange(accountId: string) {
+    const accountType = getAccountType(accountId);
+    if (accountType === ACCOUNT_TYPES.CREDIT_CARD) {
+      form.setFieldValue('type', TRANSACTION_TYPES.CREDIT_CARD_CHARGE);
+    } else {
+      form.setFieldValue('type', TRANSACTION_TYPES.PAYMENT);
+    }
+  }
 
   function handleSplitAccount() {}
 
@@ -187,6 +206,7 @@ export const TransactionTable: React.FC<Props> = (props) => {
           categoryData={props.categoryData}
           isSaving={isSaving}
           mantineForm={form}
+          onAccountChange={handleAccountChange}
           onSplitAccount={handleSplitAccount}
           onSplitCategory={handleSplitCategory}
         />
