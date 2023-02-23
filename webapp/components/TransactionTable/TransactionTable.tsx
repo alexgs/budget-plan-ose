@@ -32,6 +32,7 @@ import {
   CategoryTransferRow,
   SplitAccountRow,
   SplitCategoryRow,
+  SplitFormRow,
 } from './Rows';
 
 interface Props {
@@ -90,7 +91,13 @@ export const TransactionTable: React.FC<Props> = (props) => {
 
   function handleSplitAccount() {}
 
-  function handleSplitCategory() {}
+  function handleSplitCategory() {
+    form.insertListItem('categories', {
+      amount: 0,
+      categoryId: props.categoryData[0].id,
+      isCredit: false as boolean,
+    });
+  }
 
   function handleSubmit(values: NewTransactionFormValues) {
     setSaving(true);
@@ -200,8 +207,21 @@ export const TransactionTable: React.FC<Props> = (props) => {
 
   function renderTopRow() {
     if (isNewTxnFormVisible) {
+      if (form.values.accounts.length === 1 && form.values.categories.length === 1) {
+        return (
+          <BasicFormRow
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            isSaving={isSaving}
+            mantineForm={form}
+            onAccountChange={handleAccountChange}
+            onSplitAccount={handleSplitAccount}
+            onSplitCategory={handleSplitCategory}
+          />
+        );
+      }
       return (
-        <BasicFormRow
+        <SplitFormRow
           accountData={props.accountData}
           categoryData={props.categoryData}
           isSaving={isSaving}

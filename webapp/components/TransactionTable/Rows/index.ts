@@ -2,9 +2,10 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
+export { BasicFormRow } from './BasicFormRow';
 export { BasicRow } from './BasicRow';
 export { AccountTransferRow } from './AccountTransferRow';
 export { CategoryTransferRow } from './CategoryTransferRow';
-export { BasicFormRow } from './BasicFormRow';
 export { SplitAccountRow } from './SplitAccountRow';
 export { SplitCategoryRow } from './SplitCategoryRow';
+export { SplitFormRow } from './SplitFormRow';
