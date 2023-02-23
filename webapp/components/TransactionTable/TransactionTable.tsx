@@ -23,6 +23,7 @@ import {
   TransactionType,
   dollarsToCents,
   schemaObjects,
+  sumSubrecords,
 } from '../../shared-lib';
 
 import {
@@ -45,6 +46,7 @@ export const TransactionTable: React.FC<Props> = (props) => {
   const [isNewTxnFormVisible, setNewTxnFormVisible] =
     React.useState<boolean>(false);
   const [isSaving, setSaving] = React.useState<boolean>(false);
+  const [nowEditing, setNowEditing] = React.useState<string | null>(null);
   const form: NewTransactionFormHook = useForm({
     initialValues: {
       accounts: [
@@ -91,6 +93,38 @@ export const TransactionTable: React.FC<Props> = (props) => {
     }
   }
 
+  function handleEditClick(recordId: string) {
+    const data = props.txnData.find((txn) => txn.id === recordId);
+    if (data) {
+      const accounts = data.accounts.map((sub) => ({
+        accountId: sub.accountId,
+        amount: sub.amount / 100,
+        isCredit: sub.isCredit,
+        status: sub.status,
+      }));
+      const categories = data.categories.map((sub) => ({
+        amount: sub.amount / 100,
+        categoryId: sub.categoryId,
+        isCredit: sub.isCredit,
+      }));
+      const balance = sumSubrecords(categories);
+      const isCredit = balance >= 0;
+
+      form.setValues({
+        accounts,
+        categories,
+        isCredit,
+        balance: Math.abs(balance),
+        date: new Date(data.date),
+        description: data.description,
+        type: data.type as TransactionType,
+      });
+      setNowEditing(recordId);
+    } else {
+      throw new Error(`Unable to find txn ID ${recordId}`);
+    }
+  }
+
   function handleSplitAccount() {}
 
   function handleSplitCategory() {
@@ -103,6 +137,7 @@ export const TransactionTable: React.FC<Props> = (props) => {
 
   function handleSubmit(values: NewTransactionFormValues) {
     setSaving(true);
+    setNowEditing(null);
     const { balance, isCredit, ...record } = values;
     if (record.accounts.length === 1 && record.categories.length === 1) {
       record.categories[0].amount = dollarsToCents(record.categories[0].amount);
@@ -158,6 +193,21 @@ export const TransactionTable: React.FC<Props> = (props) => {
 
   function renderRows() {
     return props.txnData.map((txn) => {
+      if (txn.id === nowEditing) {
+        return (
+          <BasicFormRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            isSaving={isSaving}
+            mantineForm={form}
+            onAccountChange={handleAccountChange}
+            onSplitAccount={handleSplitAccount}
+            onSplitCategory={handleSplitCategory}
+          />
+        );
+      }
+
       if (txn.accounts.length === 1 && txn.categories.length > 1) {
         return (
           <SplitCategoryRow
@@ -208,6 +258,7 @@ export const TransactionTable: React.FC<Props> = (props) => {
           key={txn.id}
           accountData={props.accountData}
           categoryData={props.categoryData}
+          onEditClick={handleEditClick}
           txn={txn}
         />
       );
