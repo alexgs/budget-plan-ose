@@ -18,6 +18,7 @@ import { processCreditCardPayment } from './process-credit-card-payment';
 import { processPayment } from './process-payment';
 import { processCreditCardCharge } from './process-credit-card-charge';
 import { updateCategory } from './update-category';
+import { validateTxnPayload } from './validate-txn-payload';
 
 export const service = {
   createAccount,
@@ -33,6 +34,7 @@ export const service = {
   processCreditCardCharge,
   processCreditCardPayment,
   updateCategory,
+  validateTxnPayload,
 
   /** @private */ ensureDefaultChildCategory,
   /** @private */ ensureSystemAccounts,
