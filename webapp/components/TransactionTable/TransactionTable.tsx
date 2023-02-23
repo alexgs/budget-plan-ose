@@ -27,11 +27,12 @@ import {
 
 import {
   AccountTransferRow,
+  BasicFormRow,
   BasicRow,
   CategoryTransferRow,
-  FormRow,
   SplitAccountRow,
   SplitCategoryRow,
+  SplitFormRow,
 } from './Rows';
 
 interface Props {
@@ -72,7 +73,9 @@ export const TransactionTable: React.FC<Props> = (props) => {
   });
 
   function getAccountType(accountId: string): AccountType {
-    const account = props.accountData.find((account) => account.id === accountId);
+    const account = props.accountData.find(
+      (account) => account.id === accountId
+    );
     if (account) {
       return account.accountType as AccountType;
     }
@@ -90,7 +93,13 @@ export const TransactionTable: React.FC<Props> = (props) => {
 
   function handleSplitAccount() {}
 
-  function handleSplitCategory() {}
+  function handleSplitCategory() {
+    form.insertListItem('categories', {
+      amount: 0,
+      categoryId: props.categoryData[0].id,
+      isCredit: false as boolean,
+    });
+  }
 
   function handleSubmit(values: NewTransactionFormValues) {
     setSaving(true);
@@ -99,6 +108,13 @@ export const TransactionTable: React.FC<Props> = (props) => {
       record.categories[0].amount = dollarsToCents(record.categories[0].amount);
       record.accounts[0].amount = record.categories[0].amount;
       record.accounts[0].isCredit = record.categories[0].isCredit;
+    } else if (record.accounts.length === 1 && record.categories.length > 1) {
+      record.categories = record.categories.map((subrecord) => ({
+        ...subrecord,
+        amount: dollarsToCents(subrecord.amount),
+      }));
+      record.accounts[0].amount = dollarsToCents(balance);
+      record.accounts[0].isCredit = isCredit;
     } else {
       throw new Error('Unimplemented');
     }
@@ -200,8 +216,24 @@ export const TransactionTable: React.FC<Props> = (props) => {
 
   function renderTopRow() {
     if (isNewTxnFormVisible) {
+      if (
+        form.values.accounts.length === 1 &&
+        form.values.categories.length === 1
+      ) {
+        return (
+          <BasicFormRow
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            isSaving={isSaving}
+            mantineForm={form}
+            onAccountChange={handleAccountChange}
+            onSplitAccount={handleSplitAccount}
+            onSplitCategory={handleSplitCategory}
+          />
+        );
+      }
       return (
-        <FormRow
+        <SplitFormRow
           accountData={props.accountData}
           categoryData={props.categoryData}
           isSaving={isSaving}
