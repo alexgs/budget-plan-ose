@@ -83,6 +83,45 @@ export const SplitFormRow: React.FC<Props> = (props) => {
     );
   }
 
+  function renderSubrecordRows() {
+    return props.mantineForm.values.categories.map((subrecord, index) => {
+      const splitButton =
+        index === props.mantineForm.values.categories.length - 1 ? (
+          <Button compact onClick={props.onSplitCategory} variant="subtle">
+            <FontAwesomeIcon icon={faSplit} />
+            &nbsp; Split
+          </Button>
+        ) : null;
+      return (
+        <tr key={`subrecord-${index}`}>
+          <td colSpan={4} />
+          <td style={{ textAlign: 'center' }}>
+            <CategoryField
+              categoryData={props.categoryData}
+              index={index}
+              mantineForm={props.mantineForm}
+            />
+            {splitButton}
+          </td>
+          <td>{/* Notes */}</td>
+          <td>
+            <AmountField
+              index={index}
+              mantineForm={props.mantineForm}
+              subrecordType={'category'}
+            />
+            <CreditField
+              index={index}
+              mantineForm={props.mantineForm}
+              subrecordType={'category'}
+            />
+          </td>
+          <td>{/* Buttons */}</td>
+        </tr>
+      );
+    });
+  }
+
   if (props.isSaving) {
     return (
       <tr>
@@ -152,31 +191,7 @@ export const SplitFormRow: React.FC<Props> = (props) => {
           </UnstyledButton>
         </td>
       </tr>
-      <tr>
-        <td colSpan={4} />
-        <td style={{ textAlign: 'center' }}>
-          <CategoryField
-            categoryData={props.categoryData}
-            mantineForm={props.mantineForm}
-          />
-          <Button compact onClick={props.onSplitCategory} variant="subtle">
-            <FontAwesomeIcon icon={faSplit} />
-            &nbsp; Split
-          </Button>
-        </td>
-        <td>{/* Notes */}</td>
-        <td>
-          <AmountField
-            mantineForm={props.mantineForm}
-            subrecordType={'category'}
-          />
-          <CreditField
-            mantineForm={props.mantineForm}
-            subrecordType={'category'}
-          />
-        </td>
-        <td>{/* Buttons */}</td>
-      </tr>
+      {renderSubrecordRows()}
     </>
   );
 };
