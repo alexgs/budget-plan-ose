@@ -6,6 +6,7 @@ import { newAccount } from './new-account';
 import { newCategory } from './new-category';
 import { newTransaction } from './new-transaction';
 import { patchCategory } from './patch-category';
+import { putTransaction } from './put-transaction';
 import { transactionAccount } from './transaction-account';
 import { transactionCategory } from './transaction-category';
 
@@ -14,6 +15,7 @@ export const schemaObjects = {
   newCategory,
   newTransaction,
   patchCategory,
+  putTransaction,
   transactionAccount,
   transactionCategory,
 };

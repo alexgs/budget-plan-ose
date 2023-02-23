@@ -30,6 +30,7 @@ export namespace ApiSchema {
     'accounts' | 'categories'
   >;
   export type PatchCategory = InferType<typeof schemaObjects.patchCategory>;
+  export type PutTransaction = InferType<typeof schemaObjects.putTransaction>;
   export type Transaction = Omit<TransactionRecord, 'date'> & {
     date: string;
     accounts: TransactionAccount[];

@@ -4,8 +4,15 @@
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth/next';
+import { ValidationError } from 'yup';
 
-import { nextAuthOptions } from '../../../server-lib';
+import { nextAuthOptions, service } from '../../../server-lib';
+import {
+  AMOUNT_STATUS,
+  TRANSACTION_TYPES,
+  ApiSchema,
+  schemaObjects,
+} from '../../../shared-lib';
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,8 +24,55 @@ export default async function handler(
     if (req.method === 'PUT') {
       // --- VALIDATE PAYLOAD ---
 
-      // TODO Validate with Yup schema
-      let payload = req.body;
+      let payload: ApiSchema.PutTransaction = {
+        accounts: [
+          {
+            accountId: '',
+            amount: 0,
+            isCredit: false,
+            status: AMOUNT_STATUS.PENDING,
+          },
+        ],
+        categories: [
+          {
+            amount: 0,
+            categoryId: '',
+            isCredit: false,
+          },
+        ],
+        date: new Date(),
+        description: '',
+        id: '',
+        type: TRANSACTION_TYPES.PAYMENT,
+      };
+      try {
+        // TODO Validate that the date is in YYYY-MM-DD format before converting to a `Date` object
+        payload = await schemaObjects.putTransaction.validate(req.body);
+      } catch (e: any) {
+        if (e.name && e.name === 'ValidationError') {
+          const error: ValidationError = e as ValidationError;
+          console.error(`>> POST /api/transactions 400 ${error.errors} <<`);
+          res
+            .status(400)
+            .send(
+              'Error: payload failed validation. Please check server logs.'
+            );
+        } else {
+          console.error(`>> Unknown error: ${e} <<`);
+          res.status(500).send('Unknown error. Please check server logs.');
+        }
+        return;
+      }
+
+      const { errorMessage, isValidPayload } = service.validateTxnPayload(payload);
+      if (!isValidPayload) {
+        console.error(errorMessage);
+        res
+          .status(400)
+          .send('Error: payload failed validation. Please check server logs.');
+        return;
+      }
+
 
     } else {
       res.status(405).setHeader('Allow', 'PUT').send('Method not allowed.');

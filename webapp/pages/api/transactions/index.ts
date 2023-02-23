@@ -91,7 +91,7 @@ export default async function handler(
         res
           .status(400)
           .send('Error: payload failed validation. Please check server logs.');
-        // TODO We need to stop processing here
+        return;
       }
 
       // --- BUSINESS LOGIC ---
