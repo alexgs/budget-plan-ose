@@ -83,7 +83,7 @@ export default async function handler(
 
       // TODO For payments and credit card charges, check that each `category` subrecord has a different category ID
 
-      let result: Transaction = service.updateTransaction(payload);
+      let result: Transaction = await service.updateTransaction(payload);
       res.send(formatTransaction(result));
     } else {
       res.status(405).setHeader('Allow', 'PUT').send('Method not allowed.');

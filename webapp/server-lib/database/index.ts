@@ -5,6 +5,7 @@
 import { countChildCategories } from './count-child-categories';
 import { createAccount } from './create-account';
 import { createCategory } from './create-category';
+import { deleteTransaction } from './delete-transaction';
 import { ensureAccount } from './ensure-account';
 import { ensureCategory } from './ensure-category';
 import { getAccount } from './get-account';
@@ -25,6 +26,7 @@ export const database = {
   createCategory,
   ensureAccount,
   ensureCategory,
+  deleteTransaction,
   getAccount,
   getAccountsExceptIds,
   getCategoriesExceptIds,
