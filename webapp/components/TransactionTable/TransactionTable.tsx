@@ -27,9 +27,9 @@ import {
 
 import {
   AccountTransferRow,
+  BasicFormRow,
   BasicRow,
   CategoryTransferRow,
-  FormRow,
   SplitAccountRow,
   SplitCategoryRow,
 } from './Rows';
@@ -201,7 +201,7 @@ export const TransactionTable: React.FC<Props> = (props) => {
   function renderTopRow() {
     if (isNewTxnFormVisible) {
       return (
-        <FormRow
+        <BasicFormRow
           accountData={props.accountData}
           categoryData={props.categoryData}
           isSaving={isSaving}

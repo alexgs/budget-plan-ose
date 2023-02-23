@@ -5,6 +5,6 @@
 export { BasicRow } from './BasicRow';
 export { AccountTransferRow } from './AccountTransferRow';
 export { CategoryTransferRow } from './CategoryTransferRow';
-export { FormRow } from './FormRow';
+export { BasicFormRow } from './BasicFormRow';
 export { SplitAccountRow } from './SplitAccountRow';
 export { SplitCategoryRow } from './SplitCategoryRow';
