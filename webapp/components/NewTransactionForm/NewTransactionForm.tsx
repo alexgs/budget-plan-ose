@@ -54,16 +54,22 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
 
   const form: NewTransactionFormHook = useForm({
     initialValues: {
-      amounts: [
+      accounts: [
         {
           accountId: accounts[0].value,
           amount: 0,
-          categoryId: props.categories[0].id,
           isCredit: false as boolean,
           status: AMOUNT_STATUS.PENDING,
         },
       ],
       balance: 0, // Client-only field
+      categories: [
+        {
+          amount: 0,
+          categoryId: props.categories[0].id,
+          isCredit: false as boolean,
+        },
+      ],
       date: new Date(),
       description: '',
       isCredit: false as boolean, // Client-only field
@@ -73,7 +79,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
     validateInputOnChange: true,
   });
 
-  function ensureAtLeastTwoAmounts() {
+  function ensureAtLeastTwoCategorySubrecords() {
     if (form.values.amounts.length < 2) {
       const countToAdd = 2 - form.values.amounts.length;
       for (let i = 0; i < countToAdd; i++) {
@@ -89,8 +95,8 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
     }
   }
 
-  function ensureExactlyTwoAmounts() {
-    ensureAtLeastTwoAmounts();
+  function ensureTwoAccountSubrecords() {
+    ensureAtLeastTwoCategorySubrecords();
     if (form.values.amounts.length > 2) {
       const countToRemove = form.values.amounts.length - 2;
       for (let i = 0; i < countToRemove; i++) {
@@ -146,7 +152,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
     event: React.ChangeEvent<HTMLSelectElement>
   ) {
     if (event.currentTarget.value === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
-      ensureExactlyTwoAmounts();
+      ensureTwoAccountSubrecords();
       form.setValues({
         balance: 0,
         description: getFriendlyTransactionType(
@@ -155,7 +161,7 @@ export const NewTransactionForm: React.FC<Props> = (props) => {
       });
     }
     if (event.currentTarget.value === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
-      ensureAtLeastTwoAmounts();
+      ensureAtLeastTwoCategorySubrecords();
       form.setValues({
         balance: 0,
         description: getFriendlyTransactionType(
