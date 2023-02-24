@@ -2,6 +2,9 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
+import { faPencil } from '@fortawesome/pro-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { UnstyledButton } from '@mantine/core';
 import React from 'react';
 
 import { formatAmount } from '../../../client-lib';
@@ -16,10 +19,15 @@ import {
 interface Props {
   accountData: Account[];
   categoryData: Category[];
+  onEditClick: (recordId: string) => void;
   txn: ApiSchema.Transaction;
 }
 
 export const BasicRow: React.FC<Props> = (props) => {
+  function handleEditClick() {
+    props.onEditClick(props.txn.id);
+  }
+
   return (
     <tr>
       <td />{/* Checkbox, maybe other controls */}
@@ -39,7 +47,11 @@ export const BasicRow: React.FC<Props> = (props) => {
       </td>
       <td />{/* Notes */}
       <td>{formatAmount(props.txn.categories[0].amount)}</td>
-      <td />{/* Status icons (pending, cleared, etc.), maybe other controls */}
+      <td>
+        <UnstyledButton onClick={handleEditClick}>
+          <FontAwesomeIcon icon={faPencil} />
+        </UnstyledButton>
+      </td>
     </tr>
   );
 };

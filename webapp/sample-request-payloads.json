@@ -183,5 +183,29 @@
       "description": "Transfer",
       "type": "transaction-types.category-transfer"
     }
+  },
+  {
+    "description": "Update transaction 1",
+    "payload": {
+      "id": "81e0e184-4f92-41f4-8d16-0b0007616199",
+      "date": "2023-02-21",
+      "description": "Disney Plus",
+      "type": "transaction-types.payment",
+      "accounts": [
+        {
+          "accountId": "bcbea4af-43c0-420b-82db-dc69b79d9592",
+          "amount": 100,
+          "isCredit": false,
+          "status": "amount-status.pending"
+        }
+      ],
+      "categories": [
+        {
+          "amount": 100,
+          "categoryId": "0354c585-92d2-4675-99e1-4314bf62aae5",
+          "isCredit": false
+        }
+      ]
+    }
   }
 ]

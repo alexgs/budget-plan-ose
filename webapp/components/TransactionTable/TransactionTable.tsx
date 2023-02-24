@@ -23,6 +23,7 @@ import {
   TransactionType,
   dollarsToCents,
   schemaObjects,
+  sumSubrecords,
 } from '../../shared-lib';
 
 import {
@@ -45,6 +46,7 @@ export const TransactionTable: React.FC<Props> = (props) => {
   const [isNewTxnFormVisible, setNewTxnFormVisible] =
     React.useState<boolean>(false);
   const [isSaving, setSaving] = React.useState<boolean>(false);
+  const [nowEditing, setNowEditing] = React.useState<string | null>(null);
   const form: NewTransactionFormHook = useForm({
     initialValues: {
       accounts: [
@@ -91,6 +93,38 @@ export const TransactionTable: React.FC<Props> = (props) => {
     }
   }
 
+  function handleEditClick(recordId: string) {
+    const data = props.txnData.find((txn) => txn.id === recordId);
+    if (data) {
+      const accounts = data.accounts.map((sub) => ({
+        accountId: sub.accountId,
+        amount: sub.amount / 100,
+        isCredit: sub.isCredit,
+        status: sub.status,
+      }));
+      const categories = data.categories.map((sub) => ({
+        amount: sub.amount / 100,
+        categoryId: sub.categoryId,
+        isCredit: sub.isCredit,
+      }));
+      const balance = sumSubrecords(categories);
+      const isCredit = balance >= 0;
+
+      form.setValues({
+        accounts,
+        categories,
+        isCredit,
+        balance: Math.abs(balance),
+        date: new Date(data.date),
+        description: data.description,
+        type: data.type as TransactionType,
+      });
+      setNowEditing(recordId);
+    } else {
+      throw new Error(`Unable to find txn ID ${recordId}`);
+    }
+  }
+
   function handleSplitAccount() {}
 
   function handleSplitCategory() {
@@ -119,11 +153,23 @@ export const TransactionTable: React.FC<Props> = (props) => {
       throw new Error('Unimplemented');
     }
 
-    requestPostTransaction(record).then(() => {
-      form.reset();
-      setSaving(false);
-      setNewTxnFormVisible(false);
-    });
+    if (nowEditing) {
+      requestPutTransaction({
+        ...record,
+        id: nowEditing,
+      }).then(() => {
+        form.reset();
+        setNowEditing(null);
+        setSaving(false);
+        setNewTxnFormVisible(false);
+      });
+    } else {
+      requestPostTransaction(record).then(() => {
+        form.reset();
+        setSaving(false);
+        setNewTxnFormVisible(false);
+      });
+    }
   }
 
   async function requestPostTransaction(payload: ApiSchema.NewTransaction) {
@@ -156,8 +202,53 @@ export const TransactionTable: React.FC<Props> = (props) => {
     });
   }
 
+  async function requestPutTransaction(payload: ApiSchema.PutTransaction) {
+    const responseData = await fetch(`/api/transactions/${payload.id}`, {
+      body: JSON.stringify({
+        ...payload,
+        // Mantine makes us store the date as a `Date` object. The API only
+        //   deals with strings in YYYY-MM-DD (see project README for more
+        //   detail), so we need to format the date in the payload.
+        date: formatClientDate(payload.date),
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+    })
+      .then((response) => response.json())
+      .catch((e) => {
+        console.error(e);
+        showNotification({
+          color: 'red',
+          message: 'Something went wrong! Please check the logs.',
+          title: 'Error',
+        });
+      });
+
+    showNotification({
+      message: `Updated transaction "${responseData.description}"`,
+      title: 'Success',
+    });
+  }
+
   function renderRows() {
     return props.txnData.map((txn) => {
+      if (txn.id === nowEditing) {
+        return (
+          <BasicFormRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            isSaving={isSaving}
+            mantineForm={form}
+            onAccountChange={handleAccountChange}
+            onSplitAccount={handleSplitAccount}
+            onSplitCategory={handleSplitCategory}
+          />
+        );
+      }
+
       if (txn.accounts.length === 1 && txn.categories.length > 1) {
         return (
           <SplitCategoryRow
@@ -208,6 +299,7 @@ export const TransactionTable: React.FC<Props> = (props) => {
           key={txn.id}
           accountData={props.accountData}
           categoryData={props.categoryData}
+          onEditClick={handleEditClick}
           txn={txn}
         />
       );

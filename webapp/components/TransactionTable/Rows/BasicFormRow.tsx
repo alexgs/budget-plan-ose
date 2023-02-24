@@ -65,15 +65,14 @@ export const BasicFormRow: React.FC<Props> = (props) => {
           {...props.mantineForm.getInputProps('description')}
         />
       </td>
-      <td style={{ textAlign: 'center'}}>
+      <td style={{ textAlign: 'center' }}>
         <CategoryField
           categoryData={props.categoryData}
           mantineForm={props.mantineForm}
         />
         <Button compact onClick={props.onSplitCategory} variant="subtle">
           <FontAwesomeIcon icon={faSplit} />
-          &nbsp;
-          Split
+          &nbsp; Split
         </Button>
       </td>
       <td>{/* Notes */}</td>
