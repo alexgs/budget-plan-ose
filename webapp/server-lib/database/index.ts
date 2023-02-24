@@ -16,6 +16,7 @@ import { getTransactions } from './get-transactions';
 import {
   moveTransactionsToNewCategory
 } from './move-transactions-to-new-category';
+import { reconcileAllTransactions } from './reconcile-all-transactions';
 import { saveTransaction } from './save-transaction';
 import { updateCategory } from './update-category';
 import { updateCategoryBalance } from './update-category-balance';
@@ -33,6 +34,7 @@ export const database = {
   getCategory,
   getTransactions,
   moveTransactionsToNewCategory,
+  reconcileAllTransactions,
   saveTransaction,
   updateCategory,
   updateCategoryBalance,
