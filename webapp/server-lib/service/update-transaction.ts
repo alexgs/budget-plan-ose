@@ -4,18 +4,18 @@
 
 import { ApiSchema, Transaction } from '../../shared-lib';
 import { database } from '../database';
+import { service } from './index';
 
 export async function updateTransaction(
   payload: ApiSchema.PutTransaction
-): Promise<Transaction> {
+): Promise<Transaction | null> {
   // Delete the old transaction
   await database.deleteTransaction(payload.id);
 
   // Save the new transaction
-  const { accounts, categories, ...record } = payload;
   // TODO Check that the sum of the account subrecords equals the sum of
   //   the category subrecords
-  const output = await database.saveTransaction(record, accounts, categories);
+  const output = await service.processTransaction(payload);
 
   // Reconcile accounts and categories
   // TODO Consider reconciling only impacted accounts and categories
