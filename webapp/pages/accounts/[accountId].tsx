@@ -5,14 +5,19 @@
 import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader } from '@mantine/core';
+import { useRouter } from 'next/router';
 import React from 'react';
 import useSWR from 'swr';
+
 import { Page, TransactionTable } from '../../components';
 import { Account, ApiSchema, Category } from '../../shared-lib';
 
 const AccountDetail: React.FC = () => {
+  const router = useRouter()
+  const { accountId } = router.query as { accountId: string };
+
   const { error: txnError, data: txnData } = useSWR<ApiSchema.Transaction[]>(
-    '/api/transactions',
+    `/api/transactions?accountId=${accountId}`,
     { refreshInterval: 1000 }
   );
 
@@ -48,6 +53,7 @@ const AccountDetail: React.FC = () => {
     <Page>
       <TransactionTable
         accountData={accountData}
+        accountId={accountId}
         categoryData={categoryData}
         txnData={txnData}
       />

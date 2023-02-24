@@ -27,7 +27,7 @@ export default async function handler(
 
   if (session) {
     if (req.method === 'GET') {
-      const txns = await service.getAllTransactions();
+      const txns = await service.getAllTransactions(req.query.accountId as string);
       const payload = txns.map((txn) => formatTransaction(txn));
       res.send(payload);
     } else if (req.method === 'POST') {

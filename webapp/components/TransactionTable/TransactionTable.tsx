@@ -38,6 +38,7 @@ import {
 
 interface Props {
   accountData: Account[];
+  accountId?: string;
   categoryData: Category[];
   txnData: ApiSchema.Transaction[];
 }
@@ -51,7 +52,7 @@ export const TransactionTable: React.FC<Props> = (props) => {
     initialValues: {
       accounts: [
         {
-          accountId: props.accountData[0].id,
+          accountId: props.accountId ?? props.accountData[0].id,
           amount: 0,
           isCredit: false as boolean,
           status: AMOUNT_STATUS.PENDING,

@@ -4,6 +4,6 @@
 
 import { database } from '../database';
 
-export async function getAllTransactions() {
-  return database.getTransactions();
+export async function getAllTransactions(accountId?: string) {
+  return database.getTransactions(accountId);
 }
