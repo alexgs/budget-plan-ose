@@ -137,7 +137,6 @@ export const TransactionTable: React.FC<Props> = (props) => {
 
   function handleSubmit(values: NewTransactionFormValues) {
     setSaving(true);
-    setNowEditing(null);
     const { balance, isCredit, ...record } = values;
     if (record.accounts.length === 1 && record.categories.length === 1) {
       record.categories[0].amount = dollarsToCents(record.categories[0].amount);
@@ -154,11 +153,23 @@ export const TransactionTable: React.FC<Props> = (props) => {
       throw new Error('Unimplemented');
     }
 
-    requestPostTransaction(record).then(() => {
-      form.reset();
-      setSaving(false);
-      setNewTxnFormVisible(false);
-    });
+    if (nowEditing) {
+      requestPutTransaction({
+        ...record,
+        id: nowEditing,
+      }).then(() => {
+        form.reset();
+        setNowEditing(null);
+        setSaving(false);
+        setNewTxnFormVisible(false);
+      });
+    } else {
+      requestPostTransaction(record).then(() => {
+        form.reset();
+        setSaving(false);
+        setNewTxnFormVisible(false);
+      });
+    }
   }
 
   async function requestPostTransaction(payload: ApiSchema.NewTransaction) {
@@ -187,6 +198,36 @@ export const TransactionTable: React.FC<Props> = (props) => {
 
     showNotification({
       message: `Saved transaction "${responseData.description}"`,
+      title: 'Success',
+    });
+  }
+
+  async function requestPutTransaction(payload: ApiSchema.PutTransaction) {
+    const responseData = await fetch(`/api/transactions/${payload.id}`, {
+      body: JSON.stringify({
+        ...payload,
+        // Mantine makes us store the date as a `Date` object. The API only
+        //   deals with strings in YYYY-MM-DD (see project README for more
+        //   detail), so we need to format the date in the payload.
+        date: formatClientDate(payload.date),
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+    })
+      .then((response) => response.json())
+      .catch((e) => {
+        console.error(e);
+        showNotification({
+          color: 'red',
+          message: 'Something went wrong! Please check the logs.',
+          title: 'Error',
+        });
+      });
+
+    showNotification({
+      message: `Updated transaction "${responseData.description}"`,
       title: 'Success',
     });
   }
