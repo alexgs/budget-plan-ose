@@ -14,9 +14,13 @@ import { getPublicCategories } from './get-public-categories';
 import { getReservationCategoryId } from './get-reservation-category-id';
 import { processAccountTransfer } from './process-account-transfer';
 import { processCategoryTransfer } from './process-category-transfer';
+import { processCreditCardPayment } from './process-credit-card-payment';
 import { processPayment } from './process-payment';
 import { processCreditCardCharge } from './process-credit-card-charge';
+import { processTransaction } from './process-transaction';
 import { updateCategory } from './update-category';
+import { updateTransaction } from './update-transaction';
+import { validateTxnPayload } from './validate-txn-payload';
 
 export const service = {
   createAccount,
@@ -30,7 +34,11 @@ export const service = {
   processCategoryTransfer,
   processPayment,
   processCreditCardCharge,
+  processCreditCardPayment,
+  processTransaction,
   updateCategory,
+  updateTransaction,
+  validateTxnPayload,
 
   /** @private */ ensureDefaultChildCategory,
   /** @private */ ensureSystemAccounts,

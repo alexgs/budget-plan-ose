@@ -4,8 +4,10 @@
 
 import { prisma } from '../index';
 
-export async function getTransactions() {
+export async function getTransactions(accountId?: string) {
   return prisma.transactionRecord.findMany({
-    include: { amounts: true },
+    include: { accounts: true, categories: true },
+    where: { accounts: { some: { accountId } } },
+    orderBy: [{ date: 'desc' }, { order: 'desc' }], // Newest transaction at the top
   });
 }

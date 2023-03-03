@@ -8,7 +8,7 @@ export async function moveTransactionsToNewCategory(
   oldCategoryId: string,
   newCategoryId: string
 ): Promise<void> {
-  await prisma.transactionAmount.updateMany({
+  await prisma.transactionCategory.updateMany({
     where: { categoryId: oldCategoryId },
     data: { categoryId: newCategoryId },
   });

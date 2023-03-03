@@ -1,0 +1,211 @@
+[
+  {
+    "description": "Deposit a paycheck (one account subrecord, multiple category subrecords)",
+    "payload": {
+      "accounts": [
+        {
+          "accountId": "bcbea4af-43c0-420b-82db-dc69b79d9592",
+          "amount": 10000,
+          "isCredit": true,
+          "status": "amount-status.pending"
+        }
+      ],
+      "categories": [
+        {
+          "amount": 2000,
+          "categoryId": "0354c585-92d2-4675-99e1-4314bf62aae5",
+          "isCredit": true
+        },
+        {
+          "amount": 1000,
+          "categoryId": "16ce3af0-bd6c-474e-bb91-aadb0696ce67",
+          "isCredit": true
+        },
+        {
+          "amount": 5000,
+          "categoryId": "69abbfa9-2ddb-4450-8153-19b9bbc8f12f",
+          "isCredit": true
+        },
+        {
+          "amount": 500,
+          "categoryId": "d3ea399e-2245-421b-8efe-752c039a959b",
+          "isCredit": true
+        },
+        {
+          "amount": 1500,
+          "categoryId": "b6cc8156-6325-444f-abdb-ccf948b87975",
+          "isCredit": true
+        }
+      ],
+      "date": "2023-02-21",
+      "description": "Paycheck",
+      "type": "transaction-types.payment"
+    }
+  },
+  {
+    "description": "Basic purchase 1",
+    "payload": {
+      "accounts": [
+        {
+          "accountId": "bcbea4af-43c0-420b-82db-dc69b79d9592",
+          "amount": 1000,
+          "isCredit": false,
+          "status": "amount-status.pending"
+        }
+      ],
+      "categories": [
+        {
+          "amount": 1000,
+          "categoryId": "0354c585-92d2-4675-99e1-4314bf62aae5",
+          "isCredit": false
+        }
+      ],
+      "date": "2023-02-21",
+      "description": "Disney+",
+      "type": "transaction-types.payment"
+    }
+  },
+  {
+    "description": "Basic purchase 2",
+    "payload": {
+      "accounts": [
+        {
+          "accountId": "bcbea4af-43c0-420b-82db-dc69b79d9592",
+          "amount": 3716,
+          "isCredit": false,
+          "status": "amount-status.pending"
+        }
+      ],
+      "categories": [
+        {
+          "amount": 3716,
+          "categoryId": "d3ea399e-2245-421b-8efe-752c039a959b",
+          "isCredit": false
+        }
+      ],
+      "date": "2023-02-21",
+      "description": "HOA fees",
+      "type": "transaction-types.payment"
+    }
+  },
+  {
+    "description": "Credit card charge 1",
+    "payload": {
+      "accounts": [
+        {
+          "accountId": "36c07603-7dc2-4fc1-b685-4a76bc5448e9",
+          "amount": 749,
+          "isCredit": false,
+          "status": "amount-status.pending"
+        }
+      ],
+      "categories": [
+        {
+          "amount": 749,
+          "categoryId": "16ce3af0-bd6c-474e-bb91-aadb0696ce67",
+          "isCredit": false
+        }
+      ],
+      "date": "2023-02-19",
+      "description": "Steam",
+      "type": "transaction-types.credit-card-charge"
+    }
+  },
+  {
+    "description": "Account transfer 1",
+    "payload": {
+      "accounts": [
+        {
+          "accountId": "b9a170b5-2719-4146-8c62-b7c7e32b7536",
+          "amount": 5000,
+          "isCredit": false,
+          "status": "amount-status.cleared"
+        },
+        {
+          "accountId": "bcbea4af-43c0-420b-82db-dc69b79d9592",
+          "amount": 5000,
+          "isCredit": true,
+          "status": "amount-status.cleared"
+        }
+      ],
+      "categories": [],
+      "date": "2023-02-22",
+      "description": "Cash deposit",
+      "type": "transaction-types.account-transfer"
+    }
+  },
+  {
+    "description": "Split account payment 1",
+    "payload": {
+      "accounts": [
+        {
+          "accountId": "b9a170b5-2719-4146-8c62-b7c7e32b7536",
+          "amount": 750,
+          "isCredit": false,
+          "status": "amount-status.pending"
+        },
+        {
+          "accountId": "bcbea4af-43c0-420b-82db-dc69b79d9592",
+          "amount": 750,
+          "isCredit": false,
+          "status": "amount-status.pending"
+        }
+      ],
+      "categories": [
+        {
+          "amount": 1500,
+          "categoryId": "16ce3af0-bd6c-474e-bb91-aadb0696ce67",
+          "isCredit": false
+        }
+      ],
+      "date": "2023-02-22",
+      "description": "Split purchase",
+      "type": "transaction-types.payment"
+    }
+  },
+  {
+    "description": "Category transfer 1",
+    "payload": {
+      "accounts": [],
+      "categories": [
+        {
+          "amount": 500,
+          "categoryId": "b6cc8156-6325-444f-abdb-ccf948b87975",
+          "isCredit": false
+        },
+        {
+          "amount": 500,
+          "categoryId": "d3ea399e-2245-421b-8efe-752c039a959b",
+          "isCredit": true
+        }
+      ],
+      "date": "2023-02-22",
+      "description": "Transfer",
+      "type": "transaction-types.category-transfer"
+    }
+  },
+  {
+    "description": "Update transaction 1",
+    "payload": {
+      "id": "81e0e184-4f92-41f4-8d16-0b0007616199",
+      "date": "2023-02-21",
+      "description": "Disney Plus",
+      "type": "transaction-types.payment",
+      "accounts": [
+        {
+          "accountId": "bcbea4af-43c0-420b-82db-dc69b79d9592",
+          "amount": 100,
+          "isCredit": false,
+          "status": "amount-status.pending"
+        }
+      ],
+      "categories": [
+        {
+          "amount": 100,
+          "categoryId": "0354c585-92d2-4675-99e1-4314bf62aae5",
+          "isCredit": false
+        }
+      ]
+    }
+  }
+]
