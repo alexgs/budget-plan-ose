@@ -8,8 +8,10 @@ import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
+  CSSObject,
   Checkbox,
   Loader,
+  MantineTheme,
   NumberInput,
   TextInput,
   UnstyledButton,
@@ -25,7 +27,6 @@ import {
   dollarsToCents,
   sumSubrecords
 } from '../../../shared-lib';
-import { amountStyle } from '../../NewTransactionForm/Amounts/amount-style';
 import {
   AccountField,
   AmountField,
@@ -44,6 +45,11 @@ const AmountRemainingAmount = styled.div({
 
 const AmountRemainingLabel = styled.div({
   fontSize: 14,
+});
+
+export const amountStyle = (theme: MantineTheme): CSSObject => ({
+  '.mantine-NumberInput-icon': { color: theme.colors.green[6] },
+  input: { color: theme.colors.green[4] },
 });
 
 interface Props {

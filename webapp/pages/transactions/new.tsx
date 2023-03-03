@@ -10,7 +10,7 @@ import useSWR from 'swr';
 
 import { buildCategoryTree, getCategoryList } from '../../client-lib';
 import { FinancialAccount, RawCategory } from '../../client-lib/types';
-import { NewTransactionForm, Page } from '../../components';
+import { Page } from '../../components';
 
 const NewTransaction: FC = () => {
   // Get accounts and categories
@@ -40,7 +40,7 @@ const NewTransaction: FC = () => {
     <Page>
       <h1>Budget Plan</h1>
       <div>
-        <NewTransactionForm accounts={accountsData} categories={categories} />
+        Nothing to see here (component was removed)
       </div>
     </Page>
   );
