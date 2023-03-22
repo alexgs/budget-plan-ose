@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
+ * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
 import {
@@ -11,30 +11,24 @@ import {
   TextInput,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
-import { useForm } from '@mantine/form';
+import { useForm, yupResolver } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import { FC, PropsWithChildren } from 'react';
 
 import { formatAmount, formatClientDate } from '../../client-lib';
-import { CategoryValues } from '../../client-lib/types';
+import {
+  CategoryValues,
+  NewTransactionFormHook,
+  NewTransactionFormValues,
+} from '../../client-lib/types';
 import {
   AMOUNT_STATUS,
   TRANSACTION_TYPES,
+  ApiSchema,
+  TransactionType,
   dollarsToCents,
+  schemaObjects,
 } from '../../shared-lib';
-
-interface CategoryAmount {
-  amount: number;
-  categoryId: string;
-}
-
-interface FormValues {
-  accountId: string;
-  amounts: { [id: string]: CategoryAmount };
-  date: Date;
-  description: string;
-  totalAmount: number;
-}
 
 interface Props extends PropsWithChildren {
   accounts: { label: string; value: string }[];
@@ -42,54 +36,59 @@ interface Props extends PropsWithChildren {
 }
 
 export const DepositForm: FC<Props> = (props) => {
-  const initialAmounts = props.categories.reduce((output, current) => {
-    return {
-      ...output,
-      [current.id]: {
-        amount: 0,
-        categoryId: current.id,
-      },
-    };
-  }, {} as { [id: string]: CategoryAmount });
-
-  const form = useForm<FormValues>({
-    // TODO These types need to be fixed
+  const form: NewTransactionFormHook = useForm({
     initialValues: {
-      amounts: initialAmounts,
-      accountId: props.accounts[0].value,
+      accounts: [
+        {
+          accountId: props.accounts[0].value,
+          amount: 0,
+          isCredit: true as boolean,
+          status: AMOUNT_STATUS.PENDING,
+        },
+      ],
+      balance: 0, // Client-only field
+      categories: props.categories.map((category) => ({
+        amount: 0,
+        categoryId: category.id,
+        isCredit: true as boolean,
+      })),
       date: new Date(),
       description: '',
-      totalAmount: 0,
+      isCredit: false as boolean, // Client-only field
+      type: TRANSACTION_TYPES.PAYMENT as TransactionType,
     },
+    validate: yupResolver(schemaObjects.newTransaction),
+    validateInputOnChange: true,
   });
 
-  function handleSubmit(values: FormValues) {
+  function handleSubmit(values: NewTransactionFormValues) {
     // TODO Display a loading modal
     void requestDeposit(values);
   }
 
-  async function requestDeposit(values: FormValues) {
-    const amounts = Object.values(values.amounts)
-      .filter((amount) => amount.amount !== 0)
-      .map((amount) => {
+  async function requestDeposit(values: NewTransactionFormValues) {
+    const categories: ApiSchema.NewTransactionCategory[] = values.categories
+      .filter((category) => category.amount !== 0)
+      .map((category) => {
         return {
-          accountId: values.accountId,
-          amount: dollarsToCents(amount.amount),
-          categoryId: amount.categoryId,
+          amount: dollarsToCents(category.amount),
+          categoryId: category.categoryId,
           isCredit: true,
-          status: AMOUNT_STATUS.PENDING,
         };
       });
-    const payload = {
-      amounts,
-      date: formatClientDate(values.date),
-      description: values.description,
-      type: TRANSACTION_TYPES.PAYMENT, // TODO Should this be "deposit" to better reflect the intent of this "event"?
+    const { balance, isCredit, ...otherValues} = values;
+    const payload: ApiSchema.NewTransaction = {
+      ...otherValues,
+      categories,
+      type: TRANSACTION_TYPES.PAYMENT, // TODO Change this to "deposit" to better reflect the intent of this "event"?
     };
-    console.log(payload);
+    console.log(payload); // TODO Remove this line
 
     const responseData = await fetch('/api/transactions', {
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        ...payload,
+        date: formatClientDate(values.date),
+      }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -112,17 +111,19 @@ export const DepositForm: FC<Props> = (props) => {
   }
 
   function sumAllocations(): number {
-    const allocations: CategoryAmount[] = Object.values(form.values.amounts);
-    return allocations.reduce((output, current) => output + current.amount, 0);
+    return form.values.categories.reduce(
+      (output, current) => output + current.amount,
+      0
+    );
   }
 
-  const rows = props.categories.map((row) => {
+  const rows = props.categories.map((row, index) => {
     const input = row.isLeaf ? (
       <NumberInput
         decimalSeparator="."
         hideControls
         precision={2}
-        {...form.getInputProps(`amounts.${row.id}.amount`)}
+        {...form.getInputProps(`categories.${index}.amount`)}
       />
     ) : null;
     return (
@@ -134,7 +135,7 @@ export const DepositForm: FC<Props> = (props) => {
     );
   });
 
-  const amountRemaining = form.values.totalAmount - sumAllocations();
+  const amountRemaining = form.values.balance - sumAllocations();
   return (
     <form
       onSubmit={form.onSubmit(handleSubmit, (values) => console.error(values))}
@@ -159,7 +160,7 @@ export const DepositForm: FC<Props> = (props) => {
         label="Account"
         my="sm"
         required
-        {...form.getInputProps('accountId')}
+        {...form.getInputProps('accounts.0.accountId')}
       />
       <Group position="apart">
         <NumberInput
@@ -170,7 +171,7 @@ export const DepositForm: FC<Props> = (props) => {
           precision={2}
           required
           style={{ width: '45%' }}
-          {...form.getInputProps('totalAmount')}
+          {...form.getInputProps('balance')}
         />
         <div style={{ width: '45%' }}>
           Amount Remaining: {formatAmount(dollarsToCents(amountRemaining))}
