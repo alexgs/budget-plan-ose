@@ -42,7 +42,7 @@ export const DepositForm: FC<Props> = (props) => {
         {
           accountId: props.accounts[0].value,
           amount: 0,
-          isCredit: false as boolean,
+          isCredit: true as boolean,
           status: AMOUNT_STATUS.PENDING,
         },
       ],
@@ -50,7 +50,7 @@ export const DepositForm: FC<Props> = (props) => {
       categories: props.categories.map((category) => ({
         amount: 0,
         categoryId: category.id,
-        isCredit: false as boolean,
+        isCredit: true as boolean,
       })),
       date: new Date(),
       description: '',
@@ -74,11 +74,11 @@ export const DepositForm: FC<Props> = (props) => {
           amount: dollarsToCents(category.amount),
           categoryId: category.categoryId,
           isCredit: true,
-          status: AMOUNT_STATUS.PENDING,
         };
       });
+    const { balance, isCredit, ...otherValues} = values;
     const payload: ApiSchema.NewTransaction = {
-      ...values,
+      ...otherValues,
       categories,
       type: TRANSACTION_TYPES.PAYMENT, // TODO Change this to "deposit" to better reflect the intent of this "event"?
     };
@@ -160,7 +160,7 @@ export const DepositForm: FC<Props> = (props) => {
         label="Account"
         my="sm"
         required
-        {...form.getInputProps('accountId')}
+        {...form.getInputProps('accounts.0.accountId')}
       />
       <Group position="apart">
         <NumberInput
