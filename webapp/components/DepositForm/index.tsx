@@ -76,13 +76,13 @@ export const DepositForm: FC<Props> = (props) => {
           isCredit: true,
         };
       });
-    const { balance, isCredit, ...otherValues} = values;
+    const { balance, isCredit, ...otherValues } = values;
     const payload: ApiSchema.NewTransaction = {
       ...otherValues,
       categories,
-      type: TRANSACTION_TYPES.PAYMENT, // TODO Change this to "deposit" to better reflect the intent of this "event"?
+      type: TRANSACTION_TYPES.DEPOSIT,
     };
-    console.log(payload); // TODO Remove this line
+    console.log(payload);
 
     const responseData = await fetch('/api/transactions', {
       body: JSON.stringify({

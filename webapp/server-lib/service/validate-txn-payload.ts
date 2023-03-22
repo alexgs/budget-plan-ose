@@ -54,7 +54,10 @@ export function validateTxnPayload(payload: ApiSchema.NewTransaction): {
     }
   }
 
-  if (payload.type === TRANSACTION_TYPES.PAYMENT) {
+  if (
+    payload.type === TRANSACTION_TYPES.DEPOSIT ||
+    payload.type === TRANSACTION_TYPES.PAYMENT
+  ) {
     if (payload.accounts?.length < 1 || payload.categories?.length < 1) {
       errorMessage =
         '>> POST /api/transactions 400 For a payment, there shall be at ' +
