@@ -292,6 +292,7 @@ export const TransactionTable: React.FC<Props> = (props) => {
           accounts={accounts}
           categories={categories}
           data={payload}
+          txnId={data.id}
         />
       );
     } else {

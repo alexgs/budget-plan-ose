@@ -5,19 +5,13 @@
 import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader } from '@mantine/core';
-import { showNotification } from '@mantine/notifications';
 import { FinancialAccount } from '@prisma/client';
 import { FC } from 'react';
 import useSWR from 'swr';
 
-import {
-  buildCategoryTree,
-  formatClientDate,
-  getCategoryList
-} from '../../client-lib';
-import { NewTransactionFormValues, RawCategory } from '../../client-lib/types';
+import { buildCategoryTree, getCategoryList } from '../../client-lib';
+import { RawCategory } from '../../client-lib/types';
 import { DepositForm, Page } from '../../components';
-import { ApiSchema, dollarsToCents, TRANSACTION_TYPES } from '../../shared-lib';
 
 const Deposit: FC = () => {
   // Get accounts and categories
@@ -48,56 +42,9 @@ const Deposit: FC = () => {
   }));
   const categories = getCategoryList(buildCategoryTree(categoriesData));
 
-  async function requestPostDeposit(values: NewTransactionFormValues) {
-    const categories: ApiSchema.NewTransactionCategory[] = values.categories
-      .filter((category) => category.amount !== 0)
-      .map((category) => {
-        return {
-          amount: dollarsToCents(category.amount),
-          categoryId: category.categoryId,
-          isCredit: true,
-        };
-      });
-    const { balance, isCredit, ...otherValues } = values;
-    const payload: ApiSchema.NewTransaction = {
-      ...otherValues,
-      categories,
-      accounts:[{
-        ...otherValues.accounts[0],
-        amount: dollarsToCents(balance),
-      }],
-      type: TRANSACTION_TYPES.DEPOSIT,
-    };
-
-    const responseData = await fetch('/api/transactions', {
-      body: JSON.stringify({
-        ...payload,
-        date: formatClientDate(values.date),
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    })
-      .then((response) => response.json())
-      .catch((e) => {
-        console.error(e);
-        showNotification({
-          color: 'red',
-          message: 'Something went wrong! Please check the logs.',
-          title: 'Error',
-        });
-      });
-
-    showNotification({
-      message: `Saved deposit "${responseData.description}"`,
-      title: 'Success',
-    });
-  }
-
   return (
     <Page>
-      <DepositForm accounts={accounts} categories={categories} onSubmit={requestPostDeposit}/>
+      <DepositForm accounts={accounts} categories={categories} />
     </Page>
   );
 };

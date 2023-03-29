@@ -30,38 +30,66 @@ import {
   schemaObjects,
 } from '../../shared-lib';
 
+export function convertDepositFormValuesToRequestPayload(
+  values: NewTransactionFormValues
+): ApiSchema.NewTransaction {
+  const categories: ApiSchema.NewTransactionCategory[] = values.categories
+    .filter((category) => category.amount !== 0)
+    .map((category) => {
+      return {
+        amount: dollarsToCents(category.amount),
+        categoryId: category.categoryId,
+        isCredit: true,
+      };
+    });
+  const { balance, isCredit, ...otherValues } = values;
+  return {
+    ...otherValues,
+    categories,
+    accounts: [
+      {
+        ...otherValues.accounts[0],
+        amount: dollarsToCents(balance),
+      },
+    ],
+    type: TRANSACTION_TYPES.DEPOSIT,
+  };
+}
+
 interface Props extends PropsWithChildren {
   accounts: { label: string; value: string }[];
   categories: CategoryValues[];
   data?: ApiSchema.NewTransaction;
-  onSubmit: (values: NewTransactionFormValues) => Promise<void>;
+  txnId?: string;
 }
 
 export const DepositForm: FC<Props> = (props) => {
-  const initialValues = props.data ? {
-    ...props.data,
-    balance: props.data.accounts[0].amount, // Client-only field
-    isCredit: true as boolean, // Client-only field
-  } : {
-    accounts: [
-      {
-        accountId: props.accounts[0].value,
-        amount: 0,
-        isCredit: true as boolean,
-        status: AMOUNT_STATUS.PENDING,
-      },
-    ],
-    balance: 0, // Client-only field
-    categories: props.categories.map((category) => ({
-      amount: 0,
-      categoryId: category.id,
-      isCredit: true as boolean,
-    })),
-    date: new Date(),
-    description: '',
-    isCredit: true as boolean, // Client-only field
-    type: TRANSACTION_TYPES.PAYMENT as TransactionType,
-  };
+  const initialValues = props.data
+    ? {
+        ...props.data,
+        balance: props.data.accounts[0].amount, // Client-only field
+        isCredit: true as boolean, // Client-only field
+      }
+    : {
+        accounts: [
+          {
+            accountId: props.accounts[0].value,
+            amount: 0,
+            isCredit: true as boolean,
+            status: AMOUNT_STATUS.PENDING,
+          },
+        ],
+        balance: 0, // Client-only field
+        categories: props.categories.map((category) => ({
+          amount: 0,
+          categoryId: category.id,
+          isCredit: true as boolean,
+        })),
+        date: new Date(),
+        description: '',
+        isCredit: true as boolean, // Client-only field
+        type: TRANSACTION_TYPES.PAYMENT as TransactionType,
+      };
   const form: NewTransactionFormHook = useForm({
     initialValues,
     validate: yupResolver(schemaObjects.newTransaction),
@@ -70,9 +98,41 @@ export const DepositForm: FC<Props> = (props) => {
 
   function handleSubmit(values: NewTransactionFormValues) {
     // TODO Display a loading modal
-    void props.onSubmit(values);
+    void requestDeposit(values);
   }
 
+  async function requestDeposit(values: NewTransactionFormValues) {
+    const payload: ApiSchema.NewTransaction =
+      convertDepositFormValuesToRequestPayload(values);
+    const method = props.txnId ? 'PUT' : 'POST';
+    const url = props.txnId
+      ? `/api/transactions/${props.txnId}`
+      : '/api/transactions';
+    const responseData = await fetch(url, {
+      method,
+      body: JSON.stringify({
+        ...payload,
+        date: formatClientDate(values.date),
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .catch((e) => {
+        console.error(e);
+        showNotification({
+          color: 'red',
+          message: 'Something went wrong! Please check the logs.',
+          title: 'Error',
+        });
+      });
+
+    showNotification({
+      message: `Saved deposit "${responseData.description}"`,
+      title: 'Success',
+    });
+  }
 
   function sumAllocations(): number {
     return form.values.categories.reduce(
