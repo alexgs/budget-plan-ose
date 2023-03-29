@@ -59,7 +59,9 @@ export default async function handler(
       } catch (e: any) {
         if (e.name && e.name === 'ValidationError') {
           const error: ValidationError = e as ValidationError;
-          console.error(`>> POST /api/transactions 400 ${error.errors} <<`);
+          console.error(
+            `>> POST /api/transactions 400 Validation failed: ${error.errors} <<`
+          );
           res
             .status(400)
             .send(

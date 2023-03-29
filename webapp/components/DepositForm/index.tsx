@@ -28,9 +28,10 @@ import {
   TransactionType,
   dollarsToCents,
   schemaObjects,
+  sumSubrecords,
 } from '../../shared-lib';
 
-export function convertDepositFormValuesToRequestPayload(
+function convertDepositFormValuesToRequestPayload(
   values: NewTransactionFormValues
 ): ApiSchema.NewTransaction {
   const categories: ApiSchema.NewTransactionCategory[] = values.categories
@@ -56,6 +57,58 @@ export function convertDepositFormValuesToRequestPayload(
   };
 }
 
+function getInitialValues(
+  accounts: { label: string; value: string }[],
+  categories: CategoryValues[],
+  data?: ApiSchema.NewTransaction
+): NewTransactionFormValues {
+  if (data) {
+    const accounts = data.accounts.map((sub) => ({
+      accountId: sub.accountId,
+      amount: sub.amount / 100,
+      isCredit: sub.isCredit,
+      status: sub.status,
+    }));
+    const categories = data.categories.map((sub) => ({
+      amount: sub.amount / 100,
+      categoryId: sub.categoryId,
+      isCredit: sub.isCredit,
+    }));
+    const balance = sumSubrecords(categories);
+    const isCredit = balance >= 0;
+    return {
+      accounts,
+      categories,
+      isCredit,
+      balance: Math.abs(balance),
+      date: new Date(data.date),
+      description: data.description,
+      type: data.type as TransactionType,
+    };
+  }
+
+  return {
+    accounts: [
+      {
+        accountId: accounts[0].value,
+        amount: 0,
+        isCredit: true as boolean,
+        status: AMOUNT_STATUS.PENDING,
+      },
+    ],
+    balance: 0, // Client-only field
+    categories: categories.map((category) => ({
+      amount: 0,
+      categoryId: category.id,
+      isCredit: true as boolean,
+    })),
+    date: new Date(),
+    description: '',
+    isCredit: true as boolean, // Client-only field
+    type: TRANSACTION_TYPES.PAYMENT as TransactionType,
+  };
+}
+
 interface Props extends PropsWithChildren {
   accounts: { label: string; value: string }[];
   categories: CategoryValues[];
@@ -64,34 +117,12 @@ interface Props extends PropsWithChildren {
 }
 
 export const DepositForm: FC<Props> = (props) => {
-  const initialValues = props.data
-    ? {
-        ...props.data,
-        balance: props.data.accounts[0].amount, // Client-only field
-        isCredit: true as boolean, // Client-only field
-      }
-    : {
-        accounts: [
-          {
-            accountId: props.accounts[0].value,
-            amount: 0,
-            isCredit: true as boolean,
-            status: AMOUNT_STATUS.PENDING,
-          },
-        ],
-        balance: 0, // Client-only field
-        categories: props.categories.map((category) => ({
-          amount: 0,
-          categoryId: category.id,
-          isCredit: true as boolean,
-        })),
-        date: new Date(),
-        description: '',
-        isCredit: true as boolean, // Client-only field
-        type: TRANSACTION_TYPES.PAYMENT as TransactionType,
-      };
   const form: NewTransactionFormHook = useForm({
-    initialValues,
+    initialValues: getInitialValues(
+      props.accounts,
+      props.categories,
+      props.data
+    ),
     validate: yupResolver(schemaObjects.newTransaction),
     validateInputOnChange: true,
   });
@@ -102,8 +133,10 @@ export const DepositForm: FC<Props> = (props) => {
   }
 
   async function requestDeposit(values: NewTransactionFormValues) {
-    const payload: ApiSchema.NewTransaction =
-      convertDepositFormValuesToRequestPayload(values);
+    const payload: ApiSchema.NewTransaction | ApiSchema.PutTransaction = {
+      ...convertDepositFormValuesToRequestPayload(values),
+      id: props.txnId,
+    };
     const method = props.txnId ? 'PUT' : 'POST';
     const url = props.txnId
       ? `/api/transactions/${props.txnId}`

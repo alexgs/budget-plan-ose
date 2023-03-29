@@ -153,11 +153,13 @@ export const TransactionTable: React.FC<Props> = (props) => {
   function handleSubmit(values: NewTransactionFormValues) {
     setSaving(true);
     const { balance, isCredit, ...record } = values;
-    if (record.accounts.length === 1 && record.categories.length === 1) {
+    const isSimplePayment = record.accounts.length === 1 && record.categories.length === 1;
+    const isSplitCategory = record.accounts.length === 1 && record.categories.length > 1;
+    if (isSimplePayment) {
       record.categories[0].amount = dollarsToCents(record.categories[0].amount);
       record.accounts[0].amount = record.categories[0].amount;
       record.accounts[0].isCredit = record.categories[0].isCredit;
-    } else if (record.accounts.length === 1 && record.categories.length > 1) {
+    } else if (isSplitCategory) {
       record.categories = record.categories.map((subrecord) => ({
         ...subrecord,
         amount: dollarsToCents(subrecord.amount),
@@ -258,13 +260,11 @@ export const TransactionTable: React.FC<Props> = (props) => {
     }));
     const categories = getCategoryList(buildCategoryTree(props.categoryData));
     const data = props.txnData.find((txn) => txn.id === nowEditing);
+
+    // TODO Getting data into the deposit form is a complete mess and can be improved
     if (data) {
       const payload: ApiSchema.NewTransaction = {
         ...data,
-        accounts: data.accounts.map((acct) => ({
-          ...acct,
-          amount: acct.amount / 100,
-        })),
         categories: categories.map(
           (categoryValue): ApiSchema.NewTransactionCategory => {
             const categoryData = data.categories.find(
@@ -273,7 +273,6 @@ export const TransactionTable: React.FC<Props> = (props) => {
             if (categoryData) {
               return {
                 ...categoryData,
-                amount: categoryData.amount / 100,
                 notes: categoryData.notes ?? undefined,
               };
             }
