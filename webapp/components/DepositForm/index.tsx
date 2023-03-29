@@ -86,6 +86,10 @@ export const DepositForm: FC<Props> = (props) => {
     const payload: ApiSchema.NewTransaction = {
       ...otherValues,
       categories,
+      accounts:[{
+        ...otherValues.accounts[0],
+        amount: dollarsToCents(balance),
+      }],
       type: TRANSACTION_TYPES.DEPOSIT,
     };
     console.log(payload);
