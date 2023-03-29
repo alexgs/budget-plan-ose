@@ -55,7 +55,7 @@ export default async function handler(
       };
       try {
         // TODO Validate that the date is in YYYY-MM-DD format before converting to a `Date` object
-        payload = await schemaObjects.newTransaction.validate(req.body);
+        payload = await schemaObjects.newTransaction.validate(req.body, {stripUnknown: false});
       } catch (e: any) {
         if (e.name && e.name === 'ValidationError') {
           const error: ValidationError = e as ValidationError;

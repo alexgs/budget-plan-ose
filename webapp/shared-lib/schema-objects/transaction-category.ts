@@ -10,4 +10,4 @@ export const transactionCategory = yup.object({
   categoryId: yup.string().required(),
   isCredit: yup.boolean().required(),
   notes: yup.string(),
-});
+}).noUnknown();

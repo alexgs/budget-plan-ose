@@ -25,7 +25,7 @@ export default async function handler(
       let categoryId = '';
       try {
         categoryId = await yup.string().required().validate(req.query.categoryId);
-        payload = await schemaObjects.patchCategory.validate(req.body);
+        payload = await schemaObjects.patchCategory.validate(req.body, {stripUnknown: false});
       } catch (e: any) {
         if (e.name && e.name === 'ValidationError') {
           const error: ValidationError = e as ValidationError;
