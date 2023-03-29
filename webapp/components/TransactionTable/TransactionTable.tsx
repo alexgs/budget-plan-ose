@@ -261,14 +261,39 @@ export const TransactionTable: React.FC<Props> = (props) => {
     if (data) {
       const payload: ApiSchema.NewTransaction = {
         ...data,
-        categories: data.categories.map((cat) => ({
-          ...cat,
-          notes: cat.notes ?? undefined
+        accounts: data.accounts.map((acct) => ({
+          ...acct,
+          amount: acct.amount / 100,
         })),
+        categories: categories.map(
+          (categoryValue): ApiSchema.NewTransactionCategory => {
+            const categoryData = data.categories.find(
+              (txnCategory) => txnCategory.categoryId === categoryValue.id
+            );
+            if (categoryData) {
+              return {
+                ...categoryData,
+                amount: categoryData.amount / 100,
+                notes: categoryData.notes ?? undefined,
+              };
+            }
+            return {
+              amount: 0,
+              categoryId: categoryValue.id,
+              isCredit: true as boolean,
+            };
+          }
+        ),
         date: new Date(data.date),
         type: data.type as TransactionType,
-      }
-      return <DepositForm accounts={accounts} categories={categories} data={payload} />;
+      };
+      return (
+        <DepositForm
+          accounts={accounts}
+          categories={categories}
+          data={payload}
+        />
+      );
     } else {
       throw new Error(`Unable to find txn ID ${nowEditing}`);
     }
