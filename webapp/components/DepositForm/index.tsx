@@ -33,30 +33,36 @@ import {
 interface Props extends PropsWithChildren {
   accounts: { label: string; value: string }[];
   categories: CategoryValues[];
+  data?: ApiSchema.NewTransaction;
 }
 
 export const DepositForm: FC<Props> = (props) => {
-  const form: NewTransactionFormHook = useForm({
-    initialValues: {
-      accounts: [
-        {
-          accountId: props.accounts[0].value,
-          amount: 0,
-          isCredit: true as boolean,
-          status: AMOUNT_STATUS.PENDING,
-        },
-      ],
-      balance: 0, // Client-only field
-      categories: props.categories.map((category) => ({
+  const initialValues = props.data ? {
+    ...props.data,
+    balance: props.data.accounts[0].amount, // Client-only field
+    isCredit: true as boolean, // Client-only field
+  } : {
+    accounts: [
+      {
+        accountId: props.accounts[0].value,
         amount: 0,
-        categoryId: category.id,
         isCredit: true as boolean,
-      })),
-      date: new Date(),
-      description: '',
-      isCredit: false as boolean, // Client-only field
-      type: TRANSACTION_TYPES.PAYMENT as TransactionType,
-    },
+        status: AMOUNT_STATUS.PENDING,
+      },
+    ],
+    balance: 0, // Client-only field
+    categories: props.categories.map((category) => ({
+      amount: 0,
+      categoryId: category.id,
+      isCredit: true as boolean,
+    })),
+    date: new Date(),
+    description: '',
+    isCredit: true as boolean, // Client-only field
+    type: TRANSACTION_TYPES.PAYMENT as TransactionType,
+  };
+  const form: NewTransactionFormHook = useForm({
+    initialValues,
     validate: yupResolver(schemaObjects.newTransaction),
     validateInputOnChange: true,
   });

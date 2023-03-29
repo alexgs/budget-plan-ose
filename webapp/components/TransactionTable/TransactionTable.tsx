@@ -129,8 +129,8 @@ export const TransactionTable: React.FC<Props> = (props) => {
           description: data.description,
           type: data.type as TransactionType,
         });
-        setNowEditing(recordId);
       }
+      setNowEditing(recordId);
     } else {
       throw new Error(`Unable to find txn ID ${recordId}`);
     }
@@ -248,13 +248,30 @@ export const TransactionTable: React.FC<Props> = (props) => {
   }
 
   function renderModalContent() {
+    if (!nowEditing) {
+      return null;
+    }
+
     const accounts = props.accountData.map((account) => ({
       value: account.id,
       label: account.description,
     }));
     const categories = getCategoryList(buildCategoryTree(props.categoryData));
-
-    return <DepositForm accounts={accounts} categories={categories} />;
+    const data = props.txnData.find((txn) => txn.id === nowEditing);
+    if (data) {
+      const payload: ApiSchema.NewTransaction = {
+        ...data,
+        categories: data.categories.map((cat) => ({
+          ...cat,
+          notes: cat.notes ?? undefined
+        })),
+        date: new Date(data.date),
+        type: data.type as TransactionType,
+      }
+      return <DepositForm accounts={accounts} categories={categories} data={payload} />;
+    } else {
+      throw new Error(`Unable to find txn ID ${nowEditing}`);
+    }
   }
 
   function renderRows() {
