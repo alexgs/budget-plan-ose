@@ -21,7 +21,10 @@ export async function processTransaction(
   if (payload.type === TRANSACTION_TYPES.CREDIT_CARD_PAYMENT) {
     result = await service.processCreditCardPayment(payload);
   }
-  if (payload.type === TRANSACTION_TYPES.PAYMENT) {
+  if (
+    payload.type === TRANSACTION_TYPES.DEPOSIT ||
+    payload.type === TRANSACTION_TYPES.PAYMENT
+  ) {
     result = await service.processPayment(payload);
   }
 

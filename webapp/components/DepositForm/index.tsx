@@ -28,35 +28,101 @@ import {
   TransactionType,
   dollarsToCents,
   schemaObjects,
+  sumSubrecords,
 } from '../../shared-lib';
+
+function convertDepositFormValuesToRequestPayload(
+  values: NewTransactionFormValues
+): ApiSchema.NewTransaction {
+  const categories: ApiSchema.NewTransactionCategory[] = values.categories
+    .filter((category) => category.amount !== 0)
+    .map((category) => {
+      return {
+        amount: dollarsToCents(category.amount),
+        categoryId: category.categoryId,
+        isCredit: true,
+      };
+    });
+  const { balance, isCredit, ...otherValues } = values;
+  return {
+    ...otherValues,
+    categories,
+    accounts: [
+      {
+        ...otherValues.accounts[0],
+        amount: dollarsToCents(balance),
+      },
+    ],
+    type: TRANSACTION_TYPES.DEPOSIT,
+  };
+}
+
+function getInitialValues(
+  accounts: { label: string; value: string }[],
+  categories: CategoryValues[],
+  data?: ApiSchema.NewTransaction
+): NewTransactionFormValues {
+  if (data) {
+    const accounts = data.accounts.map((sub) => ({
+      accountId: sub.accountId,
+      amount: sub.amount / 100,
+      isCredit: sub.isCredit,
+      status: sub.status,
+    }));
+    const categories = data.categories.map((sub) => ({
+      amount: sub.amount / 100,
+      categoryId: sub.categoryId,
+      isCredit: sub.isCredit,
+    }));
+    const balance = sumSubrecords(categories);
+    const isCredit = balance >= 0;
+    return {
+      accounts,
+      categories,
+      isCredit,
+      balance: Math.abs(balance),
+      date: new Date(data.date),
+      description: data.description,
+      type: data.type as TransactionType,
+    };
+  }
+
+  return {
+    accounts: [
+      {
+        accountId: accounts[0].value,
+        amount: 0,
+        isCredit: true as boolean,
+        status: AMOUNT_STATUS.PENDING,
+      },
+    ],
+    balance: 0, // Client-only field
+    categories: categories.map((category) => ({
+      amount: 0,
+      categoryId: category.id,
+      isCredit: true as boolean,
+    })),
+    date: new Date(),
+    description: '',
+    isCredit: true as boolean, // Client-only field
+    type: TRANSACTION_TYPES.PAYMENT as TransactionType,
+  };
+}
 
 interface Props extends PropsWithChildren {
   accounts: { label: string; value: string }[];
   categories: CategoryValues[];
+  data?: ApiSchema.NewTransaction;
+  txnId?: string;
 }
 
 export const DepositForm: FC<Props> = (props) => {
   const form: NewTransactionFormHook = useForm({
-    initialValues: {
-      accounts: [
-        {
-          accountId: props.accounts[0].value,
-          amount: 0,
-          isCredit: true as boolean,
-          status: AMOUNT_STATUS.PENDING,
-        },
-      ],
-      balance: 0, // Client-only field
-      categories: props.categories.map((category) => ({
-        amount: 0,
-        categoryId: category.id,
-        isCredit: true as boolean,
-      })),
-      date: new Date(),
-      description: '',
-      isCredit: false as boolean, // Client-only field
-      type: TRANSACTION_TYPES.PAYMENT as TransactionType,
-    },
+    initialValues: getInitialValues(
+      props.accounts,
+      props.categories,
+      props.data
+    ),
     validate: yupResolver(schemaObjects.newTransaction),
     validateInputOnChange: true,
   });
@@ -67,24 +133,16 @@ export const DepositForm: FC<Props> = (props) => {
   }
 
   async function requestDeposit(values: NewTransactionFormValues) {
-    const categories: ApiSchema.NewTransactionCategory[] = values.categories
-      .filter((category) => category.amount !== 0)
-      .map((category) => {
-        return {
-          amount: dollarsToCents(category.amount),
-          categoryId: category.categoryId,
-          isCredit: true,
-        };
-      });
-    const { balance, isCredit, ...otherValues} = values;
-    const payload: ApiSchema.NewTransaction = {
-      ...otherValues,
-      categories,
-      type: TRANSACTION_TYPES.PAYMENT, // TODO Change this to "deposit" to better reflect the intent of this "event"?
+    const payload: ApiSchema.NewTransaction | ApiSchema.PutTransaction = {
+      ...convertDepositFormValuesToRequestPayload(values),
+      id: props.txnId,
     };
-    console.log(payload); // TODO Remove this line
-
-    const responseData = await fetch('/api/transactions', {
+    const method = props.txnId ? 'PUT' : 'POST';
+    const url = props.txnId
+      ? `/api/transactions/${props.txnId}`
+      : '/api/transactions';
+    const responseData = await fetch(url, {
+      method,
       body: JSON.stringify({
         ...payload,
         date: formatClientDate(values.date),
@@ -92,7 +150,6 @@ export const DepositForm: FC<Props> = (props) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      method: 'POST',
     })
       .then((response) => response.json())
       .catch((e) => {

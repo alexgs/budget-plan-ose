@@ -10,4 +10,4 @@ export const transactionAccount = yup.object({
   amount: yup.number().required(),
   isCredit: yup.boolean().required(),
   status: yup.string().oneOf(Object.values(AMOUNT_STATUS)).required(),
-});
+}).noUnknown();

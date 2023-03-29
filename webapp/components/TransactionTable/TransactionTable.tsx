@@ -2,12 +2,16 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { Button, Table } from '@mantine/core';
+import { Button, Modal, Table } from '@mantine/core';
 import { useForm, yupResolver } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import React from 'react';
 
-import { formatClientDate } from '../../client-lib';
+import {
+  buildCategoryTree,
+  formatClientDate,
+  getCategoryList,
+} from '../../client-lib';
 import {
   NewTransactionFormHook,
   NewTransactionFormValues,
@@ -25,6 +29,7 @@ import {
   schemaObjects,
   sumSubrecords,
 } from '../../shared-lib';
+import { DepositForm } from '../DepositForm';
 
 import {
   AccountTransferRow,
@@ -47,6 +52,7 @@ export const TransactionTable: React.FC<Props> = (props) => {
   const [isNewTxnFormVisible, setNewTxnFormVisible] =
     React.useState<boolean>(false);
   const [isSaving, setSaving] = React.useState<boolean>(false);
+  const [isModalVisible, setModalVisible] = React.useState(false);
   const [nowEditing, setNowEditing] = React.useState<string | null>(null);
   const form: NewTransactionFormHook = useForm({
     initialValues: {
@@ -97,33 +103,41 @@ export const TransactionTable: React.FC<Props> = (props) => {
   function handleEditClick(recordId: string) {
     const data = props.txnData.find((txn) => txn.id === recordId);
     if (data) {
-      const accounts = data.accounts.map((sub) => ({
-        accountId: sub.accountId,
-        amount: sub.amount / 100,
-        isCredit: sub.isCredit,
-        status: sub.status,
-      }));
-      const categories = data.categories.map((sub) => ({
-        amount: sub.amount / 100,
-        categoryId: sub.categoryId,
-        isCredit: sub.isCredit,
-      }));
-      const balance = sumSubrecords(categories);
-      const isCredit = balance >= 0;
+      if (data.type === TRANSACTION_TYPES.DEPOSIT) {
+        setModalVisible(true);
+      } else {
+        const accounts = data.accounts.map((sub) => ({
+          accountId: sub.accountId,
+          amount: sub.amount / 100,
+          isCredit: sub.isCredit,
+          status: sub.status,
+        }));
+        const categories = data.categories.map((sub) => ({
+          amount: sub.amount / 100,
+          categoryId: sub.categoryId,
+          isCredit: sub.isCredit,
+        }));
+        const balance = sumSubrecords(categories);
+        const isCredit = balance >= 0;
 
-      form.setValues({
-        accounts,
-        categories,
-        isCredit,
-        balance: Math.abs(balance),
-        date: new Date(data.date),
-        description: data.description,
-        type: data.type as TransactionType,
-      });
+        form.setValues({
+          accounts,
+          categories,
+          isCredit,
+          balance: Math.abs(balance),
+          date: new Date(data.date),
+          description: data.description,
+          type: data.type as TransactionType,
+        });
+      }
       setNowEditing(recordId);
     } else {
       throw new Error(`Unable to find txn ID ${recordId}`);
     }
+  }
+
+  function handleModalCancel(): void {
+    setModalVisible(false);
   }
 
   function handleSplitAccount() {}
@@ -139,11 +153,13 @@ export const TransactionTable: React.FC<Props> = (props) => {
   function handleSubmit(values: NewTransactionFormValues) {
     setSaving(true);
     const { balance, isCredit, ...record } = values;
-    if (record.accounts.length === 1 && record.categories.length === 1) {
+    const isSimplePayment = record.accounts.length === 1 && record.categories.length === 1;
+    const isSplitCategory = record.accounts.length === 1 && record.categories.length > 1;
+    if (isSimplePayment) {
       record.categories[0].amount = dollarsToCents(record.categories[0].amount);
       record.accounts[0].amount = record.categories[0].amount;
       record.accounts[0].isCredit = record.categories[0].isCredit;
-    } else if (record.accounts.length === 1 && record.categories.length > 1) {
+    } else if (isSplitCategory) {
       record.categories = record.categories.map((subrecord) => ({
         ...subrecord,
         amount: dollarsToCents(subrecord.amount),
@@ -233,6 +249,56 @@ export const TransactionTable: React.FC<Props> = (props) => {
     });
   }
 
+  function renderModalContent() {
+    if (!nowEditing) {
+      return null;
+    }
+
+    const accounts = props.accountData.map((account) => ({
+      value: account.id,
+      label: account.description,
+    }));
+    const categories = getCategoryList(buildCategoryTree(props.categoryData));
+    const data = props.txnData.find((txn) => txn.id === nowEditing);
+
+    // TODO Getting data into the deposit form is a complete mess and can be improved
+    if (data) {
+      const payload: ApiSchema.NewTransaction = {
+        ...data,
+        categories: categories.map(
+          (categoryValue): ApiSchema.NewTransactionCategory => {
+            const categoryData = data.categories.find(
+              (txnCategory) => txnCategory.categoryId === categoryValue.id
+            );
+            if (categoryData) {
+              return {
+                ...categoryData,
+                notes: categoryData.notes ?? undefined,
+              };
+            }
+            return {
+              amount: 0,
+              categoryId: categoryValue.id,
+              isCredit: true as boolean,
+            };
+          }
+        ),
+        date: new Date(data.date),
+        type: data.type as TransactionType,
+      };
+      return (
+        <DepositForm
+          accounts={accounts}
+          categories={categories}
+          data={payload}
+          txnId={data.id}
+        />
+      );
+    } else {
+      throw new Error(`Unable to find txn ID ${nowEditing}`);
+    }
+  }
+
   function renderRows() {
     return props.txnData.map((txn) => {
       if (txn.id === nowEditing) {
@@ -251,6 +317,17 @@ export const TransactionTable: React.FC<Props> = (props) => {
       }
 
       if (txn.accounts.length === 1 && txn.categories.length > 1) {
+        if (txn.type === TRANSACTION_TYPES.DEPOSIT) {
+          return (
+            <SplitCategoryRow
+              key={txn.id}
+              accountData={props.accountData}
+              categoryData={props.categoryData}
+              onEditClick={handleEditClick}
+              txn={txn}
+            />
+          );
+        }
         return (
           <SplitCategoryRow
             key={txn.id}
@@ -353,27 +430,42 @@ export const TransactionTable: React.FC<Props> = (props) => {
   }
 
   return (
-    <form
-      onSubmit={form.onSubmit(handleSubmit, (values) => console.error(values))}
-    >
-      <Table>
-        <thead>
-          <tr>
-            <th />{/* Checkbox, maybe other controls */}
-            <th>Date</th>
-            <th>Account</th>
-            <th>Description</th>
-            <th>Category</th>
-            <th>Notes</th>
-            <th>Amount</th>
-            <th />{/* Status icons (pending, cleared, etc.), maybe other controls */}
-          </tr>
-        </thead>
-        <tbody>
-          {renderTopRow()}
-          {renderRows()}
-        </tbody>
-      </Table>
-    </form>
+    <>
+      <form
+        onSubmit={form.onSubmit(handleSubmit, (values) =>
+          console.error(values)
+        )}
+      >
+        <Table>
+          <thead>
+            <tr>
+              <th>{/* Checkbox, maybe other controls */}</th>
+              <th>Date</th>
+              <th>Account</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Notes</th>
+              <th>Amount</th>
+              <th>
+                {/* Status icons (pending, cleared, etc.), maybe other controls */}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {renderTopRow()}
+            {renderRows()}
+          </tbody>
+        </Table>
+      </form>
+      <Modal
+        onClose={handleModalCancel}
+        opened={isModalVisible}
+        overlayBlur={3}
+        size={'xl'}
+        title="Edit deposit"
+      >
+        {renderModalContent()}
+      </Modal>
+    </>
   );
 };
