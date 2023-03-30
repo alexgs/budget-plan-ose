@@ -13,14 +13,8 @@ import {
   getFriendlyAccountName,
   getFriendlyCategoryName,
 } from '../../../shared-lib';
-
-const Column = styled.div({
-  display: 'table-cell',
-});
-
-const Row = styled.div({
-  display: 'table-row',
-});
+import { Column } from '../Components/Column';
+import { Row } from '../Components/Row';
 
 interface Props {
   accountData: Account[];
