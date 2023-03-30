@@ -17,8 +17,8 @@ export function formatAmount(cents?: number | null) {
 
   const formattedAmount = formatter.format(cents / 100);
   if (cents < 0) {
-    return <Text color="red">{formattedAmount}</Text>;
+    return <Text span color="red">{formattedAmount}</Text>;
   }
 
-  return <Text>{formattedAmount}</Text>;
+  return <Text span>{formattedAmount}</Text>;
 }
