@@ -9,6 +9,6 @@ interface Props {
 }
 
 export const Column = styled.div((props: Props) => ({
-  display: 'table-cell',
+  // display: 'table-cell',
   width: props.width ? props.width : undefined,
 }));

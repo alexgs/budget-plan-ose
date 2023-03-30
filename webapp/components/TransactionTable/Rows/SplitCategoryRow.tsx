@@ -9,6 +9,7 @@ import { getFriendlyAccountName, sumSubrecords } from '../../../shared-lib';
 import { Column } from '../Components/Column';
 import { ExpandRowButton } from '../Components/ExpandRowButton';
 import { Row } from '../Components/Row';
+import { COLUMN_WIDTH } from './column-width';
 
 import { RowProps } from './row-props';
 
@@ -19,14 +20,24 @@ export const SplitCategoryRow: React.FC<RowProps> = (props) => {
     if (isExpanded) {
       return (
         <Row>
-          <Column>{/* Checkbox */}</Column>
-          <Column>{/* Date */}</Column>
-          <Column>{/* Account */}</Column>
-          <Column>Hello hidden world</Column>
-          <Column>{/* Category */}</Column>
-          <Column>{/* Notes */}</Column>
-          <Column>{/* Amount */}</Column>
-          <Column>{/* Buttons */}</Column>
+          <Column width={COLUMN_WIDTH.CHEVRON}>{/* Checkbox */}</Column>
+          <Column width={COLUMN_WIDTH.DATE}>{/* Date */}</Column>
+          <Column width={COLUMN_WIDTH.ACCOUNT}>{/* Account */}</Column>
+          <Column
+            style={{
+              paddingLeft: 8,
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+            }}
+            width={COLUMN_WIDTH.DESCRIPTION}
+          >
+            Hello hidden world
+          </Column>
+          <Column width={COLUMN_WIDTH.CATEGORY}>{/* Category */}</Column>
+          <Column width={COLUMN_WIDTH.NOTES}>{/* Notes */}</Column>
+          <Column width={COLUMN_WIDTH.AMOUNT}>{/* Amount */}</Column>
+          <Column width={COLUMN_WIDTH.BUTTONS}>{/* Buttons */}</Column>
         </Row>
       );
     }
@@ -36,24 +47,30 @@ export const SplitCategoryRow: React.FC<RowProps> = (props) => {
   return (
     <>
       <Row>
-        <Column>
+        <Column width={COLUMN_WIDTH.CHEVRON}>
           <ExpandRowButton
             isExpanded={isExpanded}
             onClick={() => setExpanded((prevState) => !prevState)}
           />
         </Column>
-        <Column>{/* Date */}</Column>
-        <Column>
+        <Column width={COLUMN_WIDTH.DATE}>{/* Date */}</Column>
+        <Column width={COLUMN_WIDTH.ACCOUNT}>
           {getFriendlyAccountName(
             props.accountData,
             props.txn.accounts[0].accountId
           )}
         </Column>
-        <Column>{props.txn.description}</Column>
-        <Column style={{ fontStyle: 'italic' }}>Split</Column>
-        <Column>{/* Notes */}</Column>
-        <Column>{formatAmount(sumSubrecords(props.txn.categories))}</Column>
-        <Column>{/* Buttons */}</Column>
+        <Column width={COLUMN_WIDTH.DESCRIPTION}>
+          {props.txn.description}
+        </Column>
+        <Column style={{ fontStyle: 'italic' }} width={COLUMN_WIDTH.CATEGORY}>
+          Split
+        </Column>
+        <Column width={COLUMN_WIDTH.NOTES}>{/* Notes */}</Column>
+        <Column width={COLUMN_WIDTH.AMOUNT}>
+          {formatAmount(sumSubrecords(props.txn.categories))}
+        </Column>
+        <Column width={COLUMN_WIDTH.BUTTONS}>{/* Buttons */}</Column>
       </Row>
       {renderSubrecords()}
     </>
