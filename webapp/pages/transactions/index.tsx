@@ -8,7 +8,7 @@ import { Alert, Loader } from '@mantine/core';
 import React from 'react';
 import useSWR from 'swr';
 
-import { OldTransactionTable, Page } from '../../components';
+import { TransactionTable, Page } from '../../components';
 import { Account, ApiSchema, Category } from '../../shared-lib';
 
 const Transactions: React.FC = () => {
@@ -47,7 +47,7 @@ const Transactions: React.FC = () => {
 
   return (
     <Page>
-      <OldTransactionTable
+      <TransactionTable
         accountData={accountData}
         categoryData={categoryData}
         txnData={txnData}
