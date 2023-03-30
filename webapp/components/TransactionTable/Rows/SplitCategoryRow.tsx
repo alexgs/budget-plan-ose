@@ -3,20 +3,17 @@
  */
 
 import React from 'react';
-import { formatAmount } from '../../../client-lib';
 
-import {
-  getFriendlyAccountName,
-  getFriendlyCategoryName,
-} from '../../../shared-lib';
+import { formatAmount } from '../../../client-lib';
+import { getFriendlyAccountName, sumSubrecords } from '../../../shared-lib';
 import { Column } from '../Components/Column';
 import { Row } from '../Components/Row';
 
 import { RowProps } from './row-props';
 
-export const SimpleRow: React.FC<RowProps> = (props) => {
+export const SplitCategoryRow: React.FC<RowProps> = (props) => {
   return (
-    <Row key={props.txn.id}>
+    <Row>
       <Column>{/* Checkbox */}</Column>
       <Column>
         {getFriendlyAccountName(
@@ -24,14 +21,9 @@ export const SimpleRow: React.FC<RowProps> = (props) => {
           props.txn.accounts[0].accountId
         )}
       </Column>
-      <Column>
-        {getFriendlyCategoryName(
-          props.categoryData,
-          props.txn.categories[0].categoryId
-        )}
-      </Column>
+      <Column style={{ fontStyle: 'italic' }}>Split</Column>
       <Column>{/* Notes */}</Column>
-      <Column>{formatAmount(props.txn.categories[0].amount)}</Column>
+      <Column>{formatAmount(sumSubrecords(props.txn.categories))}</Column>
       <Column>{/* Buttons */}</Column>
     </Row>
   );

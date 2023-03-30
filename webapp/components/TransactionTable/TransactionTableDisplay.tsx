@@ -12,7 +12,11 @@ import {
   Category,
 } from '../../shared-lib';
 
+import { AccountTransferRow } from './Rows/AccountTransferRow';
+import { CategoryTransferRow } from './Rows/CategoryTransferRow';
 import { SimpleRow } from './Rows/SimpleRow';
+import { SplitAccountRow } from './Rows/SplitAccountRow';
+import { SplitCategoryRow } from './Rows/SplitCategoryRow';
 
 const Table = styled.div({});
 
@@ -27,20 +31,50 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
   function renderRows() {
     return props.txnData.map((txn) => {
       if (txn.accounts.length === 1 && txn.categories.length > 1) {
-        return <div key={txn.id}>Split category row</div>
+        return (
+          <SplitCategoryRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            txn={txn}
+          />
+        );
       }
 
       if (txn.accounts.length > 1 && txn.categories.length === 1) {
-        return <div key={txn.id}>Split account row</div>
+        return (
+          <SplitAccountRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            txn={txn}
+          />
+        );
       }
 
       if (txn.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
-        return <div key={txn.id}>Account transfer row</div>
+        return (
+          <AccountTransferRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            txn={txn}
+          />
+        );
       }
 
       if (txn.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
-        return <div key={txn.id}>Category transfer row</div>
+        return (
+          <CategoryTransferRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            txn={txn}
+          />
+        );
       }
+
+      // TODO Add another row type for credit card charges
 
       // Default option
       return (
