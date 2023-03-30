@@ -6,13 +6,21 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { formatAmount } from '../../../client-lib';
 
-import { Account, ApiSchema, Category } from '../../../shared-lib';
+import {
+  Account,
+  ApiSchema,
+  Category,
+  getFriendlyAccountName,
+  getFriendlyCategoryName,
+} from '../../../shared-lib';
 
 const Column = styled.div({
-  display: 'inline',
+  display: 'table-cell',
 });
 
-const Row = styled.div({});
+const Row = styled.div({
+  display: 'table-row',
+});
 
 interface Props {
   accountData: Account[];
@@ -24,8 +32,18 @@ export const SimpleRow: React.FC<Props> = (props) => {
   return (
     <Row key={props.txn.id}>
       <Column>{/* Checkbox */}</Column>
-      <Column>{props.txn.accounts[0].accountId}</Column>
-      <Column>{props.txn.categories[0].categoryId}</Column>
+      <Column>
+        {getFriendlyAccountName(
+          props.accountData,
+          props.txn.accounts[0].accountId
+        )}
+      </Column>
+      <Column>
+        {getFriendlyCategoryName(
+          props.categoryData,
+          props.txn.categories[0].categoryId
+        )}
+      </Column>
       <Column>{/* Notes */}</Column>
       <Column>{formatAmount(props.txn.categories[0].amount)}</Column>
       <Column>{/* Buttons */}</Column>
