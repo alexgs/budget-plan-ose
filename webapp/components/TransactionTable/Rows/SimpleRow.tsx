@@ -15,6 +15,7 @@ import { Row } from '../Components/Row';
 import { RowProps } from './row-props';
 
 export const SimpleRow: React.FC<RowProps> = (props) => {
+  const amount = props.txn.categories[0].isCredit ? props.txn.categories[0].amount : -1 * props.txn.categories[0].amount;
   return (
     <Row key={props.txn.id}>
       <Column>{/* Checkbox */}</Column>
@@ -24,6 +25,7 @@ export const SimpleRow: React.FC<RowProps> = (props) => {
           props.txn.accounts[0].accountId
         )}
       </Column>
+      <Column>{props.txn.description}</Column>
       <Column>
         {getFriendlyCategoryName(
           props.categoryData,
@@ -31,7 +33,7 @@ export const SimpleRow: React.FC<RowProps> = (props) => {
         )}
       </Column>
       <Column>{/* Notes */}</Column>
-      <Column>{formatAmount(props.txn.categories[0].amount)}</Column>
+      <Column>{formatAmount(amount)}</Column>
       <Column>{/* Buttons */}</Column>
     </Row>
   );

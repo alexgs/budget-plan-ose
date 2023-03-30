@@ -21,6 +21,7 @@ export const SplitCategoryRow: React.FC<RowProps> = (props) => {
           props.txn.accounts[0].accountId
         )}
       </Column>
+      <Column>{props.txn.description}</Column>
       <Column style={{ fontStyle: 'italic' }}>Split</Column>
       <Column>{/* Notes */}</Column>
       <Column>{formatAmount(sumSubrecords(props.txn.categories))}</Column>

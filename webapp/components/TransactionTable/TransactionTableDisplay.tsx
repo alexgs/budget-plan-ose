@@ -14,6 +14,7 @@ import {
 
 import { AccountTransferRow } from './Rows/AccountTransferRow';
 import { CategoryTransferRow } from './Rows/CategoryTransferRow';
+import { CreditCardChargeRow } from './Rows/CreditCardChargeRow';
 import { SimpleRow } from './Rows/SimpleRow';
 import { SplitAccountRow } from './Rows/SplitAccountRow';
 import { SplitCategoryRow } from './Rows/SplitCategoryRow';
@@ -30,6 +31,19 @@ interface Props {
 export const TransactionTableDisplay: React.FC<Props> = (props) => {
   function renderRows() {
     return props.txnData.map((txn) => {
+      // TODO Add a row-type for credit card payments
+
+      if (txn.type === TRANSACTION_TYPES.CREDIT_CARD_CHARGE) {
+        return (
+          <CreditCardChargeRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            txn={txn}
+          />
+        )
+      }
+
       if (txn.accounts.length === 1 && txn.categories.length > 1) {
         return (
           <SplitCategoryRow
@@ -73,8 +87,6 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
           />
         );
       }
-
-      // TODO Add another row type for credit card charges
 
       // Default option
       return (

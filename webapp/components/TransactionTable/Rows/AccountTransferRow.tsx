@@ -16,7 +16,8 @@ export const AccountTransferRow: React.FC<RowProps> = (props) => {
     <Row>
       <Column>{/* Checkbox */}</Column>
       <Column style={{ fontStyle: 'italic' }}>Transfer</Column>
-      <Column style={{ fontStyle: 'italic' }}>Transfer</Column>
+      <Column>{props.txn.description}</Column>
+      <Column>{/* Category */}</Column>
       <Column>{/* Notes */}</Column>
       <Column>{formatAmount(sumSubrecords(props.txn.accounts))}</Column>
       <Column>{/* Buttons */}</Column>

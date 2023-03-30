@@ -16,6 +16,7 @@ export const SplitAccountRow: React.FC<RowProps> = (props) => {
     <Row>
       <Column>{/* Checkbox */}</Column>
       <Column style={{ fontStyle: 'italic' }}>Split</Column>
+      <Column>{props.txn.description}</Column>
       <Column>
         {getFriendlyCategoryName(
           props.categoryData,
