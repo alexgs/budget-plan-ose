@@ -40,6 +40,7 @@ export const CreditCardChargeRow: React.FC<RowProps> = (props) => {
   return (
     <Row>
       <Column>{/* Checkbox */}</Column>
+      <Column>{/* Date */}</Column>
       <Column>
         {getFriendlyAccountName(
           props.accountData,

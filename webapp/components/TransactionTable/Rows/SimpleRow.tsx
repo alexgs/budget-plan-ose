@@ -19,6 +19,7 @@ export const SimpleRow: React.FC<RowProps> = (props) => {
   return (
     <Row key={props.txn.id}>
       <Column>{/* Checkbox */}</Column>
+      <Column>{/* Date */}</Column>
       <Column>
         {getFriendlyAccountName(
           props.accountData,

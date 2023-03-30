@@ -15,6 +15,7 @@ export const SplitAccountRow: React.FC<RowProps> = (props) => {
   return (
     <Row>
       <Column>{/* Checkbox */}</Column>
+      <Column>{/* Date */}</Column>
       <Column style={{ fontStyle: 'italic' }}>Split</Column>
       <Column>{props.txn.description}</Column>
       <Column>

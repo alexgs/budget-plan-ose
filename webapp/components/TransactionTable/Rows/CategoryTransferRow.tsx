@@ -15,6 +15,7 @@ export const CategoryTransferRow: React.FC<RowProps> = (props) => {
   return (
     <Row>
       <Column>{/* Checkbox */}</Column>
+      <Column>{/* Date */}</Column>
       <Column>{/* Account */}</Column>
       <Column>{props.txn.description}</Column>
       <Column style={{ fontStyle: 'italic' }}>Transfer</Column>
