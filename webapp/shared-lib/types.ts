@@ -56,5 +56,10 @@ export type Transaction = TransactionRecord & {
   accounts: TransactionAccount[];
   categories: TransactionCategory[];
 };
+export interface Subrecord {
+  amount: number;
+  isCredit: boolean;
+}
 export type TransactionType =
   typeof TRANSACTION_TYPES[keyof typeof TRANSACTION_TYPES];
+
