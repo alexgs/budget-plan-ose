@@ -6,6 +6,7 @@ import React from 'react';
 
 import { formatAmount } from '../../../client-lib';
 import { getFriendlyAccountName, sumSubrecords } from '../../../shared-lib';
+import { AccountCell, ChevronCell } from '../Components/Cell';
 import { Column } from '../Components/Column';
 import { ExpandRowButton } from '../Components/ExpandRowButton';
 import { Row } from '../Components/Row';
@@ -20,9 +21,9 @@ export const SplitCategoryRow: React.FC<RowProps> = (props) => {
     if (isExpanded) {
       return (
         <Row>
-          <Column width={COLUMN_WIDTH.CHEVRON}>{/* Checkbox */}</Column>
+          <ChevronCell>{/* Checkbox */}</ChevronCell>
           <Column width={COLUMN_WIDTH.DATE}>{/* Date */}</Column>
-          <Column width={COLUMN_WIDTH.ACCOUNT}>{/* Account */}</Column>
+          <AccountCell>{/* Account */}</AccountCell>
           <Column
             style={{
               paddingLeft: 8,
@@ -47,19 +48,19 @@ export const SplitCategoryRow: React.FC<RowProps> = (props) => {
   return (
     <>
       <Row>
-        <Column width={COLUMN_WIDTH.CHEVRON}>
+        <ChevronCell>
           <ExpandRowButton
             isExpanded={isExpanded}
             onClick={() => setExpanded((prevState) => !prevState)}
           />
-        </Column>
+        </ChevronCell>
         <Column width={COLUMN_WIDTH.DATE}>{/* Date */}</Column>
-        <Column width={COLUMN_WIDTH.ACCOUNT}>
+        <AccountCell>
           {getFriendlyAccountName(
             props.accountData,
             props.txn.accounts[0].accountId
           )}
-        </Column>
+        </AccountCell>
         <Column width={COLUMN_WIDTH.DESCRIPTION}>
           {props.txn.description}
         </Column>
