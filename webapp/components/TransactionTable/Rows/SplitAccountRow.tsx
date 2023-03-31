@@ -4,15 +4,14 @@
 
 import React from 'react';
 
-import { formatAmount } from '../../../client-lib';
 import {
   getFriendlyAccountName,
   getFriendlyCategoryName,
   sumSubrecords,
 } from '../../../shared-lib';
+import { SmartAmountCell } from '../Components/SmartAmountCell';
 import {
   AccountCell,
-  AmountCell,
   ButtonsCell,
   CategoryCell,
   ChevronCell,
@@ -43,9 +42,7 @@ export const SplitAccountRow: React.FC<RowProps> = (props) => {
             <DescriptionCell />
             <CategoryCell />
             <NotesCell>{/* Notes */}</NotesCell>
-            <AmountCell style={{ paddingLeft: 8 }}>
-              {formatAmount(subrecord.amount)}
-            </AmountCell>
+            <SmartAmountCell style={{ paddingLeft: 8 }} subrecord={subrecord} />
             <ButtonsCell>{/* Buttons */}</ButtonsCell>
           </Row>
         );
@@ -73,9 +70,7 @@ export const SplitAccountRow: React.FC<RowProps> = (props) => {
           )}
         </CategoryCell>
         <NotesCell>{/* Notes */}</NotesCell>
-        <AmountCell>
-          {formatAmount(sumSubrecords(props.txn.accounts))}
-        </AmountCell>
+        <SmartAmountCell amount={sumSubrecords(props.txn.categories)} />
         <ButtonsCell>{/* Buttons */}</ButtonsCell>
       </Row>
       {renderSubrecords()}

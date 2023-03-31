@@ -9,7 +9,6 @@ import {
   getFriendlyCategoryName,
   sumSubrecords,
 } from '../../../shared-lib';
-import { SmartAmountCell as AmountCell } from '../Components/SmartAmountCell';
 import {
   AccountCell,
   ButtonsCell,
@@ -21,6 +20,7 @@ import {
 } from '../Components/Cell';
 import { ExpandRowButton } from '../Components/ExpandRowButton';
 import { Row } from '../Components/Row';
+import { SmartAmountCell } from '../Components/SmartAmountCell';
 
 import { RowProps } from './row-props';
 
@@ -45,7 +45,7 @@ export const SplitCategoryRow: React.FC<RowProps> = (props) => {
               )}
             </CategoryCell>
             <NotesCell>{/* Notes */}</NotesCell>
-            <AmountCell style={{ paddingLeft: 8 }} subrecord={subrecord} />
+            <SmartAmountCell style={{ paddingLeft: 8 }} subrecord={subrecord} />
             <ButtonsCell>{/* Buttons */}</ButtonsCell>
           </Row>
         );
@@ -73,7 +73,7 @@ export const SplitCategoryRow: React.FC<RowProps> = (props) => {
         <DescriptionCell>{props.txn.description}</DescriptionCell>
         <CategoryCell style={{ fontStyle: 'italic' }}>Split</CategoryCell>
         <NotesCell>{/* Notes */}</NotesCell>
-        <AmountCell amount={sumSubrecords(props.txn.categories)} />
+        <SmartAmountCell amount={sumSubrecords(props.txn.categories)} />
         <ButtonsCell>{/* Buttons */}</ButtonsCell>
       </Row>
       {renderSubrecords()}

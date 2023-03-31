@@ -4,11 +4,9 @@
 
 import React from 'react';
 
-import { formatAmount } from '../../../client-lib';
 import { getFriendlyAccountName, sumSubrecords } from '../../../shared-lib';
 import {
   AccountCell,
-  AmountCell,
   ButtonsCell,
   CategoryCell,
   ChevronCell,
@@ -18,6 +16,7 @@ import {
 } from '../Components/Cell';
 import { ExpandRowButton } from '../Components/ExpandRowButton';
 import { Row } from '../Components/Row';
+import { SmartAmountCell } from '../Components/SmartAmountCell';
 
 import { RowProps } from './row-props';
 
@@ -39,9 +38,7 @@ export const AccountTransferRow: React.FC<RowProps> = (props) => {
             <DescriptionCell />
             <CategoryCell />
             <NotesCell>{/* Notes */}</NotesCell>
-            <AmountCell style={{ paddingLeft: 8 }}>
-              {formatAmount(subrecord.amount)}
-            </AmountCell>
+            <SmartAmountCell style={{ paddingLeft: 8 }} subrecord={subrecord} />
             <ButtonsCell>{/* Buttons */}</ButtonsCell>
           </Row>
         );
@@ -64,9 +61,7 @@ export const AccountTransferRow: React.FC<RowProps> = (props) => {
         <DescriptionCell>{props.txn.description}</DescriptionCell>
         <CategoryCell>{/* Category */}</CategoryCell>
         <NotesCell>{/* Notes */}</NotesCell>
-        <AmountCell>
-          {formatAmount(sumSubrecords(props.txn.accounts))}
-        </AmountCell>
+        <SmartAmountCell amount={sumSubrecords(props.txn.accounts)} />
         <ButtonsCell>{/* Buttons */}</ButtonsCell>
       </Row>
       {renderSubrecords()}

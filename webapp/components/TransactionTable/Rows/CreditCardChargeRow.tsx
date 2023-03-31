@@ -4,14 +4,12 @@
 
 import React from 'react';
 
-import { formatAmount } from '../../../client-lib';
 import {
   getFriendlyAccountName,
   getFriendlyCategoryName,
 } from '../../../shared-lib';
 import {
   AccountCell,
-  AmountCell,
   ButtonsCell,
   CategoryCell,
   ChevronCell,
@@ -20,6 +18,7 @@ import {
   NotesCell,
 } from '../Components/Cell';
 import { Row } from '../Components/Row';
+import { SmartAmountCell } from '../Components/SmartAmountCell';
 
 import { RowProps } from './row-props';
 
@@ -42,9 +41,6 @@ export const CreditCardChargeRow: React.FC<RowProps> = (props) => {
   }
 
   const categorySubrecord = getUserCategorySubrecord();
-  const amount = categorySubrecord.isCredit
-    ? categorySubrecord.amount
-    : -1 * categorySubrecord.amount;
   return (
     <Row>
       <ChevronCell>{/* Checkbox */}</ChevronCell>
@@ -63,7 +59,7 @@ export const CreditCardChargeRow: React.FC<RowProps> = (props) => {
         )}
       </CategoryCell>
       <NotesCell>{/* Notes */}</NotesCell>
-      <AmountCell>{formatAmount(amount)}</AmountCell>
+      <SmartAmountCell subrecord={categorySubrecord} />
       <ButtonsCell>{/* Buttons */}</ButtonsCell>
     </Row>
   );

@@ -9,11 +9,14 @@ import { formatAmount } from '../../../client-lib';
 import { formatSubrecordAmount } from '../../../client-lib/format-subrecord-amount';
 import { Subrecord } from '../../../shared-lib';
 
-import { AmountCell, Cell } from './Cell';
+import { AmountCell } from './Cell';
 
 function renderAmount(amount: String | null): React.ReactElement {
   if (!amount) {
     return <Text span>$0.00</Text>;
+  }
+  if (amount === '$0.00') {
+    return <Text span>{amount}</Text>;
   }
   if (amount.startsWith('-')) {
     return <Text span>{amount.substring(1)}</Text>;
@@ -38,17 +41,20 @@ interface SubrecordProps {
 type Props = AmountProps | SubrecordProps;
 
 export const SmartAmountCell: React.FC<Props> = (props) => {
-
   if ('subrecord' in props) {
     return (
-      <AmountCell>
+      <AmountCell style={props.style}>
         {renderAmount(formatSubrecordAmount(props.subrecord))}
       </AmountCell>
     );
   }
 
   if ('amount' in props) {
-    return <AmountCell>{renderAmount(formatAmount(props.amount))}</AmountCell>;
+    return (
+      <AmountCell style={props.style}>
+        {renderAmount(formatAmount(props.amount))}
+      </AmountCell>
+    );
   }
   throw new Error('Must include either `amount` or `subrecord`');
 };
