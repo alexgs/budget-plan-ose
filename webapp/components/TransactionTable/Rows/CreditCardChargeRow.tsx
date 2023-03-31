@@ -8,9 +8,17 @@ import { formatAmount } from '../../../client-lib';
 import {
   getFriendlyAccountName,
   getFriendlyCategoryName,
-  sumSubrecords,
 } from '../../../shared-lib';
-import { Column } from '../Components/Column';
+import {
+  AccountCell,
+  AmountCell,
+  ButtonsCell,
+  CategoryCell,
+  ChevronCell,
+  DateCell,
+  DescriptionCell,
+  NotesCell,
+} from '../Components/Cell';
 import { Row } from '../Components/Row';
 
 import { RowProps } from './row-props';
@@ -39,24 +47,24 @@ export const CreditCardChargeRow: React.FC<RowProps> = (props) => {
     : -1 * categorySubrecord.amount;
   return (
     <Row>
-      <Column>{/* Checkbox */}</Column>
-      <Column>{/* Date */}</Column>
-      <Column>
+      <ChevronCell>{/* Checkbox */}</ChevronCell>
+      <DateCell>{/* Date */}</DateCell>
+      <AccountCell>
         {getFriendlyAccountName(
           props.accountData,
           props.txn.accounts[0].accountId
         )}
-      </Column>
-      <Column>{props.txn.description}</Column>
-      <Column>
+      </AccountCell>
+      <DescriptionCell>{props.txn.description}</DescriptionCell>
+      <CategoryCell>
         {getFriendlyCategoryName(
           props.categoryData,
           categorySubrecord.categoryId
         )}
-      </Column>
-      <Column>{/* Notes */}</Column>
-      <Column>{formatAmount(amount)}</Column>
-      <Column>{/* Buttons */}</Column>
+      </CategoryCell>
+      <NotesCell>{/* Notes */}</NotesCell>
+      <AmountCell>{formatAmount(amount)}</AmountCell>
+      <ButtonsCell>{/* Buttons */}</ButtonsCell>
     </Row>
   );
 };

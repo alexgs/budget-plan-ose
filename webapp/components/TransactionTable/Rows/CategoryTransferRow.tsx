@@ -6,7 +6,16 @@ import React from 'react';
 
 import { formatAmount } from '../../../client-lib';
 import { sumSubrecords } from '../../../shared-lib';
-import { Column } from '../Components/Column';
+import {
+  AccountCell,
+  AmountCell,
+  ButtonsCell,
+  CategoryCell,
+  ChevronCell,
+  DateCell,
+  DescriptionCell,
+  NotesCell,
+} from '../Components/Cell';
 import { Row } from '../Components/Row';
 
 import { RowProps } from './row-props';
@@ -14,14 +23,14 @@ import { RowProps } from './row-props';
 export const CategoryTransferRow: React.FC<RowProps> = (props) => {
   return (
     <Row>
-      <Column>{/* Checkbox */}</Column>
-      <Column>{/* Date */}</Column>
-      <Column>{/* Account */}</Column>
-      <Column>{props.txn.description}</Column>
-      <Column style={{ fontStyle: 'italic' }}>Transfer</Column>
-      <Column>{/* Notes */}</Column>
-      <Column>{formatAmount(sumSubrecords(props.txn.accounts))}</Column>
-      <Column>{/* Buttons */}</Column>
+      <ChevronCell>{/* Checkbox */}</ChevronCell>
+      <DateCell>{/* Date */}</DateCell>
+      <AccountCell>{/* Account */}</AccountCell>
+      <DescriptionCell>{props.txn.description}</DescriptionCell>
+      <CategoryCell style={{ fontStyle: 'italic' }}>Transfer</CategoryCell>
+      <NotesCell>{/* Notes */}</NotesCell>
+      <AmountCell>{formatAmount(sumSubrecords(props.txn.accounts))}</AmountCell>
+      <ButtonsCell>{/* Buttons */}</ButtonsCell>
     </Row>
   );
 };

@@ -3,7 +3,17 @@
  */
 
 import styled from '@emotion/styled';
-import { COLUMN_WIDTH } from '../Rows/column-width';
+
+const COLUMN_WIDTH = {
+  CHEVRON: 18,
+  DATE: 0,
+  ACCOUNT: '18%',
+  DESCRIPTION: '30%',
+  CATEGORY: '23%',
+  NOTES: 0,
+  AMOUNT: '15%',
+  BUTTONS: '10%'
+} as const;
 
 export const Cell = styled.div({
   whiteSpace: 'nowrap',
@@ -12,9 +22,34 @@ export const Cell = styled.div({
 });
 
 export const AccountCell = styled(Cell)({
+  minWidth: 100,
   width: COLUMN_WIDTH.ACCOUNT,
+});
+
+export const AmountCell = styled(Cell)({
+  width: COLUMN_WIDTH.AMOUNT,
+});
+
+export const ButtonsCell = styled(Cell)({
+  width: COLUMN_WIDTH.BUTTONS,
+});
+
+export const CategoryCell = styled(Cell)({
+  width: COLUMN_WIDTH.CATEGORY,
 });
 
 export const ChevronCell = styled(Cell)({
   width: COLUMN_WIDTH.CHEVRON,
+});
+
+export const DateCell = styled(Cell)({
+  width: COLUMN_WIDTH.DATE,
+});
+
+export const DescriptionCell = styled(Cell)({
+  width: COLUMN_WIDTH.DESCRIPTION,
+});
+
+export const NotesCell = styled(Cell)({
+  width: COLUMN_WIDTH.NOTES,
 });
