@@ -27,7 +27,7 @@ export const SplitCategoryRow: React.FC<RowProps> = (props) => {
   function renderSubrecords() {
     if (isExpanded) {
       return (
-        <Row>
+        <Row style={{ borderTop: 'none'}}>
           <ChevronCell>{/* Checkbox */}</ChevronCell>
           <DateCell>{/* Date */}</DateCell>
           <AccountCell>{/* Account */}</AccountCell>

@@ -11,6 +11,17 @@ import {
   ApiSchema,
   Category,
 } from '../../shared-lib';
+import {
+  AccountCell,
+  AmountCell,
+  ButtonsCell,
+  CategoryCell,
+  ChevronCell,
+  DateCell,
+  DescriptionCell,
+  NotesCell,
+} from './Components/Cell';
+import { Row } from './Components/Row';
 
 import { AccountTransferRow } from './Rows/AccountTransferRow';
 import { CategoryTransferRow } from './Rows/CategoryTransferRow';
@@ -41,7 +52,7 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
             categoryData={props.categoryData}
             txn={txn}
           />
-        )
+        );
       }
 
       if (txn.accounts.length === 1 && txn.categories.length > 1) {
@@ -100,5 +111,20 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
     });
   }
 
-  return <Table>{renderRows()}</Table>;
+  return (
+    <Table>
+      <Row style={{ borderTop: 'none' }}>
+        <ChevronCell>{/* Checkbox */}</ChevronCell>
+        <DateCell>Date</DateCell>
+        <AccountCell>Account</AccountCell>
+        <DescriptionCell>Description</DescriptionCell>
+        <CategoryCell>Category </CategoryCell>
+        <NotesCell>Notes</NotesCell>
+        <AmountCell>Amount</AmountCell>
+        <ButtonsCell>{/* Buttons */}</ButtonsCell>
+      </Row>
+
+      {renderRows()}
+    </Table>
+  );
 };
