@@ -5,7 +5,11 @@
 import React from 'react';
 
 import { formatAmount } from '../../../client-lib';
-import { getFriendlyAccountName, sumSubrecords } from '../../../shared-lib';
+import {
+  getFriendlyAccountName,
+  getFriendlyCategoryName,
+  sumSubrecords,
+} from '../../../shared-lib';
 import {
   AccountCell,
   AmountCell,
@@ -21,25 +25,34 @@ import { Row } from '../Components/Row';
 
 import { RowProps } from './row-props';
 
+// TODO Add animation to expanding and collapsing rows
+
 export const SplitCategoryRow: React.FC<RowProps> = (props) => {
   const [isExpanded, setExpanded] = React.useState<boolean>(false);
 
   function renderSubrecords() {
     if (isExpanded) {
-      return (
-        <Row style={{ borderTop: 'none'}}>
-          <ChevronCell>{/* Checkbox */}</ChevronCell>
-          <DateCell>{/* Date */}</DateCell>
-          <AccountCell>{/* Account */}</AccountCell>
-          <DescriptionCell style={{ paddingLeft: 8 }}>
-            Hello hidden world
-          </DescriptionCell>
-          <CategoryCell>{/* Category */}</CategoryCell>
-          <NotesCell>{/* Notes */}</NotesCell>
-          <AmountCell>{/* Amount */}</AmountCell>
-          <ButtonsCell>{/* Buttons */}</ButtonsCell>
-        </Row>
-      );
+      return props.txn.categories.map((subrecord) => {
+        return (
+          <Row key={subrecord.id} style={{ borderTop: 'none' }}>
+            <ChevronCell>{/* Checkbox */}</ChevronCell>
+            <DateCell>{/* Date */}</DateCell>
+            <AccountCell>{/* Account */}</AccountCell>
+            <DescriptionCell />
+            <CategoryCell style={{ paddingLeft: 8 }}>
+              {getFriendlyCategoryName(
+                props.categoryData,
+                subrecord.categoryId
+              )}
+            </CategoryCell>
+            <NotesCell>{/* Notes */}</NotesCell>
+            <AmountCell style={{ paddingLeft: 8 }}>
+              {formatAmount(subrecord.amount)}
+            </AmountCell>
+            <ButtonsCell>{/* Buttons */}</ButtonsCell>
+          </Row>
+        );
+      });
     }
     return null;
   }

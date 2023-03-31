@@ -5,7 +5,11 @@
 import React from 'react';
 
 import { formatAmount } from '../../../client-lib';
-import { getFriendlyCategoryName, sumSubrecords } from '../../../shared-lib';
+import {
+  getFriendlyAccountName,
+  getFriendlyCategoryName,
+  sumSubrecords,
+} from '../../../shared-lib';
 import {
   AccountCell,
   AmountCell,
@@ -16,26 +20,65 @@ import {
   DescriptionCell,
   NotesCell,
 } from '../Components/Cell';
+import { ExpandRowButton } from '../Components/ExpandRowButton';
 import { Row } from '../Components/Row';
 
 import { RowProps } from './row-props';
 
+// TODO Add animation to expanding and collapsing rows
+
 export const SplitAccountRow: React.FC<RowProps> = (props) => {
+  const [isExpanded, setExpanded] = React.useState<boolean>(false);
+
+  function renderSubrecords() {
+    if (isExpanded) {
+      return props.txn.accounts.map((subrecord) => {
+        return (
+          <Row key={subrecord.id} style={{ borderTop: 'none' }}>
+            <ChevronCell>{/* Checkbox */}</ChevronCell>
+            <DateCell>{/* Date */}</DateCell>
+            <AccountCell style={{ paddingLeft: 8 }}>
+              {getFriendlyAccountName(props.accountData, subrecord.accountId)}
+            </AccountCell>
+            <DescriptionCell />
+            <CategoryCell />
+            <NotesCell>{/* Notes */}</NotesCell>
+            <AmountCell style={{ paddingLeft: 8 }}>
+              {formatAmount(subrecord.amount)}
+            </AmountCell>
+            <ButtonsCell>{/* Buttons */}</ButtonsCell>
+          </Row>
+        );
+      });
+    }
+    return null;
+  }
+
   return (
-    <Row>
-      <ChevronCell>{/* Checkbox */}</ChevronCell>
-      <DateCell>{/* Date */}</DateCell>
-      <AccountCell style={{ fontStyle: 'italic' }}>Split</AccountCell>
-      <DescriptionCell>{props.txn.description}</DescriptionCell>
-      <CategoryCell>
-        {getFriendlyCategoryName(
-          props.categoryData,
-          props.txn.categories[0].categoryId
-        )}
-      </CategoryCell>
-      <NotesCell>{/* Notes */}</NotesCell>
-      <AmountCell>{formatAmount(sumSubrecords(props.txn.accounts))}</AmountCell>
-      <ButtonsCell>{/* Buttons */}</ButtonsCell>
-    </Row>
+    <>
+      <Row>
+        <ChevronCell>
+          <ExpandRowButton
+            isExpanded={isExpanded}
+            onClick={() => setExpanded((prevState) => !prevState)}
+          />
+        </ChevronCell>
+        <DateCell>{/* Date */}</DateCell>
+        <AccountCell style={{ fontStyle: 'italic' }}>Split</AccountCell>
+        <DescriptionCell>{props.txn.description}</DescriptionCell>
+        <CategoryCell>
+          {getFriendlyCategoryName(
+            props.categoryData,
+            props.txn.categories[0].categoryId
+          )}
+        </CategoryCell>
+        <NotesCell>{/* Notes */}</NotesCell>
+        <AmountCell>
+          {formatAmount(sumSubrecords(props.txn.accounts))}
+        </AmountCell>
+        <ButtonsCell>{/* Buttons */}</ButtonsCell>
+      </Row>
+      {renderSubrecords()}
+    </>
   );
 };
