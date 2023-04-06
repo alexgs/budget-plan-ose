@@ -20,10 +20,10 @@ export namespace ApiSchema {
   export type NewCategory = InferType<typeof schemaObjects.newCategory>;
   export type NewTransaction = InferType<typeof schemaObjects.newTransaction>;
   export type NewTransactionAccount = InferType<
-    typeof schemaObjects.transactionAccount
+    typeof schemaObjects.accountSubrecord
   >;
   export type NewTransactionCategory = InferType<
-    typeof schemaObjects.transactionCategory
+    typeof schemaObjects.categorySubrecord
   >;
   export type NewTransactionRecord = Omit<
     NewTransaction,

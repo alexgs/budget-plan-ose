@@ -11,11 +11,11 @@ import { accountSubrecord } from './account-subrecord';
 import { categorySubrecord } from './category-subrecord';
 
 export const schemaObjects = {
+  accountSubrecord,
+  categorySubrecord,
   newAccount,
   newCategory,
   newTransaction,
   patchCategory,
   putTransaction,
-  transactionAccount: accountSubrecord,
-  transactionCategory: categorySubrecord,
 };
