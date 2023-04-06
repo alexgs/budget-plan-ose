@@ -56,7 +56,7 @@ export const AccountTransferRow: React.FC<RowProps> = (props) => {
             onClick={() => setExpanded((prevState) => !prevState)}
           />
         </ChevronCell>
-        <DateCell>{/* Date */}</DateCell>
+        <DateCell>{props.txn.date.substring(5)}</DateCell>
         <AccountCell style={{ fontStyle: 'italic' }}>Transfer</AccountCell>
         <DescriptionCell>{props.txn.description}</DescriptionCell>
         <CategoryCell>{/* Category */}</CategoryCell>

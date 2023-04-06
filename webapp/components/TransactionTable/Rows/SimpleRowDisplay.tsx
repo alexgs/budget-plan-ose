@@ -30,7 +30,7 @@ export const SimpleRowDisplay: React.FC<Props> = (props) => {
   return (
     <Row key={props.txn.id}>
       <ChevronCell>{/* Checkbox */}</ChevronCell>
-      <DateCell>{/* Date */}</DateCell>
+      <DateCell>{props.txn.date.substring(5)}</DateCell>
       <AccountCell>
         {getFriendlyAccountName(
           props.accountData,

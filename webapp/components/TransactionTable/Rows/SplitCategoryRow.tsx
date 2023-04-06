@@ -63,7 +63,7 @@ export const SplitCategoryRow: React.FC<RowProps> = (props) => {
             onClick={() => setExpanded((prevState) => !prevState)}
           />
         </ChevronCell>
-        <DateCell>{/* Date */}</DateCell>
+        <DateCell>{props.txn.date.substring(5)}</DateCell>
         <AccountCell>
           {getFriendlyAccountName(
             props.accountData,

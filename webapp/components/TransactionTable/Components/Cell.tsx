@@ -6,7 +6,7 @@ import styled from '@emotion/styled';
 
 const COLUMN_WIDTH = {
   CHEVRON: 18,
-  DATE: 0,
+  DATE: '12%',
   ACCOUNT: '18%',
   DESCRIPTION: '30%',
   CATEGORY: '23%',
