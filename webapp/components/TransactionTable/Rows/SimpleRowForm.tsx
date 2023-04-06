@@ -3,12 +3,20 @@
  */
 
 import React from 'react';
+
+import { ApiSchema } from '../../../shared-lib';
 import { Row } from '../Components/Row';
+
 import { RowProps } from './row-props';
 
-export const SimpleRowForm: React.FC<RowProps> = (props) => {
+interface Props extends Omit<RowProps, 'txn'> {
+  data?: ApiSchema.UpdateTransaction;
+}
+
+export const SimpleRowForm: React.FC<Props> = (props) => {
+  const key = props.data ? props.data.id : 'new-txn';
   return (
-    <Row key={props.txn.id}>
+    <Row key={key}>
       <div>Hello simple row form</div>
     </Row>
   );
