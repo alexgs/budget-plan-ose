@@ -219,7 +219,7 @@ export const TransactionTable: React.FC<Props> = (props) => {
     });
   }
 
-  async function requestPutTransaction(payload: ApiSchema.PutTransaction) {
+  async function requestPutTransaction(payload: ApiSchema.UpdateTransaction) {
     const responseData = await fetch(`/api/transactions/${payload.id}`, {
       body: JSON.stringify({
         ...payload,
@@ -266,7 +266,7 @@ export const TransactionTable: React.FC<Props> = (props) => {
       const payload: ApiSchema.NewTransaction = {
         ...data,
         categories: categories.map(
-          (categoryValue): ApiSchema.NewTransactionCategory => {
+          (categoryValue): ApiSchema.NewCategorySubrecord => {
             const categoryData = data.categories.find(
               (txnCategory) => txnCategory.categoryId === categoryValue.id
             );

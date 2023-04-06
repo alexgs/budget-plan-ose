@@ -5,7 +5,7 @@
 import * as yup from 'yup';
 import { AMOUNT_STATUS } from '../constants';
 
-export const accountSubrecord = yup.object({
+export const newAccountSubrecord = yup.object({
   accountId: yup.string().required(),
   amount: yup.number().required(),
   isCredit: yup.boolean().required(),

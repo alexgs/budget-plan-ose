@@ -19,18 +19,18 @@ export namespace ApiSchema {
   export type NewAccount = InferType<typeof schemaObjects.newAccount>;
   export type NewCategory = InferType<typeof schemaObjects.newCategory>;
   export type NewTransaction = InferType<typeof schemaObjects.newTransaction>;
-  export type NewTransactionAccount = InferType<
-    typeof schemaObjects.accountSubrecord
+  export type NewAccountSubrecord = InferType<
+    typeof schemaObjects.newAccountSubrecord
   >;
-  export type NewTransactionCategory = InferType<
-    typeof schemaObjects.categorySubrecord
+  export type NewCategorySubrecord = InferType<
+    typeof schemaObjects.newCategorySubrecord
   >;
-  export type NewTransactionRecord = Omit<
+  export type NewTransactionBase = Omit<
     NewTransaction,
     'accounts' | 'categories'
   >;
-  export type PatchCategory = InferType<typeof schemaObjects.patchCategory>;
-  export type PutTransaction = InferType<typeof schemaObjects.putTransaction>;
+  export type UpdateCategory = InferType<typeof schemaObjects.updateCategory>;
+  export type UpdateTransaction = InferType<typeof schemaObjects.updateTransaction>;
   export type Transaction = Omit<TransactionRecord, 'date'> & {
     date: string;
     accounts: TransactionAccount[];

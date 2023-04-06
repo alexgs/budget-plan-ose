@@ -9,7 +9,7 @@ import { service } from './index';
 
 export async function updateCategory(
   categoryId: string,
-  payload: ApiSchema.PatchCategory
+  payload: ApiSchema.UpdateCategory
 ): Promise<Category> {
   const currentCategory = await database.getCategory(categoryId);
   const isNewParent = currentCategory.parentId !== payload.parentId;

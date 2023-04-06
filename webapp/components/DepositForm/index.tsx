@@ -34,7 +34,7 @@ import {
 function convertDepositFormValuesToRequestPayload(
   values: NewTransactionFormValues
 ): ApiSchema.NewTransaction {
-  const categories: ApiSchema.NewTransactionCategory[] = values.categories
+  const categories: ApiSchema.NewCategorySubrecord[] = values.categories
     .filter((category) => category.amount !== 0)
     .map((category) => {
       return {
@@ -133,7 +133,7 @@ export const DepositForm: FC<Props> = (props) => {
   }
 
   async function requestDeposit(values: NewTransactionFormValues) {
-    const payload: ApiSchema.NewTransaction | ApiSchema.PutTransaction = {
+    const payload: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction = {
       ...convertDepositFormValuesToRequestPayload(values),
       id: props.txnId,
     };

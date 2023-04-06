@@ -4,12 +4,12 @@
 
 import * as yup from 'yup';
 import { TRANSACTION_TYPES } from '../constants';
-import { accountSubrecord } from './account-subrecord';
-import { categorySubrecord } from './category-subrecord';
+import { newAccountSubrecord } from './new-account-subrecord';
+import { newCategorySubrecord } from './new-category-subrecord';
 
 export const newTransaction = yup.object({
-  accounts: yup.array().of(accountSubrecord).required(),
-  categories: yup.array().of(categorySubrecord).required(),
+  accounts: yup.array().of(newAccountSubrecord).required(),
+  categories: yup.array().of(newCategorySubrecord).required(),
   date: yup.date().required(), // TODO Better client error message for this field
   description: yup.string().required(),
   type: yup.string().oneOf(Object.values(TRANSACTION_TYPES)).required(),

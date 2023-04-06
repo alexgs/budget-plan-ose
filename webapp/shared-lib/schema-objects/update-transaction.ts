@@ -6,7 +6,7 @@ import * as yup from 'yup';
 
 import { newTransaction } from './new-transaction';
 
-export const putTransaction = newTransaction.concat(
+export const updateTransaction = newTransaction.concat(
   yup.object({
     id: yup.string().uuid().required(),
   })

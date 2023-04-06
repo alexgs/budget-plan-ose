@@ -29,7 +29,7 @@ export default async function handler(
     if (req.method === 'PUT') {
       // --- VALIDATE PAYLOAD ---
 
-      let payload: ApiSchema.PutTransaction = {
+      let payload: ApiSchema.UpdateTransaction = {
         accounts: [
           {
             accountId: '',
@@ -52,7 +52,7 @@ export default async function handler(
       };
       try {
         // TODO Validate that the date is in YYYY-MM-DD format before converting to a `Date` object
-        payload = await schemaObjects.putTransaction.validate(req.body, {
+        payload = await schemaObjects.updateTransaction.validate(req.body, {
           stripUnknown: false,
         });
       } catch (e: any) {
