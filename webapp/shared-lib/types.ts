@@ -29,8 +29,20 @@ export namespace ApiSchema {
     NewTransaction,
     'accounts' | 'categories'
   >;
+  export type UpdateAccountSubrecord = InferType<
+    typeof schemaObjects.updateAccountSubrecord
+  >;
   export type UpdateCategory = InferType<typeof schemaObjects.updateCategory>;
-  export type UpdateTransaction = InferType<typeof schemaObjects.updateTransaction>;
+  export type UpdateCategorySubrecord = InferType<
+    typeof schemaObjects.updateCategorySubrecord
+  >;
+  export type UpdateTransaction = Omit<
+    InferType<typeof schemaObjects.updateTransaction>,
+    'accounts' | 'categories'
+  > & {
+    accounts: (NewAccountSubrecord | UpdateAccountSubrecord)[];
+    categories: (NewCategorySubrecord | UpdateCategorySubrecord)[];
+  };
   export type Transaction = Omit<TransactionRecord, 'date'> & {
     date: string;
     accounts: TransactionAccount[];
@@ -56,10 +68,11 @@ export type Transaction = TransactionRecord & {
   accounts: TransactionAccount[];
   categories: TransactionCategory[];
 };
+
 export interface Subrecord {
   amount: number;
   isCredit: boolean;
 }
+
 export type TransactionType =
   typeof TRANSACTION_TYPES[keyof typeof TRANSACTION_TYPES];
-
