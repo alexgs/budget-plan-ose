@@ -49,6 +49,10 @@ const amountStyle = (theme: MantineTheme): CSSObject => ({
 
 interface Props extends Omit<RowProps, 'txn'> {
   data?: ApiSchema.UpdateTransaction;
+  onCancel: VoidFunction;
+  onSubmit: (
+    values: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction
+  ) => void;
 }
 
 export const SimpleRowForm: React.FC<Props> = (props) => {
@@ -80,9 +84,20 @@ export const SimpleRowForm: React.FC<Props> = (props) => {
   });
   const viewport = useViewportSize();
 
-  function handleCancel() {}
+  function handleCancel() {
+    props.onCancel();
+  }
 
-  function handleSubmit() {}
+  function handleSubmit(values: ApiSchema.NewTransaction) {
+    if (props.data?.id) {
+      props.onSubmit({
+        ...values,
+        id: props.data.id,
+      });
+    } else {
+      props.onSubmit(values);
+    }
+  }
 
   function renderCategoryField() {
     const categories = getCategoryList(buildCategoryTree(props.categoryData))

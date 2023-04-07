@@ -4,6 +4,7 @@
 
 import React from 'react';
 
+import { api } from '../../../client-lib/api';
 import { ApiSchema, TransactionType } from '../../../shared-lib';
 
 import { RowProps } from './row-props';
@@ -17,26 +18,48 @@ export const SimpleRow: React.FC<RowProps> = (props) => {
     setEditing(true);
   }
 
+  function handleCancel() {
+    setEditing(false);
+  }
+
+  function handleSubmit(
+    values: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction
+  ) {
+    if ('id' in values) {
+      const updateValues: ApiSchema.UpdateTransaction = values;
+      api.postExtantTransaction(updateValues).then(() => {
+        setEditing(false);
+      });
+    } else {
+      const newValues: ApiSchema.NewTransaction = values;
+      api.postNewTransaction(newValues).then(() => {
+        setEditing(false);
+      });
+    }
+  }
+
   if (isEditing) {
     // TODO All of the type-casting in here is kind of ugly
     const temp: Partial<ApiSchema.Transaction> = {
       ...props.txn,
       id: props.txn.id as string,
       type: props.txn.type as TransactionType,
-    }
+    };
     delete temp.createdAt;
     delete temp.updatedAt;
 
     const data: ApiSchema.UpdateTransaction = {
       ...temp,
       date: new Date(props.txn.date),
-    } as ApiSchema.UpdateTransaction
+    } as ApiSchema.UpdateTransaction;
 
     return (
       <SimpleRowForm
         accountData={props.accountData}
         categoryData={props.categoryData}
         data={data}
+        onCancel={handleCancel}
+        onSubmit={handleSubmit}
       />
     );
   }
