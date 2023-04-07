@@ -5,6 +5,7 @@
 import styled from '@emotion/styled';
 
 export const Row = styled.div({
+  alignItems: 'center',
   borderTop: '1px solid #373A40',
   display: 'flex',
 });

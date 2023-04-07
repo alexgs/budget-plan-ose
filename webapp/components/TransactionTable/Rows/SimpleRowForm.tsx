@@ -2,6 +2,7 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
+import { faCancel, faFloppyDisk } from '@fortawesome/pro-regular-svg-icons';
 import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -11,6 +12,7 @@ import {
   NumberInput,
   Select,
   TextInput,
+  UnstyledButton,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useForm, UseFormReturnType, yupResolver } from '@mantine/form';
@@ -77,6 +79,8 @@ export const SimpleRowForm: React.FC<Props> = (props) => {
     validateInputOnChange: true,
   });
   const viewport = useViewportSize();
+
+  function handleCancel() {}
 
   function handleSubmit() {}
 
@@ -159,7 +163,18 @@ export const SimpleRowForm: React.FC<Props> = (props) => {
             {...form.getInputProps(`categories.0.amount`)}
           />
         </AmountCell>
-        <ButtonsCell></ButtonsCell>
+        <ButtonsCell>
+          <UnstyledButton sx={{ marginLeft: '1rem' }} type="submit">
+            <FontAwesomeIcon icon={faFloppyDisk} />
+          </UnstyledButton>
+          <UnstyledButton
+            onClick={handleCancel}
+            sx={{ marginLeft: '1rem' }}
+            type="button"
+          >
+            <FontAwesomeIcon icon={faCancel} />
+          </UnstyledButton>
+        </ButtonsCell>
       </Row>
     </form>
   );
