@@ -2,6 +2,7 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
+import { showNotification } from '@mantine/notifications';
 import React from 'react';
 
 import { api } from '../../../client-lib/api';
@@ -27,14 +28,48 @@ export const SimpleRow: React.FC<RowProps> = (props) => {
   ) {
     if ('id' in values) {
       const updateValues: ApiSchema.UpdateTransaction = values;
-      api.postExtantTransaction(updateValues).then(() => {
-        setEditing(false);
-      });
+      api
+        .postExtantTransaction(updateValues)
+        .then((response) => response.json())
+        .then((json) => {
+          showNotification({
+            message: `Saved transaction "${json.description}"`,
+            title: 'Success',
+          });
+        })
+        .catch((e) => {
+          console.error(e);
+          showNotification({
+            color: 'red',
+            message: 'Something went wrong! Please check the logs.',
+            title: 'Error',
+          });
+        })
+        .finally(() => {
+          setEditing(false);
+        });
     } else {
       const newValues: ApiSchema.NewTransaction = values;
-      api.postNewTransaction(newValues).then(() => {
-        setEditing(false);
-      });
+      api
+        .postNewTransaction(newValues)
+        .then((response) => response.json())
+        .then((json) => {
+          showNotification({
+            message: `Saved transaction "${json.description}"`,
+            title: 'Success',
+          });
+        })
+        .catch((e) => {
+          console.error(e);
+          showNotification({
+            color: 'red',
+            message: 'Something went wrong! Please check the logs.',
+            title: 'Error',
+          });
+        })
+        .finally(() => {
+          setEditing(false);
+        });
     }
   }
 
