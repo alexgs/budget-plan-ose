@@ -3,6 +3,7 @@
  */
 
 import styled from '@emotion/styled';
+import { Button, UnstyledButton } from '@mantine/core';
 import React from 'react';
 
 import {
@@ -11,11 +12,13 @@ import {
   ApiSchema,
   Category,
 } from '../../shared-lib';
+import { space } from '../tokens';
 import {
   AccountCell,
   AmountCell,
   ButtonsCell,
   CategoryCell,
+  Cell,
   ChevronCell,
   DateCell,
   DescriptionCell,
@@ -27,6 +30,7 @@ import { AccountTransferRow } from './Rows/AccountTransferRow';
 import { CategoryTransferRow } from './Rows/CategoryTransferRow';
 import { CreditCardChargeRow } from './Rows/CreditCardChargeRow';
 import { SimpleRow } from './Rows/SimpleRow';
+import { SimpleRowForm } from './Rows/SimpleRowForm';
 import { SplitAccountRow } from './Rows/SplitAccountRow';
 import { SplitCategoryRow } from './Rows/SplitCategoryRow';
 
@@ -40,6 +44,13 @@ interface Props {
 }
 
 export const TransactionTableDisplay: React.FC<Props> = (props) => {
+  const [isNewTxnFormVisible, setNewTxnFormVisible] =
+    React.useState<boolean>(false);
+
+  function handleCancel() {}
+
+  function handleSubmit() {}
+
   function renderRows() {
     return props.txnData.map((txn) => {
       // TODO Add a row-type for credit card payments
@@ -111,6 +122,36 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
     });
   }
 
+  function renderTopRow() {
+    if (isNewTxnFormVisible) {
+      return (
+        <SimpleRowForm
+          onCancel={handleCancel}
+          onSubmit={handleSubmit}
+          accountData={props.accountData}
+          categoryData={props.categoryData}
+        />
+      );
+    }
+
+    return (
+      <Row>
+        <Cell>
+          <UnstyledButton
+            onClick={() => setNewTxnFormVisible(true)}
+            sx={(theme) => ({
+              color: theme.colors.blue[6],
+              fontWeight: 'bold',
+              marginLeft: space.medium,
+            })}
+          >
+            Add New Transaction
+          </UnstyledButton>
+        </Cell>
+      </Row>
+    );
+  }
+
   return (
     <Table>
       <Row style={{ borderTop: 'none' }}>
@@ -123,7 +164,7 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
         <AmountCell>Amount</AmountCell>
         <ButtonsCell>{/* Buttons */}</ButtonsCell>
       </Row>
-
+      {renderTopRow()}
       {renderRows()}
     </Table>
   );

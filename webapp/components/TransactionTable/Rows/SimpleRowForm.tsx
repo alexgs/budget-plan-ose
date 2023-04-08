@@ -125,7 +125,6 @@ export const SimpleRowForm: React.FC<Props> = (props) => {
       return (
         <Select
           data={categories}
-          my="sm"
           required
           searchable
           {...form.getInputProps(`categories.0.categoryId`)}
@@ -136,7 +135,6 @@ export const SimpleRowForm: React.FC<Props> = (props) => {
     return (
       <NativeSelect
         data={categories}
-        my="sm"
         required
         {...form.getInputProps(`categories.0.categoryId`)}
       />
@@ -158,7 +156,6 @@ export const SimpleRowForm: React.FC<Props> = (props) => {
           <DatePicker
             allowFreeInput
             inputFormat="YYYY-MM-DD"
-            my="sm"
             required
             {...form.getInputProps('date')}
           />
@@ -166,7 +163,6 @@ export const SimpleRowForm: React.FC<Props> = (props) => {
         <AccountCell>
           <NativeSelect
             data={accounts}
-            my="sm"
             required
             {...form.getInputProps('accounts.0.accountId')}
           />
@@ -174,7 +170,6 @@ export const SimpleRowForm: React.FC<Props> = (props) => {
         <DescriptionCell>
           <TextInput
             placeholder="Payee"
-            my="sm"
             required
             {...form.getInputProps('description')}
           />
@@ -186,7 +181,6 @@ export const SimpleRowForm: React.FC<Props> = (props) => {
             decimalSeparator="."
             hideControls
             icon={<FontAwesomeIcon icon={faDollarSign} />}
-            my="sm"
             precision={2}
             required
             sx={form.values.categories[0].isCredit ? amountStyle : {}}
