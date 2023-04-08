@@ -3,9 +3,12 @@
  */
 
 import styled from '@emotion/styled';
-import { Button, UnstyledButton } from '@mantine/core';
+import { UnstyledButton } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
 import React from 'react';
 
+import { api } from '../../client-lib/api';
+import { txnToUpdateTxn } from '../../client-lib/txn-to-update-txn';
 import {
   TRANSACTION_TYPES,
   Account,
@@ -13,6 +16,7 @@ import {
   Category,
 } from '../../shared-lib';
 import { space } from '../tokens';
+
 import {
   AccountCell,
   AmountCell,
@@ -29,7 +33,7 @@ import { Row } from './Components/Row';
 import { AccountTransferRow } from './Rows/AccountTransferRow';
 import { CategoryTransferRow } from './Rows/CategoryTransferRow';
 import { CreditCardChargeRow } from './Rows/CreditCardChargeRow';
-import { SimpleRow } from './Rows/SimpleRow';
+import { SimpleRowDisplay } from './Rows/SimpleRowDisplay';
 import { SimpleRowForm } from './Rows/SimpleRowForm';
 import { SplitAccountRow } from './Rows/SplitAccountRow';
 import { SplitCategoryRow } from './Rows/SplitCategoryRow';
@@ -46,14 +50,75 @@ interface Props {
 export const TransactionTableDisplay: React.FC<Props> = (props) => {
   const [isNewTxnFormVisible, setNewTxnFormVisible] =
     React.useState<boolean>(false);
+  const [nowEditing, setNowEditing] = React.useState<string | null>(null);
 
-  function handleCancel() {}
+  function handleCancel() {
+    setNewTxnFormVisible(false);
+    setNowEditing(null);
+  }
 
-  function handleSubmit() {}
+  function handleEditClick(recordId: string) {
+    const data = props.txnData.find((txn) => txn.id === recordId);
+    if (data) {
+      if (data.type === TRANSACTION_TYPES.DEPOSIT) {
+        // setModalVisible(true);
+      }
+      setNowEditing(recordId);
+    } else {
+      throw new Error(`Unable to find txn ID ${recordId}`);
+    }
+  }
+
+  function handleSubmit(
+    values: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction
+  ) {
+    let promise: Promise<Response>;
+    if ('id' in values) {
+      const updateValues: ApiSchema.UpdateTransaction = values;
+      promise = api.postExtantTransaction(updateValues);
+    } else {
+      const newValues: ApiSchema.NewTransaction = values;
+      promise = api.postNewTransaction(newValues);
+    }
+
+    promise
+      .then((response) => response.json())
+      .then((json) => {
+        showNotification({
+          message: `Saved transaction "${json.description}"`,
+          title: 'Success',
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+        showNotification({
+          color: 'red',
+          message: 'Something went wrong! Please check the logs.',
+          title: 'Error',
+        });
+      })
+      .finally(() => {
+        setNewTxnFormVisible(false);
+        setNowEditing(null);
+      });
+  }
 
   function renderRows() {
     return props.txnData.map((txn) => {
       // TODO Add a row-type for credit card payments
+
+      if (txn.id === nowEditing) {
+        const data = txnToUpdateTxn(txn);
+        return (
+          <SimpleRowForm
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            data={data}
+            onCancel={handleCancel}
+            onSubmit={handleSubmit}
+          />
+        );
+      }
 
       if (txn.type === TRANSACTION_TYPES.CREDIT_CARD_CHARGE) {
         return (
@@ -112,10 +177,11 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
 
       // Default option
       return (
-        <SimpleRow
+        <SimpleRowDisplay
           key={txn.id}
           accountData={props.accountData}
           categoryData={props.categoryData}
+          onEditClick={handleEditClick}
           txn={txn}
         />
       );

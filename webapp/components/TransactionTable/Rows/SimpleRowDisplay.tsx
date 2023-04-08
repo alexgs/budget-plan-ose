@@ -23,10 +23,14 @@ import { SmartAmountCell } from '../Components/SmartAmountCell';
 import { RowProps } from './row-props';
 
 interface Props extends RowProps {
-  onEditClick: VoidFunction;
+  onEditClick: (txnId: string) => void;
 }
 
 export const SimpleRowDisplay: React.FC<Props> = (props) => {
+  function handleEditClick() {
+    props.onEditClick(props.txn.id);
+  }
+
   return (
     <Row key={props.txn.id}>
       <ChevronCell>{/* Checkbox */}</ChevronCell>
@@ -47,7 +51,7 @@ export const SimpleRowDisplay: React.FC<Props> = (props) => {
       <NotesCell>{/* Notes */}</NotesCell>
       <SmartAmountCell subrecord={props.txn.categories[0]} />
       <ButtonsCell>
-        <UnstyledButton onClick={props.onEditClick}>
+        <UnstyledButton onClick={handleEditClick}>
           <FontAwesomeIcon icon={faPencil} />
         </UnstyledButton>
       </ButtonsCell>
