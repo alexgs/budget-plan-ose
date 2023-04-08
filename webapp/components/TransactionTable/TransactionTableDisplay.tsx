@@ -33,8 +33,8 @@ import { Row } from './Components/Row';
 import { AccountTransferRow } from './Rows/AccountTransferRow';
 import { CategoryTransferRow } from './Rows/CategoryTransferRow';
 import { CreditCardChargeRow } from './Rows/CreditCardChargeRow';
-import { SimpleRowDisplay } from './Rows/SimpleRowDisplay';
-import { SimpleRowForm } from './Rows/SimpleRowForm';
+import { Form } from './Rows/Form';
+import { SimpleRow } from './Rows/SimpleRow';
 import { SplitAccountRow } from './Rows/SplitAccountRow';
 import { SplitCategoryRow } from './Rows/SplitCategoryRow';
 
@@ -110,7 +110,7 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
       if (txn.id === nowEditing) {
         const data = txnToUpdateTxn(txn);
         return (
-          <SimpleRowForm
+          <Form
             accountData={props.accountData}
             categoryData={props.categoryData}
             data={data}
@@ -177,7 +177,7 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
 
       // Default option
       return (
-        <SimpleRowDisplay
+        <SimpleRow
           key={txn.id}
           accountData={props.accountData}
           categoryData={props.categoryData}
@@ -191,7 +191,7 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
   function renderTopRow() {
     if (isNewTxnFormVisible) {
       return (
-        <SimpleRowForm
+        <Form
           onCancel={handleCancel}
           onSubmit={handleSubmit}
           accountData={props.accountData}

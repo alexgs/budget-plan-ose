@@ -26,7 +26,7 @@ interface Props extends RowProps {
   onEditClick: (txnId: string) => void;
 }
 
-export const SimpleRowDisplay: React.FC<Props> = (props) => {
+export const SimpleRow: React.FC<Props> = (props) => {
   function handleEditClick() {
     props.onEditClick(props.txn.id);
   }

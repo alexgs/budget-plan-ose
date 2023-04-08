@@ -56,7 +56,7 @@ interface Props extends Omit<RowProps, 'txn'> {
   ) => void;
 }
 
-export const SimpleRowForm: React.FC<Props> = (props) => {
+export const Form: React.FC<Props> = (props) => {
   const form: UseFormReturnType<ApiSchema.NewTransaction> = useForm({
     initialValues: {
       accounts: [
