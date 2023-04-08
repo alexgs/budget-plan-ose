@@ -26,51 +26,34 @@ export const SimpleRow: React.FC<RowProps> = (props) => {
   function handleSubmit(
     values: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction
   ) {
+    let promise: Promise<Response>;
     if ('id' in values) {
       const updateValues: ApiSchema.UpdateTransaction = values;
-      api
-        .postExtantTransaction(updateValues)
-        .then((response) => response.json())
-        .then((json) => {
-          showNotification({
-            message: `Saved transaction "${json.description}"`,
-            title: 'Success',
-          });
-        })
-        .catch((e) => {
-          console.error(e);
-          showNotification({
-            color: 'red',
-            message: 'Something went wrong! Please check the logs.',
-            title: 'Error',
-          });
-        })
-        .finally(() => {
-          setEditing(false);
-        });
+      promise = api.postExtantTransaction(updateValues);
     } else {
       const newValues: ApiSchema.NewTransaction = values;
-      api
-        .postNewTransaction(newValues)
-        .then((response) => response.json())
-        .then((json) => {
-          showNotification({
-            message: `Saved transaction "${json.description}"`,
-            title: 'Success',
-          });
-        })
-        .catch((e) => {
-          console.error(e);
-          showNotification({
-            color: 'red',
-            message: 'Something went wrong! Please check the logs.',
-            title: 'Error',
-          });
-        })
-        .finally(() => {
-          setEditing(false);
-        });
+      promise = api.postNewTransaction(newValues);
     }
+
+    promise
+      .then((response) => response.json())
+      .then((json) => {
+        showNotification({
+          message: `Saved transaction "${json.description}"`,
+          title: 'Success',
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+        showNotification({
+          color: 'red',
+          message: 'Something went wrong! Please check the logs.',
+          title: 'Error',
+        });
+      })
+      .finally(() => {
+        setEditing(false);
+      });
   }
 
   if (isEditing) {
