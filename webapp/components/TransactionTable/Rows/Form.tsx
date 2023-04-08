@@ -2,10 +2,15 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { faCancel, faFloppyDisk } from '@fortawesome/pro-regular-svg-icons';
+import {
+  faCancel,
+  faFloppyDisk,
+  faSplit,
+} from '@fortawesome/pro-regular-svg-icons';
 import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  Button,
   CSSObject,
   MantineTheme,
   NativeSelect,
@@ -15,7 +20,7 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
-import { useForm, UseFormReturnType, yupResolver } from '@mantine/form';
+import { useForm, yupResolver } from '@mantine/form';
 import { useViewportSize } from '@mantine/hooks';
 import React from 'react';
 
@@ -31,6 +36,7 @@ import {
 } from '../Components/Cell';
 import { Row } from '../Components/Row';
 import { buildCategoryTree, getCategoryList } from '../../../client-lib';
+import { NewTransactionFormHook } from '../../../client-lib/types';
 import {
   AMOUNT_STATUS,
   TRANSACTION_TYPES,
@@ -57,7 +63,7 @@ interface Props extends Omit<RowProps, 'txn'> {
 }
 
 export const Form: React.FC<Props> = (props) => {
-  const form: UseFormReturnType<ApiSchema.NewTransaction> = useForm({
+  const form: NewTransactionFormHook = useForm({
     initialValues: {
       accounts: [
         {
@@ -68,6 +74,7 @@ export const Form: React.FC<Props> = (props) => {
           status: props.data?.accounts[0].status ?? AMOUNT_STATUS.PENDING,
         },
       ],
+      balance: 0, // Client-only field
       categories: [
         {
           amount: (props.data?.categories[0].amount ?? 0) / 100,
@@ -78,6 +85,7 @@ export const Form: React.FC<Props> = (props) => {
       ],
       date: props.data?.date ?? new Date(),
       description: props.data?.description ?? '',
+      isCredit: false as boolean, // Client-only field
       type: props.data?.type ?? (TRANSACTION_TYPES.PAYMENT as TransactionType),
     },
     validate: yupResolver(schemaObjects.newTransaction),
@@ -87,6 +95,14 @@ export const Form: React.FC<Props> = (props) => {
 
   function handleCancel() {
     props.onCancel();
+  }
+
+  function handleSplitCategory() {
+    form.insertListItem('categories', {
+      amount: 0,
+      categoryId: props.categoryData[0].id,
+      isCredit: false as boolean,
+    });
   }
 
   function handleSubmit(values: ApiSchema.NewTransaction) {
@@ -199,6 +215,21 @@ export const Form: React.FC<Props> = (props) => {
             <FontAwesomeIcon icon={faCancel} />
           </UnstyledButton>
         </ButtonsCell>
+      </Row>
+      <Row key={`${key}-controls`} border={false}>
+        <ChevronCell>{/* Checkbox */}</ChevronCell>
+        <DateCell></DateCell>
+        <AccountCell></AccountCell>
+        <DescriptionCell></DescriptionCell>
+        <CategoryCell>
+          <Button compact onClick={handleSplitCategory} variant="subtle">
+            <FontAwesomeIcon icon={faSplit} />
+            &nbsp; Split
+          </Button>
+        </CategoryCell>
+        <NotesCell>{/* Notes */}</NotesCell>
+        <AmountCell></AmountCell>
+        <ButtonsCell></ButtonsCell>
       </Row>
     </form>
   );

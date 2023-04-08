@@ -4,8 +4,12 @@
 
 import styled from '@emotion/styled';
 
-export const Row = styled.div({
+interface Props {
+  border?: boolean;
+}
+
+export const Row = styled.div((props: Props) => ({
   alignItems: 'center',
-  borderTop: '1px solid #373A40',
+  borderTop: props.border === false ? 'none' : '1px solid #373A40',
   display: 'flex',
-});
+}));
