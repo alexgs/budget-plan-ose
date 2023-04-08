@@ -26,7 +26,7 @@ export default async function handler(
   const session = await unstable_getServerSession(req, res, nextAuthOptions);
 
   if (session) {
-    if (req.method === 'PUT') {
+    if (req.method === 'POST') {
       // --- VALIDATE PAYLOAD ---
 
       let payload: ApiSchema.UpdateTransaction = {
@@ -94,7 +94,7 @@ export default async function handler(
         res.status(500).send(`Unknown transaction type: ${payload.type}`);
       }
     } else {
-      res.status(405).setHeader('Allow', 'PUT').send('Method not allowed.');
+      res.status(405).setHeader('Allow', 'POST').send('Method not allowed.');
     }
   } else {
     res.status(400).send('Bad request.');

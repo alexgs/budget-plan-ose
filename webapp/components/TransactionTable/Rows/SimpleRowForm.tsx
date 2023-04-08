@@ -36,6 +36,7 @@ import {
   TRANSACTION_TYPES,
   ApiSchema,
   TransactionType,
+  dollarsToCents,
   schemaObjects,
 } from '../../../shared-lib';
 import { contentWidth } from '../../tokens';
@@ -89,13 +90,27 @@ export const SimpleRowForm: React.FC<Props> = (props) => {
   }
 
   function handleSubmit(values: ApiSchema.NewTransaction) {
+    const accounts = values.accounts.map((account) => ({
+      ...account,
+      amount: dollarsToCents(account.amount),
+    }));
+    const categories = values.categories.map((category) => ({
+      ...category,
+      amount: dollarsToCents(category.amount),
+    }));
+    const payload = {
+      ...values,
+      accounts,
+      categories,
+    };
+
     if (props.data?.id) {
       props.onSubmit({
-        ...values,
+        ...payload,
         id: props.data.id,
       });
     } else {
-      props.onSubmit(values);
+      props.onSubmit(payload);
     }
   }
 
