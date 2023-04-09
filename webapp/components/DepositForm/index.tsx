@@ -12,10 +12,9 @@ import {
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useForm, yupResolver } from '@mantine/form';
-import { showNotification } from '@mantine/notifications';
-import { FC, PropsWithChildren } from 'react';
+import React from 'react';
 
-import { formatAmount, formatClientDate } from '../../client-lib';
+import { formatAmount } from '../../client-lib';
 import {
   CategoryValues,
   NewTransactionFormHook,
@@ -125,13 +124,16 @@ function getInitialValues(
   };
 }
 
-interface Props extends PropsWithChildren {
+interface Props extends React.PropsWithChildren {
   accounts: { label: string; value: string }[];
   categories: CategoryValues[];
   data?: ApiSchema.UpdateTransaction;
+  onSubmit: (
+    values: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction
+  ) => void;
 }
 
-export const DepositForm: FC<Props> = (props) => {
+export const DepositForm: React.FC<Props> = (props) => {
   const form: NewTransactionFormHook = useForm({
     initialValues: getInitialValues(
       props.accounts,
@@ -143,43 +145,17 @@ export const DepositForm: FC<Props> = (props) => {
   });
 
   function handleSubmit(values: NewTransactionFormValues) {
-    // TODO Display a loading modal
-    void requestDeposit(values);
-  }
-
-  async function requestDeposit(values: NewTransactionFormValues) {
-    const payload: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction = {
-      ...convertDepositFormValuesToRequestPayload(values),
-      id: props.txnId,
-    };
-    const method = props.txnId ? 'PUT' : 'POST';
-    const url = props.txnId
-      ? `/api/transactions/${props.txnId}`
-      : '/api/transactions';
-    const responseData = await fetch(url, {
-      method,
-      body: JSON.stringify({
-        ...payload,
-        date: formatClientDate(values.date),
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .catch((e) => {
-        console.error(e);
-        showNotification({
-          color: 'red',
-          message: 'Something went wrong! Please check the logs.',
-          title: 'Error',
-        });
-      });
-
-    showNotification({
-      message: `Saved deposit "${responseData.description}"`,
-      title: 'Success',
-    });
+    if (props.data?.id) {
+      const payload: ApiSchema.UpdateTransaction = {
+        ...convertDepositFormValuesToRequestPayload(values),
+        id: props.data.id,
+      };
+      props.onSubmit(payload);
+    } else {
+      const payload: ApiSchema.NewTransaction =
+        convertDepositFormValuesToRequestPayload(values);
+      props.onSubmit(payload);
+    }
   }
 
   function sumAllocations(): number {
