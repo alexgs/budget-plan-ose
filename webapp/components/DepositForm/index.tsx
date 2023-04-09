@@ -69,18 +69,30 @@ function getInitialValues(
       isCredit: sub.isCredit,
       status: sub.status,
     }));
-    const categories = data.categories.map((sub) => ({
-      amount: sub.amount / 100,
-      categoryId: sub.categoryId,
-      isCredit: sub.isCredit,
-    }));
-    const balance = sumSubrecords(categories);
+    const categorySubrecords = categories.map((category) => {
+      const output = {
+        amount: 0,
+        categoryId: category.id,
+        isCredit: true as boolean,
+      };
+
+      const subrecord = data.categories.find(
+        (sub) => sub.categoryId === category.id
+      );
+      if (subrecord) {
+        output.amount = subrecord.amount / 100;
+        output.isCredit = subrecord.isCredit;
+      }
+
+      return output;
+    });
+    const balance = sumSubrecords(categorySubrecords);
     const isCredit = balance >= 0;
     return {
       accounts,
-      categories,
       isCredit,
       balance: Math.abs(balance),
+      categories: categorySubrecords,
       date: new Date(data.date),
       description: data.description,
       type: data.type as TransactionType,
