@@ -7,15 +7,10 @@ import {
   faFloppyDisk,
   faSplit,
 } from '@fortawesome/pro-regular-svg-icons';
-import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
-  Checkbox,
-  CSSObject,
-  MantineTheme,
   NativeSelect,
-  NumberInput,
   TextInput,
   UnstyledButton,
 } from '@mantine/core';
@@ -34,6 +29,7 @@ import {
   DescriptionCell,
   NotesCell,
 } from '../Components/Cell';
+import { MainAmountCell } from '../Components/MainAmountCell';
 import { MainCategoryCell } from '../Components/MainCategoryCell';
 import { Row } from '../Components/Row';
 import { NewTransactionFormHook } from '../../../client-lib/types';
@@ -47,11 +43,6 @@ import {
 } from '../../../shared-lib';
 
 import { RowProps } from './row-props';
-
-const amountStyle = (theme: MantineTheme): CSSObject => ({
-  '.mantine-NumberInput-icon': { color: theme.colors.green[6] },
-  input: { color: theme.colors.green[4] },
-});
 
 interface Props extends Omit<RowProps, 'txn'> {
   data?: ApiSchema.UpdateTransaction;
@@ -192,23 +183,7 @@ export const Form: React.FC<Props> = (props) => {
           mantineForm={form}
         />
         <NotesCell></NotesCell>
-        <AmountCell style={{ display: 'flex', alignItems: 'center' }}>
-          <NumberInput
-            decimalSeparator="."
-            hideControls
-            icon={<FontAwesomeIcon icon={faDollarSign} />}
-            precision={2}
-            required
-            sx={form.values.categories[0].isCredit ? amountStyle : {}}
-            {...form.getInputProps(`categories.0.amount`)}
-          />
-          <Checkbox
-            label="Credit"
-            {...form.getInputProps('categories.0.isCredit', {
-              type: 'checkbox',
-            })}
-          />
-        </AmountCell>
+        <MainAmountCell mantineForm={form} />
         <ButtonsCell>
           <UnstyledButton sx={{ marginLeft: '1rem' }} type="submit">
             <FontAwesomeIcon icon={faFloppyDisk} />
