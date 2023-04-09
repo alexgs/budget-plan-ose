@@ -11,6 +11,5 @@ export {
 export { AddTransactionButton } from './AddTransactionButton';
 export { DepositForm } from './DepositForm';
 export { NextAuthProvider } from './NextAuthProvider';
-export { OldTransactionTable } from './OldTransactionTable';
 export { Page } from './Page';
 export { TransactionTable } from './TransactionTable';
