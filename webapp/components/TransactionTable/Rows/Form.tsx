@@ -18,6 +18,7 @@ import { DatePicker } from '@mantine/dates';
 import { useForm, yupResolver } from '@mantine/form';
 import React from 'react';
 
+import { AmountInputCell } from '../Components/AmountInputCell';
 import { CategoryField } from '../Components/CategoryField';
 import {
   AccountCell,
@@ -138,7 +139,14 @@ export const Form: React.FC<Props> = (props) => {
             />
           </CategoryCell>
           <NotesCell>{/* Notes */}</NotesCell>
-          <AmountCell>Hello amounts!</AmountCell>
+          <AmountInputCell
+            checkboxInputProps={form.getInputProps(
+              `categories.${index}.isCredit`,
+              { type: 'checkbox' }
+            )}
+            isCredit={form.values.categories[index].isCredit}
+            numberInputProps={form.getInputProps(`categories.${index}.amount`)}
+          />
           <ButtonsCell></ButtonsCell>
         </Row>
       );
