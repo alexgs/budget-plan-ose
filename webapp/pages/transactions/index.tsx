@@ -8,7 +8,7 @@ import { Alert, Loader } from '@mantine/core';
 import React from 'react';
 import useSWR from 'swr';
 
-import { Page, TransactionTable } from '../../components';
+import { TransactionTable, Page } from '../../components';
 import { Account, ApiSchema, Category } from '../../shared-lib';
 
 const Transactions: React.FC = () => {

@@ -3,66 +3,67 @@
  */
 
 import React from 'react';
-import { formatAmount } from '../../../client-lib';
-import {
-  Account,
-  ApiSchema,
-  Category,
-  getFriendlyAccountName,
-  getFriendlyCategoryName,
-} from '../../../shared-lib';
-import { ExpandRowButton } from '../BuildingBlocks';
 
-interface Props {
-  accountData: Account[];
-  categoryData: Category[];
-  txn: ApiSchema.Transaction;
-}
+import { getFriendlyAccountName, sumSubrecords } from '../../../shared-lib';
+import {
+  AccountCell,
+  ButtonsCell,
+  CategoryCell,
+  ChevronCell,
+  DateCell,
+  DescriptionCell,
+  NotesCell,
+} from '../Components/Cell';
+import { ExpandRowButton } from '../Components/ExpandRowButton';
+import { Row } from '../Components/Row';
+import { SmartAmountCell } from '../Components/SmartAmountCell';
+
+import { RowProps } from './row-props';
 
 // TODO Add animation to expanding and collapsing rows
 
-export const AccountTransferRow: React.FC<Props> = (props) => {
+export const AccountTransferRow: React.FC<RowProps> = (props) => {
   const [isExpanded, setExpanded] = React.useState<boolean>(false);
 
   function renderSubrecords() {
     if (isExpanded) {
-      return props.txn.accounts.map((subrecord) => (
-        <tr key={subrecord.id}>
-          <td />{/* Checkbox, maybe other controls */}
-          <td />{/* Date */}
-          <td>
-            {/* Account name */}
-            {getFriendlyAccountName(props.accountData, subrecord.accountId)}
-          </td>
-          <td />{/* Description */}
-          <td />{/* Category */}
-          <td />{/* Notes */}
-          <td>{formatAmount(subrecord.amount)}</td>
-          <td />{/* Status icons (pending, cleared, etc.), maybe other controls */}
-        </tr>
-      ));
+      return props.txn.accounts.map((subrecord) => {
+        return (
+          <Row key={subrecord.id} style={{ borderTop: 'none' }}>
+            <ChevronCell>{/* Checkbox */}</ChevronCell>
+            <DateCell>{/* Date */}</DateCell>
+            <AccountCell style={{ paddingLeft: 8 }}>
+              {getFriendlyAccountName(props.accountData, subrecord.accountId)}
+            </AccountCell>
+            <DescriptionCell />
+            <CategoryCell />
+            <NotesCell>{/* Notes */}</NotesCell>
+            <SmartAmountCell style={{ paddingLeft: 8 }} subrecord={subrecord} />
+            <ButtonsCell>{/* Buttons */}</ButtonsCell>
+          </Row>
+        );
+      });
     }
     return null;
   }
 
   return (
     <>
-      <tr>
-        <td>
-          {/* Checkbox, maybe other controls */}
+      <Row>
+        <ChevronCell>
           <ExpandRowButton
             isExpanded={isExpanded}
             onClick={() => setExpanded((prevState) => !prevState)}
           />
-        </td>
-        <td>{props.txn.date}</td>
-        <td style={{ fontStyle: 'italic' }}>Transfer</td>
-        <td>{props.txn.description}</td>
-        <td>{/* Category */}</td>
-        <td />{/* Notes */}
-        <td>{/* Amount */}</td>
-        <td />{/* Status icons (pending, cleared, etc.), maybe other controls */}
-      </tr>
+        </ChevronCell>
+        <DateCell>{props.txn.date.substring(5)}</DateCell>
+        <AccountCell style={{ fontStyle: 'italic' }}>Transfer</AccountCell>
+        <DescriptionCell>{props.txn.description}</DescriptionCell>
+        <CategoryCell>{/* Category */}</CategoryCell>
+        <NotesCell>{/* Notes */}</NotesCell>
+        <SmartAmountCell amount={sumSubrecords(props.txn.accounts)} />
+        <ButtonsCell>{/* Buttons */}</ButtonsCell>
+      </Row>
       {renderSubrecords()}
     </>
   );

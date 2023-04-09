@@ -6,9 +6,9 @@ import { prisma } from '../index';
 import { ApiSchema, Transaction } from '../../shared-lib';
 
 export async function saveTransaction(
-  record: ApiSchema.NewTransactionRecord,
-  accountSubrecords: ApiSchema.NewTransactionAccount[],
-  categorySubrecords: ApiSchema.NewTransactionCategory[]
+  record: ApiSchema.NewTransactionBase,
+  accountSubrecords: ApiSchema.NewAccountSubrecord[],
+  categorySubrecords: ApiSchema.NewCategorySubrecord[]
 ): Promise<Transaction> {
   // TODO All of the DB updates in here should be wrapped in a single DB transaction
 

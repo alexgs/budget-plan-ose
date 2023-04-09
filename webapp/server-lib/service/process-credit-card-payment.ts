@@ -7,7 +7,7 @@ import { database } from '../database';
 import { service } from './index';
 
 async function determineCategoryId(
-  accountSubrecords: ApiSchema.NewTransactionAccount[]
+  accountSubrecords: ApiSchema.NewAccountSubrecord[]
 ): Promise<string> {
   const accounts = await Promise.all(
     accountSubrecords.map(

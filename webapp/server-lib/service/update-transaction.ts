@@ -7,7 +7,7 @@ import { database } from '../database';
 import { service } from './index';
 
 export async function updateTransaction(
-  payload: ApiSchema.PutTransaction
+  payload: ApiSchema.UpdateTransaction
 ): Promise<Transaction | null> {
   // Delete the old transaction
   await database.deleteTransaction(payload.id);

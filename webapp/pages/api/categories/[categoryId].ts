@@ -18,14 +18,14 @@ export default async function handler(
 
   if (session) {
     if (req.method === 'PATCH') {
-      let payload: ApiSchema.PatchCategory = {
+      let payload: ApiSchema.UpdateCategory = {
         name: '',
         parentId: null,
       };
       let categoryId = '';
       try {
         categoryId = await yup.string().required().validate(req.query.categoryId);
-        payload = await schemaObjects.patchCategory.validate(req.body, {stripUnknown: false});
+        payload = await schemaObjects.updateCategory.validate(req.body, {stripUnknown: false});
       } catch (e: any) {
         if (e.name && e.name === 'ValidationError') {
           const error: ValidationError = e as ValidationError;

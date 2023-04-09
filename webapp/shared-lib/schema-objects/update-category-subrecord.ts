@@ -4,9 +4,9 @@
 
 import * as yup from 'yup';
 
-import { newTransaction } from './new-transaction';
+import { newCategorySubrecord } from './new-category-subrecord';
 
-export const putTransaction = newTransaction.concat(
+export const updateCategorySubrecord = newCategorySubrecord.concat(
   yup.object({
     id: yup.string().uuid().required(),
   })

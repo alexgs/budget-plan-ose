@@ -7,7 +7,7 @@ import { ApiSchema, Category } from '../../shared-lib';
 
 export async function updateCategory(
   categoryId: string,
-  payload: ApiSchema.PatchCategory
+  payload: ApiSchema.UpdateCategory
 ): Promise<Category> {
   return prisma.category.update({
     where: { id: categoryId },

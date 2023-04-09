@@ -26,7 +26,7 @@ export async function processCreditCardCharge(
     (output, current) => output + current.amount,
     0
   );
-  const reservationSubrecord: ApiSchema.NewTransactionCategory = {
+  const reservationSubrecord: ApiSchema.NewCategorySubrecord = {
     amount: sum,
     categoryId: service.getReservationCategoryId(account),
     isCredit: true,
