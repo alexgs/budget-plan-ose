@@ -12,10 +12,9 @@ import {
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useForm, yupResolver } from '@mantine/form';
-import { showNotification } from '@mantine/notifications';
-import { FC, PropsWithChildren } from 'react';
+import React from 'react';
 
-import { formatAmount, formatClientDate } from '../../client-lib';
+import { formatAmount } from '../../client-lib';
 import {
   CategoryValues,
   NewTransactionFormHook,
@@ -60,7 +59,7 @@ function convertDepositFormValuesToRequestPayload(
 function getInitialValues(
   accounts: { label: string; value: string }[],
   categories: CategoryValues[],
-  data?: ApiSchema.NewTransaction
+  data?: ApiSchema.UpdateTransaction
 ): NewTransactionFormValues {
   if (data) {
     const accounts = data.accounts.map((sub) => ({
@@ -69,18 +68,34 @@ function getInitialValues(
       isCredit: sub.isCredit,
       status: sub.status,
     }));
-    const categories = data.categories.map((sub) => ({
-      amount: sub.amount / 100,
-      categoryId: sub.categoryId,
-      isCredit: sub.isCredit,
-    }));
-    const balance = sumSubrecords(categories);
+    const categorySubrecords = categories.map((category) => {
+      const subrecord = data.categories.find(
+        (sub) => sub.categoryId === category.id
+      );
+      if (subrecord) {
+        const output: ApiSchema.UpdateCategorySubrecord = {
+          amount: subrecord.amount / 100,
+          categoryId: category.id,
+          id: 'id' in subrecord ? subrecord.id : '',
+          isCredit: subrecord.isCredit,
+        };
+        return output;
+      }
+
+      const output: ApiSchema.NewCategorySubrecord = {
+        amount: 0,
+        categoryId: category.id,
+        isCredit: true as boolean,
+      };
+      return output;
+    });
+    const balance = sumSubrecords(categorySubrecords);
     const isCredit = balance >= 0;
     return {
       accounts,
-      categories,
       isCredit,
       balance: Math.abs(balance),
+      categories: categorySubrecords,
       date: new Date(data.date),
       description: data.description,
       type: data.type as TransactionType,
@@ -109,14 +124,16 @@ function getInitialValues(
   };
 }
 
-interface Props extends PropsWithChildren {
+interface Props extends React.PropsWithChildren {
   accounts: { label: string; value: string }[];
   categories: CategoryValues[];
-  data?: ApiSchema.NewTransaction;
-  txnId?: string;
+  data?: ApiSchema.UpdateTransaction;
+  onSubmit: (
+    values: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction
+  ) => void;
 }
 
-export const DepositForm: FC<Props> = (props) => {
+export const DepositForm: React.FC<Props> = (props) => {
   const form: NewTransactionFormHook = useForm({
     initialValues: getInitialValues(
       props.accounts,
@@ -128,43 +145,17 @@ export const DepositForm: FC<Props> = (props) => {
   });
 
   function handleSubmit(values: NewTransactionFormValues) {
-    // TODO Display a loading modal
-    void requestDeposit(values);
-  }
-
-  async function requestDeposit(values: NewTransactionFormValues) {
-    const payload: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction = {
-      ...convertDepositFormValuesToRequestPayload(values),
-      id: props.txnId,
-    };
-    const method = props.txnId ? 'PUT' : 'POST';
-    const url = props.txnId
-      ? `/api/transactions/${props.txnId}`
-      : '/api/transactions';
-    const responseData = await fetch(url, {
-      method,
-      body: JSON.stringify({
-        ...payload,
-        date: formatClientDate(values.date),
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .catch((e) => {
-        console.error(e);
-        showNotification({
-          color: 'red',
-          message: 'Something went wrong! Please check the logs.',
-          title: 'Error',
-        });
-      });
-
-    showNotification({
-      message: `Saved deposit "${responseData.description}"`,
-      title: 'Success',
-    });
+    if (props.data?.id) {
+      const payload: ApiSchema.UpdateTransaction = {
+        ...convertDepositFormValuesToRequestPayload(values),
+        id: props.data.id,
+      };
+      props.onSubmit(payload);
+    } else {
+      const payload: ApiSchema.NewTransaction =
+        convertDepositFormValuesToRequestPayload(values);
+      props.onSubmit(payload);
+    }
   }
 
   function sumAllocations(): number {

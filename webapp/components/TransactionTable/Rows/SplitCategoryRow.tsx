@@ -2,9 +2,13 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
+import { faPencil } from '@fortawesome/pro-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { UnstyledButton } from '@mantine/core';
 import React from 'react';
 
 import {
+  TRANSACTION_TYPES,
   getFriendlyAccountName,
   getFriendlyCategoryName,
   sumSubrecords,
@@ -24,10 +28,31 @@ import { SmartAmountCell } from '../Components/SmartAmountCell';
 
 import { RowProps } from './row-props';
 
+interface Props extends RowProps {
+  onEditClick: (txnId: string) => void;
+}
+
 // TODO Add animation to expanding and collapsing rows
 
-export const SplitCategoryRow: React.FC<RowProps> = (props) => {
+export const SplitCategoryRow: React.FC<Props> = (props) => {
   const [isExpanded, setExpanded] = React.useState<boolean>(false);
+
+  function handleEditClick() {
+    props.onEditClick(props.txn.id);
+  }
+
+  function renderButtonsCell() {
+    if (props.txn.type === TRANSACTION_TYPES.DEPOSIT) {
+      return (
+        <ButtonsCell>
+          <UnstyledButton onClick={handleEditClick}>
+            <FontAwesomeIcon icon={faPencil} />
+          </UnstyledButton>
+        </ButtonsCell>
+      );
+    }
+    return <ButtonsCell>{/* Buttons */}</ButtonsCell>;
+  }
 
   function renderSubrecords() {
     if (isExpanded) {
@@ -74,7 +99,7 @@ export const SplitCategoryRow: React.FC<RowProps> = (props) => {
         <CategoryCell style={{ fontStyle: 'italic' }}>Split</CategoryCell>
         <NotesCell>{/* Notes */}</NotesCell>
         <SmartAmountCell amount={sumSubrecords(props.txn.categories)} />
-        <ButtonsCell>{/* Buttons */}</ButtonsCell>
+        {renderButtonsCell()}
       </Row>
       {renderSubrecords()}
     </>
