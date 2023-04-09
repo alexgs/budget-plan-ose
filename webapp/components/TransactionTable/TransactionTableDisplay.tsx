@@ -50,6 +50,7 @@ interface Props {
 export const TransactionTableDisplay: React.FC<Props> = (props) => {
   const [isNewTxnFormVisible, setNewTxnFormVisible] =
     React.useState<boolean>(false);
+  const [isSaving, setSaving] = React.useState<boolean>(false);
   const [nowEditing, setNowEditing] = React.useState<string | null>(null);
 
   function handleCancel() {
@@ -58,6 +59,10 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
   }
 
   function handleEditClick(recordId: string) {
+    if (isNewTxnFormVisible || nowEditing) {
+      return; // Do nothing
+    }
+
     const data = props.txnData.find((txn) => txn.id === recordId);
     if (data) {
       if (data.type === TRANSACTION_TYPES.DEPOSIT) {
@@ -72,6 +77,7 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
   function handleSubmit(
     values: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction
   ) {
+    setSaving(true);
     let promise: Promise<Response>;
     if ('id' in values) {
       const updateValues: ApiSchema.UpdateTransaction = values;
@@ -100,6 +106,7 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
       .finally(() => {
         setNewTxnFormVisible(false);
         setNowEditing(null);
+        setSaving(false);
       });
   }
 

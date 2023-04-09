@@ -33,7 +33,10 @@ import {
 import { MainAmountCell } from '../Components/MainAmountCell';
 import { MainCategoryCell } from '../Components/MainCategoryCell';
 import { Row } from '../Components/Row';
-import { NewTransactionFormHook } from '../../../client-lib/types';
+import {
+  NewTransactionFormHook,
+  NewTransactionFormValues
+} from '../../../client-lib/types';
 import {
   AMOUNT_STATUS,
   TRANSACTION_TYPES,
@@ -95,28 +98,32 @@ export const Form: React.FC<Props> = (props) => {
     });
   }
 
-  function handleSubmit(values: ApiSchema.NewTransaction) {
-    const accounts = values.accounts.map((account) => ({
-      ...account,
-      amount: dollarsToCents(account.amount),
-    }));
-    const categories = values.categories.map((category) => ({
-      ...category,
-      amount: dollarsToCents(category.amount),
-    }));
-    const payload = {
-      ...values,
-      accounts,
-      categories,
-    };
+  function handleSubmit(values: NewTransactionFormValues) {
+    const { balance, isCredit, ...record } = values;
+    const isSimplePayment = record.accounts.length === 1 && record.categories.length === 1;
+    const isSplitCategory = record.accounts.length === 1 && record.categories.length > 1;
+    if (isSimplePayment) {
+      record.categories[0].amount = dollarsToCents(record.categories[0].amount);
+      record.accounts[0].amount = record.categories[0].amount;
+      record.accounts[0].isCredit = record.categories[0].isCredit;
+    } else if (isSplitCategory) {
+      record.categories = record.categories.map((subrecord) => ({
+        ...subrecord,
+        amount: dollarsToCents(subrecord.amount),
+      }));
+      record.accounts[0].amount = dollarsToCents(balance);
+      record.accounts[0].isCredit = isCredit;
+    } else {
+      throw new Error('Unimplemented');
+    }
 
     if (props.data?.id) {
       props.onSubmit({
-        ...payload,
+        ...record,
         id: props.data.id,
       });
     } else {
-      props.onSubmit(payload);
+      props.onSubmit(record);
     }
   }
 
