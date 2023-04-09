@@ -16,15 +16,14 @@ import {
   MantineTheme,
   NativeSelect,
   NumberInput,
-  Select,
   TextInput,
   UnstyledButton,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useForm, yupResolver } from '@mantine/form';
-import { useViewportSize } from '@mantine/hooks';
 import React from 'react';
 
+import { CategoryField } from '../Components/CategoryField';
 import {
   AccountCell,
   AmountCell,
@@ -36,7 +35,6 @@ import {
   NotesCell,
 } from '../Components/Cell';
 import { Row } from '../Components/Row';
-import { buildCategoryTree, getCategoryList } from '../../../client-lib';
 import { NewTransactionFormHook } from '../../../client-lib/types';
 import {
   AMOUNT_STATUS,
@@ -46,7 +44,6 @@ import {
   dollarsToCents,
   schemaObjects,
 } from '../../../shared-lib';
-import { contentWidth } from '../../tokens';
 
 import { RowProps } from './row-props';
 
@@ -92,7 +89,6 @@ export const Form: React.FC<Props> = (props) => {
     validate: yupResolver(schemaObjects.newTransaction),
     validateInputOnChange: true,
   });
-  const viewport = useViewportSize();
 
   function handleCancel() {
     props.onCancel();
@@ -131,31 +127,30 @@ export const Form: React.FC<Props> = (props) => {
     }
   }
 
-  function renderCategoryField() {
-    const categories = getCategoryList(buildCategoryTree(props.categoryData))
-      .filter((cat) => cat.isLeaf)
-      .map((cat) => ({
-        value: cat.id,
-        label: cat.label,
-      }));
-    if (viewport.width > contentWidth.medium) {
-      return (
-        <Select
-          data={categories}
-          required
-          searchable
-          {...form.getInputProps(`categories.0.categoryId`)}
-        />
-      );
+  function renderSubrecordRows() {
+    if (form.values.categories.length === 1) {
+      return null;
     }
 
-    return (
-      <NativeSelect
-        data={categories}
-        required
-        {...form.getInputProps(`categories.0.categoryId`)}
-      />
-    );
+    return form.values.categories.map((subrecord, index) => {
+      return (
+        <Row border={false}>
+          <ChevronCell>{/* Checkbox */}</ChevronCell>
+          <DateCell></DateCell>
+          <AccountCell></AccountCell>
+          <DescriptionCell></DescriptionCell>
+          <CategoryCell>
+            <CategoryField
+              categoryData={props.categoryData}
+              {...form.getInputProps(`categories.${index}.categoryId`)}
+            />
+          </CategoryCell>
+          <NotesCell>{/* Notes */}</NotesCell>
+          <AmountCell>Hello amounts!</AmountCell>
+          <ButtonsCell></ButtonsCell>
+        </Row>
+      );
+    });
   }
 
   const accounts = props.accountData.map((account) => ({
@@ -191,7 +186,12 @@ export const Form: React.FC<Props> = (props) => {
             {...form.getInputProps('description')}
           />
         </DescriptionCell>
-        <CategoryCell>{renderCategoryField()}</CategoryCell>
+        <CategoryCell>
+          <CategoryField
+            categoryData={props.categoryData}
+            {...form.getInputProps(`categories.0.categoryId`)}
+          />
+        </CategoryCell>
         <NotesCell></NotesCell>
         <AmountCell style={{ display: 'flex', alignItems: 'center' }}>
           <NumberInput
@@ -223,6 +223,7 @@ export const Form: React.FC<Props> = (props) => {
           </UnstyledButton>
         </ButtonsCell>
       </Row>
+      {renderSubrecordRows()}
       <Row key={`${key}-controls`} border={false}>
         <ChevronCell>{/* Checkbox */}</ChevronCell>
         <DateCell></DateCell>
