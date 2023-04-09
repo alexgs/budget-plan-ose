@@ -60,7 +60,7 @@ function convertDepositFormValuesToRequestPayload(
 function getInitialValues(
   accounts: { label: string; value: string }[],
   categories: CategoryValues[],
-  data?: ApiSchema.NewTransaction
+  data?: ApiSchema.UpdateTransaction
 ): NewTransactionFormValues {
   if (data) {
     const accounts = data.accounts.map((sub) => ({
@@ -70,20 +70,24 @@ function getInitialValues(
       status: sub.status,
     }));
     const categorySubrecords = categories.map((category) => {
-      const output = {
-        amount: 0,
-        categoryId: category.id,
-        isCredit: true as boolean,
-      };
-
       const subrecord = data.categories.find(
         (sub) => sub.categoryId === category.id
       );
       if (subrecord) {
-        output.amount = subrecord.amount / 100;
-        output.isCredit = subrecord.isCredit;
+        const output: ApiSchema.UpdateCategorySubrecord = {
+          amount: subrecord.amount / 100,
+          categoryId: category.id,
+          id: 'id' in subrecord ? subrecord.id : '',
+          isCredit: subrecord.isCredit,
+        };
+        return output;
       }
 
+      const output: ApiSchema.NewCategorySubrecord = {
+        amount: 0,
+        categoryId: category.id,
+        isCredit: true as boolean,
+      };
       return output;
     });
     const balance = sumSubrecords(categorySubrecords);
@@ -124,8 +128,7 @@ function getInitialValues(
 interface Props extends PropsWithChildren {
   accounts: { label: string; value: string }[];
   categories: CategoryValues[];
-  data?: ApiSchema.NewTransaction;
-  txnId?: string;
+  data?: ApiSchema.UpdateTransaction;
 }
 
 export const DepositForm: FC<Props> = (props) => {
