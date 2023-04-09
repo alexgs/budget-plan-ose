@@ -3,9 +3,10 @@
  */
 
 import styled from '@emotion/styled';
-import { UnstyledButton } from '@mantine/core';
+import { Modal, UnstyledButton } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import React from 'react';
+import { buildCategoryTree, getCategoryList } from '../../client-lib';
 
 import { api } from '../../client-lib/api';
 import { txnToUpdateTxn } from '../../client-lib/txn-to-update-txn';
@@ -14,7 +15,9 @@ import {
   Account,
   ApiSchema,
   Category,
+  TransactionType,
 } from '../../shared-lib';
+import { DepositForm } from '../DepositForm';
 import { space } from '../tokens';
 
 import {
@@ -50,6 +53,7 @@ interface Props {
 export const TransactionTableDisplay: React.FC<Props> = (props) => {
   const [isNewTxnFormVisible, setNewTxnFormVisible] =
     React.useState<boolean>(false);
+  const [isDepositModalVisible, setDepositModalVisible] = React.useState(false);
   const [isSaving, setSaving] = React.useState<boolean>(false);
   const [nowEditing, setNowEditing] = React.useState<string | null>(null);
 
@@ -66,12 +70,16 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
     const data = props.txnData.find((txn) => txn.id === recordId);
     if (data) {
       if (data.type === TRANSACTION_TYPES.DEPOSIT) {
-        // setModalVisible(true);
+        setDepositModalVisible(true);
       }
       setNowEditing(recordId);
     } else {
       throw new Error(`Unable to find txn ID ${recordId}`);
     }
+  }
+
+  function handleDepositModalCancel(): void {
+    setDepositModalVisible(false);
   }
 
   function handleSubmit(
@@ -104,10 +112,37 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
         });
       })
       .finally(() => {
+        setDepositModalVisible(false);
         setNewTxnFormVisible(false);
         setNowEditing(null);
         setSaving(false);
       });
+  }
+
+  function renderDepositModalContent() {
+    if (!nowEditing) {
+      return null;
+    }
+
+    const accounts = props.accountData.map((account) => ({
+      value: account.id,
+      label: account.description,
+    }));
+    const categories = getCategoryList(buildCategoryTree(props.categoryData));
+    const data = props.txnData.find((txn) => txn.id === nowEditing);
+    if (data) {
+      const payload: ApiSchema.UpdateTransaction = txnToUpdateTxn(data);
+      return (
+        <DepositForm
+          accounts={accounts}
+          categories={categories}
+          data={payload}
+          onSubmit={handleSubmit}
+        />
+      );
+    } else {
+      throw new Error(`Unable to find txn ID ${nowEditing}`);
+    }
   }
 
   function renderRows() {
@@ -239,6 +274,15 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
       </Row>
       {renderTopRow()}
       {renderRows()}
+      <Modal
+        onClose={handleDepositModalCancel}
+        opened={isDepositModalVisible}
+        overlayBlur={3}
+        size={'xl'}
+        title="Edit deposit"
+      >
+        {renderDepositModalContent()}
+      </Modal>
     </Table>
   );
 };
