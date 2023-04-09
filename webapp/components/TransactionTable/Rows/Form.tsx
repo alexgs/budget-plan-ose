@@ -11,6 +11,7 @@ import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
+  Checkbox,
   CSSObject,
   MantineTheme,
   NativeSelect,
@@ -192,7 +193,7 @@ export const Form: React.FC<Props> = (props) => {
         </DescriptionCell>
         <CategoryCell>{renderCategoryField()}</CategoryCell>
         <NotesCell></NotesCell>
-        <AmountCell>
+        <AmountCell style={{ display: 'flex', alignItems: 'center' }}>
           <NumberInput
             decimalSeparator="."
             hideControls
@@ -201,6 +202,12 @@ export const Form: React.FC<Props> = (props) => {
             required
             sx={form.values.categories[0].isCredit ? amountStyle : {}}
             {...form.getInputProps(`categories.0.amount`)}
+          />
+          <Checkbox
+            label="Credit"
+            {...form.getInputProps('categories.0.isCredit', {
+              type: 'checkbox',
+            })}
           />
         </AmountCell>
         <ButtonsCell>
@@ -228,7 +235,9 @@ export const Form: React.FC<Props> = (props) => {
           </Button>
         </CategoryCell>
         <NotesCell>{/* Notes */}</NotesCell>
-        <AmountCell></AmountCell>
+        <AmountCell>
+          {/* TODO Render a "credit" check box for every subrecord _and_ on the main row*/}
+        </AmountCell>
         <ButtonsCell></ButtonsCell>
       </Row>
     </form>
