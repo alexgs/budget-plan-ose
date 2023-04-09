@@ -34,6 +34,7 @@ import {
   DescriptionCell,
   NotesCell,
 } from '../Components/Cell';
+import { MainCategoryCell } from '../Components/MainCategoryCell';
 import { Row } from '../Components/Row';
 import { NewTransactionFormHook } from '../../../client-lib/types';
 import {
@@ -186,12 +187,10 @@ export const Form: React.FC<Props> = (props) => {
             {...form.getInputProps('description')}
           />
         </DescriptionCell>
-        <CategoryCell>
-          <CategoryField
-            categoryData={props.categoryData}
-            {...form.getInputProps(`categories.0.categoryId`)}
-          />
-        </CategoryCell>
+        <MainCategoryCell
+          categoryData={props.categoryData}
+          mantineForm={form}
+        />
         <NotesCell></NotesCell>
         <AmountCell style={{ display: 'flex', alignItems: 'center' }}>
           <NumberInput
