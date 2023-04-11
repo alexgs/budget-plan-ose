@@ -18,6 +18,7 @@ import { processCreditCardCharge } from './process-credit-card-charge';
 import { processCreditCardPayment } from './process-credit-card-payment';
 import { processTransaction } from './process-transaction';
 import { processPayment } from './process-payment';
+import { saveExtantTransaction } from './save-extant-transaction';
 import { saveNewTransaction } from './save-new-transaction';
 import { updateCategory } from './update-category';
 import { validateTxnPayload } from './validate-txn-payload';
@@ -42,5 +43,6 @@ export const service = {
   /** @private */ processCreditCardCharge,
   /** @private */ processCreditCardPayment,
   /** @private */ processPayment,
+  /** @private */ saveExtantTransaction,
   /** @private */ saveNewTransaction,
 };

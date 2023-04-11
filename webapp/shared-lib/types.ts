@@ -36,10 +36,11 @@ export namespace ApiSchema {
   export type UpdateCategorySubrecord = InferType<
     typeof schemaObjects.updateCategorySubrecord
   >;
-  export type UpdateTransaction = Omit<
+  export type UpdateTransactionBase = Omit<
     InferType<typeof schemaObjects.updateTransaction>,
     'accounts' | 'categories'
-  > & {
+  >
+  export type UpdateTransaction = UpdateTransactionBase & {
     accounts: (NewAccountSubrecord | UpdateAccountSubrecord)[];
     categories: (NewCategorySubrecord | UpdateCategorySubrecord)[];
   };

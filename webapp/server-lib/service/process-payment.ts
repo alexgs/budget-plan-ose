@@ -11,5 +11,8 @@ export async function processPayment(
   const { accounts, categories, ...record } = payload;
   // TODO Check that the sum of the account subrecords equals the sum of
   //   the category subrecords
+  if ('id' in record) {
+    return service.saveExtantTransaction(record, accounts, categories);
+  }
   return service.saveNewTransaction(record, accounts, categories);
 }
