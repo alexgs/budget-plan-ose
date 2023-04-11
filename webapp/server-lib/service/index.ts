@@ -16,7 +16,7 @@ import { processAccountTransfer } from './process-account-transfer';
 import { processCategoryTransfer } from './process-category-transfer';
 import { processCreditCardCharge } from './process-credit-card-charge';
 import { processCreditCardPayment } from './process-credit-card-payment';
-import { processNewTransaction } from './process-new-transaction';
+import { processTransaction } from './process-transaction';
 import { processPayment } from './process-payment';
 import { saveNewTransaction } from './save-new-transaction';
 import { updateCategory } from './update-category';
@@ -31,7 +31,7 @@ export const service = {
   getPublicAccounts,
   getPublicCategories,
   getReservationCategoryId,
-  processNewTransaction,
+  processTransaction,
   updateCategory,
   updateTransaction,
   validateTxnPayload,

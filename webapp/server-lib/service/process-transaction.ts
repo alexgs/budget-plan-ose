@@ -5,8 +5,8 @@
 import { ApiSchema, Transaction, TRANSACTION_TYPES } from '../../shared-lib';
 import { service } from './index';
 
-export async function processNewTransaction(
-  payload: ApiSchema.NewTransaction
+export async function processTransaction(
+  payload: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction
 ): Promise<Transaction | null> {
   let result: Transaction | null = null;
   if (payload.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
