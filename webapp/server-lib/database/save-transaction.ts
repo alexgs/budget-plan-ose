@@ -5,6 +5,9 @@
 import { prisma } from '../index';
 import { ApiSchema, Transaction } from '../../shared-lib';
 
+/**
+ * @deprecated
+ */
 export async function saveTransaction(
   record: ApiSchema.NewTransactionBase,
   accountSubrecords: ApiSchema.NewAccountSubrecord[],
