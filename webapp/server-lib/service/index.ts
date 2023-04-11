@@ -18,6 +18,7 @@ import { processCreditCardPayment } from './process-credit-card-payment';
 import { processPayment } from './process-payment';
 import { processCreditCardCharge } from './process-credit-card-charge';
 import { processTransaction } from './process-transaction';
+import { saveNewTransaction } from './save-new-transaction';
 import { updateCategory } from './update-category';
 import { updateTransaction } from './update-transaction';
 import { validateTxnPayload } from './validate-txn-payload';
@@ -36,6 +37,7 @@ export const service = {
   processCreditCardCharge,
   processCreditCardPayment,
   processTransaction,
+  saveNewTransaction,
   updateCategory,
   updateTransaction,
   validateTxnPayload,

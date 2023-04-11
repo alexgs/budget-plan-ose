@@ -12,12 +12,15 @@ import { getAccount } from './get-account';
 import { getAccountsExceptIds } from './get-accounts-except-ids';
 import { getCategoriesExceptIds } from './get-categories-except-ids';
 import { getCategory } from './get-category';
+import { getTransaction } from './get-transaction';
 import { getTransactions } from './get-transactions';
 import {
   moveTransactionsToNewCategory
 } from './move-transactions-to-new-category';
 import { reconcileAllTransactions } from './reconcile-all-transactions';
-import { saveNewTransaction } from './save-new-transaction';
+import { saveNewAccountSubrecord } from './save-new-account-subrecord';
+import { saveNewCategorySubrecord } from './save-new-category-subrecord';
+import { saveNewTransactionBase } from './save-new-transaction-base';
 import { saveTransaction } from './save-transaction';
 import { updateCategory } from './update-category';
 import { updateCategoryBalance } from './update-category-balance';
@@ -33,10 +36,13 @@ export const database = {
   getAccountsExceptIds,
   getCategoriesExceptIds,
   getCategory,
+  getTransaction,
   getTransactions,
   moveTransactionsToNewCategory,
   reconcileAllTransactions,
-  saveNewTransaction,
+  saveNewAccountSubrecord,
+  saveNewCategorySubrecord,
+  saveNewTransactionBase,
   saveTransaction,
   updateCategory,
   updateCategoryBalance,
