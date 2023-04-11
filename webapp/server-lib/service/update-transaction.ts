@@ -15,7 +15,7 @@ export async function updateTransaction(
   // Save the new transaction
   // TODO Check that the sum of the account subrecords equals the sum of
   //   the category subrecords
-  const output = await service.processTransaction(payload);
+  const output = await service.processNewTransaction(payload);
 
   // Reconcile accounts and categories
   // TODO Consider reconciling only impacted accounts and categories
