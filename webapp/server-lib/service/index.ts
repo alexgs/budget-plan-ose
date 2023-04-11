@@ -20,7 +20,6 @@ import { processTransaction } from './process-transaction';
 import { processPayment } from './process-payment';
 import { saveNewTransaction } from './save-new-transaction';
 import { updateCategory } from './update-category';
-import { updateTransaction } from './update-transaction';
 import { validateTxnPayload } from './validate-txn-payload';
 
 export const service = {
@@ -33,7 +32,6 @@ export const service = {
   getReservationCategoryId,
   processTransaction,
   updateCategory,
-  updateTransaction,
   validateTxnPayload,
 
   /** @private */ ensureDefaultChildCategory,
