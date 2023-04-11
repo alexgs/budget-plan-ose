@@ -21,7 +21,6 @@ import { reconcileAllTransactions } from './reconcile-all-transactions';
 import { saveNewAccountSubrecord } from './save-new-account-subrecord';
 import { saveNewCategorySubrecord } from './save-new-category-subrecord';
 import { saveNewTransactionBase } from './save-new-transaction-base';
-import { saveTransaction } from './save-transaction';
 import { updateCategory } from './update-category';
 import { updateCategoryBalance } from './update-category-balance';
 
@@ -43,7 +42,6 @@ export const database = {
   saveNewAccountSubrecord,
   saveNewCategorySubrecord,
   saveNewTransactionBase,
-  saveTransaction,
   updateCategory,
   updateCategoryBalance,
 };

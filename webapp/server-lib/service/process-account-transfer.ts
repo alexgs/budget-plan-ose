@@ -3,7 +3,7 @@
  */
 
 import { ApiSchema, Transaction } from '../../shared-lib';
-import { database } from '../database';
+import { service } from './index';
 
 export async function processAccountTransfer(
   payload: ApiSchema.NewTransaction
@@ -20,5 +20,5 @@ export async function processAccountTransfer(
     throw new Error(`Credit and debit amounts must be the same.`);
   }
 
-  return database.saveTransaction(record, accounts, []);
+  return service.saveNewTransaction(record, accounts, []);
 }

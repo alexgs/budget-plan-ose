@@ -32,7 +32,7 @@ export async function processCreditCardCharge(
     isCredit: true,
   };
 
-  return database.saveTransaction(record, accounts, [
+  return service.saveNewTransaction(record, accounts, [
     ...categories,
     reservationSubrecord,
   ]);

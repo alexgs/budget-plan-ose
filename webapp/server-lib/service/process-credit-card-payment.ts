@@ -39,7 +39,7 @@ export async function processCreditCardPayment(
   // See [ADR 1][1] for an explanation of this logic.
   // [1]: https://app.clickup.com/8582989/v/dc/85xud-4647/85xud-187
   const categoryId = await determineCategoryId(accounts);
-  return database.saveTransaction(record, accounts, [
+  return service.saveNewTransaction(record, accounts, [
     {
       categoryId,
       amount: accounts[0].amount,

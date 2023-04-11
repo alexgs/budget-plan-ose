@@ -3,7 +3,7 @@
  */
 
 import { ApiSchema, Transaction } from '../../shared-lib';
-import { database } from '../database';
+import { service } from './index';
 
 export async function processCategoryTransfer(
   payload: ApiSchema.NewTransaction
@@ -24,5 +24,5 @@ export async function processCategoryTransfer(
     );
   }
 
-  return database.saveTransaction(record, [], categories);
+  return service.saveNewTransaction(record, [], categories);
 }
