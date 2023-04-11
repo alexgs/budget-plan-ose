@@ -6,6 +6,7 @@ import { countChildCategories } from './count-child-categories';
 import { createAccount } from './create-account';
 import { createCategory } from './create-category';
 import { deleteAccountSubrecord } from './delete-account-subrecord';
+import { deleteCategorySubrecord } from './delete-category-subrecord';
 import { deleteTransaction } from './delete-transaction';
 import { ensureAccount } from './ensure-account';
 import { ensureCategory } from './ensure-category';
@@ -22,8 +23,10 @@ import { reconcileAllTransactions } from './reconcile-all-transactions';
 import { saveNewAccountSubrecord } from './save-new-account-subrecord';
 import { saveNewCategorySubrecord } from './save-new-category-subrecord';
 import { saveNewTransactionBase } from './save-new-transaction-base';
+import { updateAccountSubrecord } from './update-account-subrecord';
 import { updateCategory } from './update-category';
 import { updateCategoryBalance } from './update-category-balance';
+import { updateCategorySubrecord } from './update-category-subrecord';
 
 export const database = {
   countChildCategories,
@@ -32,6 +35,7 @@ export const database = {
   ensureAccount,
   ensureCategory,
   deleteAccountSubrecord,
+  deleteCategorySubrecord,
   deleteTransaction,
   getAccount,
   getAccountsExceptIds,
@@ -44,6 +48,8 @@ export const database = {
   saveNewAccountSubrecord,
   saveNewCategorySubrecord,
   saveNewTransactionBase,
+  updateAccountSubrecord,
   updateCategory,
   updateCategoryBalance,
+  updateCategorySubrecord,
 };
