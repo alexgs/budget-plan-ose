@@ -83,5 +83,8 @@ export async function saveExtantTransaction(
     newCategorySubrecords.map((subrecord) => database.saveNewCategorySubrecord(base.id, subrecord))
   )
 
+  // Reconcile accounts and categories
+  await database.reconcileAllTransactions();
+
   return database.getTransaction(base.id);
 }
