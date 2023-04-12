@@ -20,6 +20,7 @@ import { processTransaction } from './process-transaction';
 import { processPayment } from './process-payment';
 import { saveExtantTransaction } from './save-extant-transaction';
 import { saveNewTransaction } from './save-new-transaction';
+import { saveTransaction } from './save-transaction';
 import { updateCategory } from './update-category';
 import { validateTxnPayload } from './validate-txn-payload';
 
@@ -45,4 +46,5 @@ export const service = {
   /** @private */ processPayment,
   /** @private */ saveExtantTransaction,
   /** @private */ saveNewTransaction,
+  /** @private */ saveTransaction,
 };
