@@ -87,7 +87,7 @@ export default async function handler(
 
       // TODO For payments and credit card charges, check that each `category` subrecord has a different category ID
 
-      let result: Transaction | null = await service.updateTransaction(payload);
+      let result: Transaction | null = await service.processTransaction(payload);
       if (result) {
         res.send(formatTransaction(result));
       } else {
