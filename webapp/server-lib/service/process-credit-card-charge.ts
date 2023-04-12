@@ -34,8 +34,12 @@ export async function processCreditCardCharge(
     isCredit: true,
   };
 
-  return service.saveNewTransaction(record, accounts, [
-    ...categories,
-    reservationSubrecord,
-  ]);
+  return service.saveTransaction({
+    ...record,
+    accounts,
+    categories: [
+      ...categories,
+      reservationSubrecord,
+    ]
+  });
 }

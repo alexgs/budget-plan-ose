@@ -19,5 +19,5 @@ export async function processCategoryTransfer(
     );
   }
 
-  return service.saveNewTransaction(record, [], categories);
+  return service.saveTransaction(payload);
 }

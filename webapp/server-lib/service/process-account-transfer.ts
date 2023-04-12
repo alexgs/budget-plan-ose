@@ -25,5 +25,5 @@ export async function processAccountTransfer(
     throw new Error(`Credit and debit amounts must be the same.`);
   }
 
-  return service.saveNewTransaction(record, accounts, []);
+  return service.saveTransaction(payload);
 }
