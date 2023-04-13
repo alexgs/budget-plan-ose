@@ -54,7 +54,7 @@ interface Props extends Omit<RowProps, 'txn'> {
   ) => void;
 }
 
-export const Form: React.FC<Props> = (props) => {
+export const FormContainer: React.FC<Props> = (props) => {
   const form: NewTransactionFormHook = useForm({
     initialValues: {
       accounts: [
