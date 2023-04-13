@@ -44,7 +44,7 @@ import {
   schemaObjects,
 } from '../../../shared-lib';
 
-import { RowProps } from './row-props';
+import { RowProps } from '../Rows/row-props';
 
 interface Props extends Omit<RowProps, 'txn'> {
   data?: ApiSchema.UpdateTransaction;

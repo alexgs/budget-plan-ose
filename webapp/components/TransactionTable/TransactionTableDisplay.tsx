@@ -36,7 +36,7 @@ import { Row } from './Components/Row';
 import { AccountTransferRow } from './Rows/AccountTransferRow';
 import { CategoryTransferRow } from './Rows/CategoryTransferRow';
 import { CreditCardChargeRow } from './Rows/CreditCardChargeRow';
-import { Form } from './Rows/Form';
+import { Form } from './Form/Form';
 import { SimpleRow } from './Rows/SimpleRow';
 import { SplitAccountRow } from './Rows/SplitAccountRow';
 import { SplitCategoryRow } from './Rows/SplitCategoryRow';
