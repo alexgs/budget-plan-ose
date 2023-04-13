@@ -27,7 +27,7 @@ export async function processCreditCardCharge(
   // [ADR 1][1] for an explanation of this logic.
   // [1]: https://app.clickup.com/8582989/v/dc/85xud-4647/85xud-187
   const account: Account = await database.getAccount(accounts[0].accountId);
-  const sum = sumSubrecords(categories);
+  const sum = Math.abs(sumSubrecords(categories));
   const reservationSubrecord: ApiSchema.NewCategorySubrecord = {
     amount: sum,
     categoryId: service.getReservationCategoryId(account),

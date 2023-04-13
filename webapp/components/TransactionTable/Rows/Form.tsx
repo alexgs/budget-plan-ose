@@ -78,7 +78,7 @@ export const Form: React.FC<Props> = (props) => {
       date: props.data?.date ?? new Date(),
       description: props.data?.description ?? '',
       isCredit: false as boolean, // Client-only field
-      type: props.data?.type ?? (TRANSACTION_TYPES.PAYMENT as TransactionType),
+      type: getInitialTxnType(),
     },
     validate: yupResolver(schemaObjects.newTransaction),
     validateInputOnChange: true,
@@ -92,6 +92,19 @@ export const Form: React.FC<Props> = (props) => {
       return account.accountType as AccountType;
     }
     throw new Error(`Unknown account id ${accountId}.`);
+  }
+
+  function getInitialTxnType(): TransactionType {
+    if (props.data?.type) {
+      return props.data.type;
+    }
+
+    const accountType = getAccountType(props.accountData[0].id);
+    if (accountType === ACCOUNT_TYPES.CREDIT_CARD) {
+      return TRANSACTION_TYPES.CREDIT_CARD_CHARGE;
+    } else {
+      return TRANSACTION_TYPES.PAYMENT;
+    }
   }
 
   function handleAccountChange(accountId: string) {
