@@ -8,16 +8,12 @@ import {
   faSplit,
 } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Button,
-  NativeSelect,
-  TextInput,
-  UnstyledButton,
-} from '@mantine/core';
+import { Button, TextInput, UnstyledButton } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useForm, yupResolver } from '@mantine/form';
 import React from 'react';
 
+import { AccountField } from '../Components/AccountField';
 import { AmountInputCell } from '../Components/AmountInputCell';
 import { CategoryField } from '../Components/CategoryField';
 import {
@@ -35,11 +31,13 @@ import { MainCategoryCell } from '../Components/MainCategoryCell';
 import { Row } from '../Components/Row';
 import {
   NewTransactionFormHook,
-  NewTransactionFormValues
+  NewTransactionFormValues,
 } from '../../../client-lib/types';
 import {
+  ACCOUNT_TYPES,
   AMOUNT_STATUS,
   TRANSACTION_TYPES,
+  AccountType,
   ApiSchema,
   TransactionType,
   dollarsToCents,
@@ -86,6 +84,25 @@ export const Form: React.FC<Props> = (props) => {
     validateInputOnChange: true,
   });
 
+  function getAccountType(accountId: string): AccountType {
+    const account = props.accountData.find(
+      (account) => account.id === accountId
+    );
+    if (account) {
+      return account.accountType as AccountType;
+    }
+    throw new Error(`Unknown account id ${accountId}.`);
+  }
+
+  function handleAccountChange(accountId: string) {
+    const accountType = getAccountType(accountId);
+    if (accountType === ACCOUNT_TYPES.CREDIT_CARD) {
+      form.setFieldValue('type', TRANSACTION_TYPES.CREDIT_CARD_CHARGE);
+    } else {
+      form.setFieldValue('type', TRANSACTION_TYPES.PAYMENT);
+    }
+  }
+
   function handleCancel() {
     props.onCancel();
   }
@@ -100,8 +117,10 @@ export const Form: React.FC<Props> = (props) => {
 
   function handleSubmit(values: NewTransactionFormValues) {
     const { balance, isCredit, ...record } = values;
-    const isSimplePayment = record.accounts.length === 1 && record.categories.length === 1;
-    const isSplitCategory = record.accounts.length === 1 && record.categories.length > 1;
+    const isSimplePayment =
+      record.accounts.length === 1 && record.categories.length === 1;
+    const isSplitCategory =
+      record.accounts.length === 1 && record.categories.length > 1;
     if (isSimplePayment) {
       record.categories[0].amount = dollarsToCents(record.categories[0].amount);
       record.accounts[0].amount = record.categories[0].amount;
@@ -160,10 +179,6 @@ export const Form: React.FC<Props> = (props) => {
     });
   }
 
-  const accounts = props.accountData.map((account) => ({
-    value: account.id,
-    label: account.description,
-  }));
   const key = props.data ? props.data.id : 'new-txn';
   return (
     <form
@@ -180,10 +195,10 @@ export const Form: React.FC<Props> = (props) => {
           />
         </DateCell>
         <AccountCell>
-          <NativeSelect
-            data={accounts}
-            required
-            {...form.getInputProps('accounts.0.accountId')}
+          <AccountField
+            mantineForm={form}
+            accountData={props.accountData}
+            onAccountChange={handleAccountChange}
           />
         </AccountCell>
         <DescriptionCell>
