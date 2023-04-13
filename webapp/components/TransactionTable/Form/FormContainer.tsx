@@ -2,37 +2,14 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import {
-  faCancel,
-  faFloppyDisk,
-  faSplit,
-} from '@fortawesome/pro-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, TextInput, UnstyledButton } from '@mantine/core';
-import { DatePicker } from '@mantine/dates';
 import { useForm, yupResolver } from '@mantine/form';
 import React from 'react';
 
-import { AccountField } from '../Components/AccountField';
-import { AmountInputCell } from '../Components/AmountInputCell';
-import { CategoryField } from '../Components/CategoryField';
-import {
-  AccountCell,
-  AmountCell,
-  ButtonsCell,
-  CategoryCell,
-  ChevronCell,
-  DateCell,
-  DescriptionCell,
-  NotesCell,
-} from '../Components/Cell';
-import { MainAmountCell } from '../Components/MainAmountCell';
-import { MainCategoryCell } from '../Components/MainCategoryCell';
-import { Row } from '../Components/Row';
 import {
   NewTransactionFormHook,
   NewTransactionFormValues,
 } from '../../../client-lib/types';
+import { RowProps } from '../Rows/row-props';
 import {
   ACCOUNT_TYPES,
   AMOUNT_STATUS,
@@ -44,7 +21,7 @@ import {
   schemaObjects,
 } from '../../../shared-lib';
 
-import { RowProps } from '../Rows/row-props';
+import { DefaultForm } from './DefaultForm';
 
 interface Props extends Omit<RowProps, 'txn'> {
   data?: ApiSchema.UpdateTransaction;
@@ -120,6 +97,10 @@ export const FormContainer: React.FC<Props> = (props) => {
     props.onCancel();
   }
 
+  function handleFormSubmit() {
+    return form.onSubmit(handleSubmit, (values) => console.error(values));
+  }
+
   function handleSplitCategory() {
     form.insertListItem('categories', {
       amount: 0,
@@ -159,105 +140,16 @@ export const FormContainer: React.FC<Props> = (props) => {
     }
   }
 
-  function renderSubrecordRows() {
-    if (form.values.categories.length === 1) {
-      return null;
-    }
-
-    return form.values.categories.map((subrecord, index) => {
-      return (
-        <Row border={false}>
-          <ChevronCell>{/* Checkbox */}</ChevronCell>
-          <DateCell></DateCell>
-          <AccountCell></AccountCell>
-          <DescriptionCell></DescriptionCell>
-          <CategoryCell>
-            <CategoryField
-              categoryData={props.categoryData}
-              {...form.getInputProps(`categories.${index}.categoryId`)}
-            />
-          </CategoryCell>
-          <NotesCell>{/* Notes */}</NotesCell>
-          <AmountInputCell
-            checkboxInputProps={form.getInputProps(
-              `categories.${index}.isCredit`,
-              { type: 'checkbox' }
-            )}
-            isCredit={form.values.categories[index].isCredit}
-            numberInputProps={form.getInputProps(`categories.${index}.amount`)}
-          />
-          <ButtonsCell></ButtonsCell>
-        </Row>
-      );
-    });
-  }
-
-  const key = props.data ? props.data.id : 'new-txn';
   return (
-    <form
-      onSubmit={form.onSubmit(handleSubmit, (values) => console.error(values))}
-    >
-      <Row key={key}>
-        <ChevronCell>{/* Checkbox */}</ChevronCell>
-        <DateCell>
-          <DatePicker
-            allowFreeInput
-            inputFormat="YYYY-MM-DD"
-            required
-            {...form.getInputProps('date')}
-          />
-        </DateCell>
-        <AccountCell>
-          <AccountField
-            mantineForm={form}
-            accountData={props.accountData}
-            onAccountChange={handleAccountChange}
-          />
-        </AccountCell>
-        <DescriptionCell>
-          <TextInput
-            placeholder="Payee"
-            required
-            {...form.getInputProps('description')}
-          />
-        </DescriptionCell>
-        <MainCategoryCell
-          categoryData={props.categoryData}
-          mantineForm={form}
-        />
-        <NotesCell></NotesCell>
-        <MainAmountCell mantineForm={form} />
-        <ButtonsCell>
-          <UnstyledButton sx={{ marginLeft: '1rem' }} type="submit">
-            <FontAwesomeIcon icon={faFloppyDisk} />
-          </UnstyledButton>
-          <UnstyledButton
-            onClick={handleCancel}
-            sx={{ marginLeft: '1rem' }}
-            type="button"
-          >
-            <FontAwesomeIcon icon={faCancel} />
-          </UnstyledButton>
-        </ButtonsCell>
-      </Row>
-      {renderSubrecordRows()}
-      <Row key={`${key}-controls`} border={false}>
-        <ChevronCell>{/* Checkbox */}</ChevronCell>
-        <DateCell></DateCell>
-        <AccountCell></AccountCell>
-        <DescriptionCell></DescriptionCell>
-        <CategoryCell>
-          <Button compact onClick={handleSplitCategory} variant="subtle">
-            <FontAwesomeIcon icon={faSplit} />
-            &nbsp; Split
-          </Button>
-        </CategoryCell>
-        <NotesCell>{/* Notes */}</NotesCell>
-        <AmountCell>
-          {/* TODO Render a "credit" check box for every subrecord _and_ on the main row*/}
-        </AmountCell>
-        <ButtonsCell></ButtonsCell>
-      </Row>
-    </form>
+    <DefaultForm
+      accountData={props.accountData}
+      categoryData={props.categoryData}
+      formOnSubmit={handleFormSubmit}
+      mantineForm={form}
+      onAccountChange={handleAccountChange}
+      onCancel={handleCancel}
+      onSplitCategory={handleSplitCategory}
+      txnId={props.data?.id}
+    />
   );
 };
