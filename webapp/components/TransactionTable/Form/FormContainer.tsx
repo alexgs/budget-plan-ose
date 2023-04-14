@@ -101,6 +101,13 @@ export const FormContainer: React.FC<Props> = (props) => {
     const accountType = getAccountType(accountId);
     if (accountType === EXTRA_ACCOUNT_OPTIONS.ACCOUNT_TRANSFER) {
       form.setFieldValue('type', TRANSACTION_TYPES.ACCOUNT_TRANSFER);
+      form.insertListItem('accounts', {
+        amount: 0,
+        accountId: props.accountData[1].id,
+        isCredit: true as boolean,
+        status: AMOUNT_STATUS.PENDING,
+      });
+
     } else if (accountType === EXTRA_ACCOUNT_OPTIONS.CATEGORY_TRANSFER) {
       form.setFieldValue('type', TRANSACTION_TYPES.CATEGORY_TRANSFER);
     } else if (accountType === ACCOUNT_TYPES.CREDIT_CARD) {

@@ -3,18 +3,22 @@
  */
 
 import { faCancel, faFloppyDisk } from '@fortawesome/pro-regular-svg-icons';
+import { faDollarSign } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { TextInput, UnstyledButton } from '@mantine/core';
+import { NumberInput, UnstyledButton } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import React from 'react';
+
 import { NewTransactionFormHook } from '../../../client-lib/types';
 import { Account, Category } from '../../../shared-lib';
 import { AccountField } from '../Components/AccountField';
 import {
-  AccountCell, ButtonsCell,
+  AccountCell,
+  AmountCell,
+  ButtonsCell,
+  Cell,
   ChevronCell,
   DateCell,
-  DescriptionCell
 } from '../Components/Cell';
 import { Row } from '../Components/Row';
 
@@ -40,20 +44,31 @@ export const AccountTransferForm: React.FC<Props> = (props) => {
           {...props.mantineForm.getInputProps('date')}
         />
       </DateCell>
-      <AccountCell>
+      <AccountCell>Account transfer</AccountCell>
+      <Cell style={{ display: 'flex', alignItems: 'center' }}>
+        From:{' '}
         <AccountField
-          mantineForm={props.mantineForm}
           accountData={props.accountData}
-          onAccountChange={props.onAccountChange}
+          mantineForm={props.mantineForm}
         />
-      </AccountCell>
-      <DescriptionCell>
-        <TextInput
-          placeholder="Payee"
+      </Cell>
+      <Cell style={{ display: 'flex', alignItems: 'center' }}>
+        To:{' '}
+        <AccountField
+          accountData={props.accountData}
+          mantineForm={props.mantineForm}
+        />
+      </Cell>
+      <AmountCell style={{ display: 'flex', alignItems: 'center' }}>
+        <NumberInput
+          decimalSeparator="."
+          hideControls
+          icon={<FontAwesomeIcon icon={faDollarSign} />}
+          precision={2}
           required
-          {...props.mantineForm.getInputProps('description')}
+          {...props.mantineForm.getInputProps(`accounts.0.amount`)}
         />
-      </DescriptionCell>
+      </AmountCell>
       <ButtonsCell>
         <UnstyledButton sx={{ marginLeft: '1rem' }} type="submit">
           <FontAwesomeIcon icon={faFloppyDisk} />
