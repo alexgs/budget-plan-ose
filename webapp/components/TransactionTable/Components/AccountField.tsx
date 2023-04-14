@@ -4,7 +4,9 @@
 
 import { NativeSelect } from '@mantine/core';
 import React from 'react';
+
 import { NewTransactionFormHook } from '../../../client-lib/types';
+import { EXTRA_ACCOUNT_OPTIONS } from '../constants';
 import { Account } from '../../../shared-lib';
 
 interface Props {
@@ -15,10 +17,23 @@ interface Props {
 }
 
 export const AccountField: React.FC<Props> = (props) => {
-  const accounts = props.accountData.map((account) => ({
-    value: account.id,
-    label: account.description,
-  }));
+  const accounts = props.accountData
+    .map((account) => ({
+      value: account.id,
+      label: account.description,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+  accounts.unshift(
+    {
+      label: 'Account transfer',
+      value: EXTRA_ACCOUNT_OPTIONS.ACCOUNT_TRANSFER,
+    },
+    {
+      label: 'Category transfer',
+      value: EXTRA_ACCOUNT_OPTIONS.CATEGORY_TRANSFER,
+    },
+  );
+
   const index = props.index ?? 0;
   const fieldPath = `accounts.${index}.accountId`;
 

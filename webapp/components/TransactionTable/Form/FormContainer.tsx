@@ -9,6 +9,7 @@ import {
   NewTransactionFormHook,
   NewTransactionFormValues,
 } from '../../../client-lib/types';
+import { EXTRA_ACCOUNT_OPTIONS, ExtraAccountOptions } from '../constants';
 import { RowProps } from '../Rows/row-props';
 import {
   ACCOUNT_TYPES,
@@ -61,13 +62,23 @@ export const FormContainer: React.FC<Props> = (props) => {
     validateInputOnChange: true,
   });
 
-  function getAccountType(accountId: string): AccountType {
+  function getAccountType(
+    accountId: string
+  ): AccountType | ExtraAccountOptions {
+    if (
+      accountId === EXTRA_ACCOUNT_OPTIONS.ACCOUNT_TRANSFER ||
+      accountId === EXTRA_ACCOUNT_OPTIONS.CATEGORY_TRANSFER
+    ) {
+      return accountId;
+    }
+
     const account = props.accountData.find(
       (account) => account.id === accountId
     );
     if (account) {
       return account.accountType as AccountType;
     }
+
     throw new Error(`Unknown account id ${accountId}.`);
   }
 
@@ -86,7 +97,11 @@ export const FormContainer: React.FC<Props> = (props) => {
 
   function handleAccountChange(accountId: string) {
     const accountType = getAccountType(accountId);
-    if (accountType === ACCOUNT_TYPES.CREDIT_CARD) {
+    if (accountType === EXTRA_ACCOUNT_OPTIONS.ACCOUNT_TRANSFER) {
+      form.setFieldValue('type', TRANSACTION_TYPES.ACCOUNT_TRANSFER);
+    } else if (accountType === EXTRA_ACCOUNT_OPTIONS.CATEGORY_TRANSFER) {
+      form.setFieldValue('type', TRANSACTION_TYPES.CATEGORY_TRANSFER);
+    } else if (accountType === ACCOUNT_TYPES.CREDIT_CARD) {
       form.setFieldValue('type', TRANSACTION_TYPES.CREDIT_CARD_CHARGE);
     } else {
       form.setFieldValue('type', TRANSACTION_TYPES.PAYMENT);
@@ -115,6 +130,7 @@ export const FormContainer: React.FC<Props> = (props) => {
       record.accounts.length === 1 && record.categories.length === 1;
     const isSplitCategory =
       record.accounts.length === 1 && record.categories.length > 1;
+    // TODO Handle account transfers that are really credit card payments or charges
     if (isSimplePayment) {
       record.categories[0].amount = dollarsToCents(record.categories[0].amount);
       record.accounts[0].amount = record.categories[0].amount;
