@@ -49,6 +49,8 @@ export const AccountTransferForm: React.FC<Props> = (props) => {
         From:{' '}
         <AccountField
           accountData={props.accountData}
+          enableTransferOptions={false}
+          index={0}
           mantineForm={props.mantineForm}
         />
       </Cell>
@@ -56,6 +58,8 @@ export const AccountTransferForm: React.FC<Props> = (props) => {
         To:{' '}
         <AccountField
           accountData={props.accountData}
+          enableTransferOptions={false}
+          index={1}
           mantineForm={props.mantineForm}
         />
       </Cell>

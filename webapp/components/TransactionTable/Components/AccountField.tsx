@@ -11,6 +11,7 @@ import { Account } from '../../../shared-lib';
 
 interface Props {
   accountData: Account[];
+  enableTransferOptions?: boolean;
   index?: number;
   mantineForm: NewTransactionFormHook;
   onAccountChange?: (accountId: string) => void;
@@ -23,16 +24,20 @@ export const AccountField: React.FC<Props> = (props) => {
       label: account.description,
     }))
     .sort((a, b) => a.label.localeCompare(b.label));
-  accounts.unshift(
-    {
-      label: 'Account transfer',
-      value: EXTRA_ACCOUNT_OPTIONS.ACCOUNT_TRANSFER,
-    },
-    {
-      label: 'Category transfer',
-      value: EXTRA_ACCOUNT_OPTIONS.CATEGORY_TRANSFER,
-    },
-  );
+
+  const enableTransferOptions = props.enableTransferOptions ?? true;
+  if (enableTransferOptions) {
+    accounts.unshift(
+      {
+        label: 'Account transfer',
+        value: EXTRA_ACCOUNT_OPTIONS.ACCOUNT_TRANSFER,
+      },
+      {
+        label: 'Category transfer',
+        value: EXTRA_ACCOUNT_OPTIONS.CATEGORY_TRANSFER,
+      }
+    );
+  }
 
   const index = props.index ?? 0;
   const fieldPath = `accounts.${index}.accountId`;

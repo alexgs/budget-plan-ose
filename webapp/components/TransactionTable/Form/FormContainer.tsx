@@ -103,7 +103,7 @@ export const FormContainer: React.FC<Props> = (props) => {
       form.setFieldValue('type', TRANSACTION_TYPES.ACCOUNT_TRANSFER);
       form.insertListItem('accounts', {
         amount: 0,
-        accountId: props.accountData[1].id,
+        accountId: props.accountData[0].id,
         isCredit: true as boolean,
         status: AMOUNT_STATUS.PENDING,
       });
