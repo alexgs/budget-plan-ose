@@ -21,6 +21,8 @@ import {
   dollarsToCents,
   schemaObjects,
 } from '../../../shared-lib';
+import { AccountTransferForm } from './AccountTransferForm';
+import { CategoryTransferForm } from './CategoryTransferForm';
 
 import { DefaultForm } from './DefaultForm';
 
@@ -154,6 +156,32 @@ export const FormContainer: React.FC<Props> = (props) => {
     } else {
       props.onSubmit(record);
     }
+  }
+
+  if (form.values.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
+    return (
+      <AccountTransferForm
+        accountData={props.accountData}
+        categoryData={props.categoryData}
+        formOnSubmit={handleFormSubmit}
+        mantineForm={form}
+        onAccountChange={handleAccountChange}
+        onCancel={handleCancel}
+      />
+    );
+  }
+
+  if (form.values.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
+    return (
+      <CategoryTransferForm
+        accountData={props.accountData}
+        categoryData={props.categoryData}
+        formOnSubmit={handleFormSubmit}
+        mantineForm={form}
+        onAccountChange={handleAccountChange}
+        onCancel={handleCancel}
+      />
+    );
   }
 
   return (
