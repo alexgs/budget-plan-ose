@@ -9,7 +9,10 @@ import { NumberInput, UnstyledButton } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import React from 'react';
 
-import { NewTransactionFormHook } from '../../../client-lib/types';
+import {
+  NewTransactionFormHook,
+  NewTransactionFormValues,
+} from '../../../client-lib/types';
 import { Account, Category } from '../../../shared-lib';
 import { AccountField } from '../Components/AccountField';
 import {
@@ -25,66 +28,72 @@ import { Row } from '../Components/Row';
 interface Props {
   accountData: Account[];
   categoryData: Category[];
-  formOnSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   mantineForm: NewTransactionFormHook;
   onAccountChange: (accountId: string) => void;
+  onSubmit: (values: NewTransactionFormValues) => void;
   onCancel: VoidFunction;
 }
 
 export const AccountTransferForm: React.FC<Props> = (props) => {
   const key = 'new-account-transfer';
   return (
-    <Row key={key}>
-      <ChevronCell>{/* Checkbox */}</ChevronCell>
-      <DateCell>
-        <DatePicker
-          allowFreeInput
-          inputFormat="YYYY-MM-DD"
-          required
-          {...props.mantineForm.getInputProps('date')}
-        />
-      </DateCell>
-      <AccountCell>Account transfer</AccountCell>
-      <Cell style={{ display: 'flex', alignItems: 'center' }}>
-        From:{' '}
-        <AccountField
-          accountData={props.accountData}
-          enableTransferOptions={false}
-          index={0}
-          mantineForm={props.mantineForm}
-        />
-      </Cell>
-      <Cell style={{ display: 'flex', alignItems: 'center' }}>
-        To:{' '}
-        <AccountField
-          accountData={props.accountData}
-          enableTransferOptions={false}
-          index={1}
-          mantineForm={props.mantineForm}
-        />
-      </Cell>
-      <AmountCell style={{ display: 'flex', alignItems: 'center' }}>
-        <NumberInput
-          decimalSeparator="."
-          hideControls
-          icon={<FontAwesomeIcon icon={faDollarSign} />}
-          precision={2}
-          required
-          {...props.mantineForm.getInputProps(`accounts.0.amount`)}
-        />
-      </AmountCell>
-      <ButtonsCell>
-        <UnstyledButton sx={{ marginLeft: '1rem' }} type="submit">
-          <FontAwesomeIcon icon={faFloppyDisk} />
-        </UnstyledButton>
-        <UnstyledButton
-          onClick={props.onCancel}
-          sx={{ marginLeft: '1rem' }}
-          type="button"
-        >
-          <FontAwesomeIcon icon={faCancel} />
-        </UnstyledButton>
-      </ButtonsCell>
-    </Row>
+    <form
+      onSubmit={props.mantineForm.onSubmit(props.onSubmit, (values) =>
+        console.error(values)
+      )}
+    >
+      <Row key={key}>
+        <ChevronCell>{/* Checkbox */}</ChevronCell>
+        <DateCell>
+          <DatePicker
+            allowFreeInput
+            inputFormat="YYYY-MM-DD"
+            required
+            {...props.mantineForm.getInputProps('date')}
+          />
+        </DateCell>
+        <AccountCell>Account transfer</AccountCell>
+        <Cell style={{ display: 'flex', alignItems: 'center' }}>
+          From:{' '}
+          <AccountField
+            accountData={props.accountData}
+            enableTransferOptions={false}
+            index={0}
+            mantineForm={props.mantineForm}
+          />
+        </Cell>
+        <Cell style={{ display: 'flex', alignItems: 'center' }}>
+          To:{' '}
+          <AccountField
+            accountData={props.accountData}
+            enableTransferOptions={false}
+            index={1}
+            mantineForm={props.mantineForm}
+          />
+        </Cell>
+        <AmountCell style={{ display: 'flex', alignItems: 'center' }}>
+          <NumberInput
+            decimalSeparator="."
+            hideControls
+            icon={<FontAwesomeIcon icon={faDollarSign} />}
+            precision={2}
+            required
+            {...props.mantineForm.getInputProps(`accounts.0.amount`)}
+          />
+        </AmountCell>
+        <ButtonsCell>
+          <UnstyledButton sx={{ marginLeft: '1rem' }} type="submit">
+            <FontAwesomeIcon icon={faFloppyDisk} />
+          </UnstyledButton>
+          <UnstyledButton
+            onClick={props.onCancel}
+            sx={{ marginLeft: '1rem' }}
+            type="button"
+          >
+            <FontAwesomeIcon icon={faCancel} />
+          </UnstyledButton>
+        </ButtonsCell>
+      </Row>
+    </form>
   );
 };

@@ -3,18 +3,21 @@
  */
 
 import React from 'react';
-import { NewTransactionFormHook } from '../../../client-lib/types';
+import {
+  NewTransactionFormHook,
+  NewTransactionFormValues,
+} from '../../../client-lib/types';
 import { Account, Category } from '../../../shared-lib';
 
 interface Props {
   accountData: Account[];
   categoryData: Category[];
-  formOnSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   mantineForm: NewTransactionFormHook;
   onAccountChange: (accountId: string) => void;
   onCancel: VoidFunction;
+  onSubmit: (values: NewTransactionFormValues) => void;
 }
 
 export const CategoryTransferForm: React.FC<Props> = (props) => {
-  return <div>Hello category transfer</div>
-}
+  return <div>Hello category transfer</div>;
+};

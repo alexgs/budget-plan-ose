@@ -11,7 +11,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, TextInput, UnstyledButton } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import React from 'react';
-import { NewTransactionFormHook } from '../../../client-lib/types';
+import {
+  NewTransactionFormHook,
+  NewTransactionFormValues,
+} from '../../../client-lib/types';
 import { Account, Category } from '../../../shared-lib';
 import { AccountField } from '../Components/AccountField';
 import { AmountInputCell } from '../Components/AmountInputCell';
@@ -33,11 +36,11 @@ import { Row } from '../Components/Row';
 interface Props {
   accountData: Account[];
   categoryData: Category[];
-  formOnSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   mantineForm: NewTransactionFormHook;
   onAccountChange: (accountId: string) => void;
   onCancel: VoidFunction;
   onSplitCategory: VoidFunction;
+  onSubmit: (values: NewTransactionFormValues) => void;
   txnId?: string;
 }
 
@@ -81,7 +84,11 @@ export const DefaultForm: React.FC<Props> = (props) => {
 
   const key = props.txnId ?? 'new-txn';
   return (
-    <form onSubmit={props.formOnSubmit}>
+    <form
+      onSubmit={props.mantineForm.onSubmit(props.onSubmit, (values) =>
+        console.error(values)
+      )}
+    >
       <Row key={key}>
         <ChevronCell>{/* Checkbox */}</ChevronCell>
         <DateCell>

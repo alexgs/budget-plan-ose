@@ -101,13 +101,13 @@ export const FormContainer: React.FC<Props> = (props) => {
     const accountType = getAccountType(accountId);
     if (accountType === EXTRA_ACCOUNT_OPTIONS.ACCOUNT_TRANSFER) {
       form.setFieldValue('type', TRANSACTION_TYPES.ACCOUNT_TRANSFER);
+      form.setFieldValue('description', 'Account transfer');
       form.insertListItem('accounts', {
         amount: 0,
         accountId: props.accountData[0].id,
         isCredit: true as boolean,
         status: AMOUNT_STATUS.PENDING,
       });
-
     } else if (accountType === EXTRA_ACCOUNT_OPTIONS.CATEGORY_TRANSFER) {
       form.setFieldValue('type', TRANSACTION_TYPES.CATEGORY_TRANSFER);
     } else if (accountType === ACCOUNT_TYPES.CREDIT_CARD) {
@@ -119,10 +119,6 @@ export const FormContainer: React.FC<Props> = (props) => {
 
   function handleCancel() {
     props.onCancel();
-  }
-
-  function handleFormSubmit() {
-    return form.onSubmit(handleSubmit, (values) => console.error(values));
   }
 
   function handleSplitCategory() {
@@ -170,10 +166,10 @@ export const FormContainer: React.FC<Props> = (props) => {
       <AccountTransferForm
         accountData={props.accountData}
         categoryData={props.categoryData}
-        formOnSubmit={handleFormSubmit}
         mantineForm={form}
         onAccountChange={handleAccountChange}
         onCancel={handleCancel}
+        onSubmit={handleSubmit}
       />
     );
   }
@@ -183,10 +179,10 @@ export const FormContainer: React.FC<Props> = (props) => {
       <CategoryTransferForm
         accountData={props.accountData}
         categoryData={props.categoryData}
-        formOnSubmit={handleFormSubmit}
         mantineForm={form}
         onAccountChange={handleAccountChange}
         onCancel={handleCancel}
+        onSubmit={handleSubmit}
       />
     );
   }
@@ -195,11 +191,11 @@ export const FormContainer: React.FC<Props> = (props) => {
     <DefaultForm
       accountData={props.accountData}
       categoryData={props.categoryData}
-      formOnSubmit={handleFormSubmit}
       mantineForm={form}
       onAccountChange={handleAccountChange}
       onCancel={handleCancel}
       onSplitCategory={handleSplitCategory}
+      onSubmit={handleSubmit}
       txnId={props.data?.id}
     />
   );
