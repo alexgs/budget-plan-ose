@@ -102,6 +102,7 @@ export const FormContainer: React.FC<Props> = (props) => {
     if (accountType === EXTRA_ACCOUNT_OPTIONS.ACCOUNT_TRANSFER) {
       form.setFieldValue('type', TRANSACTION_TYPES.ACCOUNT_TRANSFER);
       form.setFieldValue('description', 'Account transfer');
+      form.setFieldValue('accounts.0.accountId', props.accountData[0].id);
       form.insertListItem('accounts', {
         amount: 0,
         accountId: props.accountData[0].id,
@@ -147,6 +148,15 @@ export const FormContainer: React.FC<Props> = (props) => {
       }));
       record.accounts[0].amount = dollarsToCents(balance);
       record.accounts[0].isCredit = isCredit;
+    } else if (record.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
+      if (record.accounts.length !== 2) {
+        throw new Error(
+          `Incorrect number of account subrecords (expected 2, found ${record.accounts.length}).`
+        );
+      }
+      record.categories = [];
+      record.accounts[0].amount = dollarsToCents(record.accounts[0].amount);
+      record.accounts[1].amount = record.accounts[0].amount;
     } else {
       throw new Error('Unimplemented');
     }

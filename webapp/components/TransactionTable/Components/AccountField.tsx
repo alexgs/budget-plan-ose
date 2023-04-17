@@ -44,10 +44,10 @@ export const AccountField: React.FC<Props> = (props) => {
 
   function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
     const value = event.currentTarget.value;
+    props.mantineForm.setFieldValue(fieldPath, value);
     if (props.onAccountChange) {
       props.onAccountChange(value);
     }
-    props.mantineForm.setFieldValue(fieldPath, value);
   }
 
   return (

@@ -16,6 +16,7 @@
     "build": "next build",
     "check": "npx tsc --noEmit",
     "dev": "next dev",
+    "debug": "NODE_OPTIONS='--inspect' next dev",
     "lint": "next lint",
     "prettier": "npx prettier --check .",
     "prettier:fix": "npx prettier --write .",
