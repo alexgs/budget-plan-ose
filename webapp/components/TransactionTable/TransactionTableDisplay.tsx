@@ -36,7 +36,7 @@ import { Row } from './Components/Row';
 import { AccountTransferRow } from './Rows/AccountTransferRow';
 import { CategoryTransferRow } from './Rows/CategoryTransferRow';
 import { CreditCardChargeRow } from './Rows/CreditCardChargeRow';
-import { Form } from './Rows/Form';
+import { FormContainer } from './Form/FormContainer';
 import { SimpleRow } from './Rows/SimpleRow';
 import { SplitAccountRow } from './Rows/SplitAccountRow';
 import { SplitCategoryRow } from './Rows/SplitCategoryRow';
@@ -153,7 +153,7 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
       if (txn.id === nowEditing) {
         const data = txnToUpdateTxn(txn);
         return (
-          <Form
+          <FormContainer
             accountData={props.accountData}
             categoryData={props.categoryData}
             data={data}
@@ -235,7 +235,7 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
   function renderTopRow() {
     if (isNewTxnFormVisible) {
       return (
-        <Form
+        <FormContainer
           onCancel={handleCancel}
           onSubmit={handleSubmit}
           accountData={props.accountData}
