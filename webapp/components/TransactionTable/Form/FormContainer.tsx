@@ -136,7 +136,19 @@ export const FormContainer: React.FC<Props> = (props) => {
       record.accounts.length === 1 && record.categories.length === 1;
     const isSplitCategory =
       record.accounts.length === 1 && record.categories.length > 1;
-    // TODO Handle account transfers that are really credit card payments or charges
+    const isCreditCardPayment =
+      record.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER &&
+      getAccountType(record.accounts[1].accountId) ===
+        ACCOUNT_TYPES.CREDIT_CARD;
+    const isCreditCardCharge =
+      record.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER &&
+      getAccountType(record.accounts[0].accountId) ===
+      ACCOUNT_TYPES.CREDIT_CARD;
+
+    if (isCreditCardCharge && isCreditCardPayment) {
+      throw new Error('Balance transfers are unsupported at this time.')
+    }
+
     if (isSimplePayment) {
       record.categories[0].amount = dollarsToCents(record.categories[0].amount);
       record.accounts[0].amount = record.categories[0].amount;
@@ -148,6 +160,39 @@ export const FormContainer: React.FC<Props> = (props) => {
       }));
       record.accounts[0].amount = dollarsToCents(balance);
       record.accounts[0].isCredit = isCredit;
+    } else if (isCreditCardPayment) {
+      if (record.accounts.length !== 2) {
+        throw new Error(
+          `Incorrect number of account subrecords (expected 2, found ${record.accounts.length}).`
+        );
+      }
+      record.type = TRANSACTION_TYPES.CREDIT_CARD_PAYMENT;
+      record.description = 'Credit card payment';
+      // We don't need to set the category here; we just need to send the account subrecords to the server, and it will take care of the business logic
+      record.categories = [];
+      record.accounts[0].amount = dollarsToCents(record.accounts[0].amount);
+      record.accounts[1].amount = record.accounts[0].amount;
+    } else if (isCreditCardCharge) {
+      throw new Error('Unimplemented');
+
+      // TODO I don't think the below approach is correct, but I haven't really
+      //   thought this through. Account transfers from a credit card are an
+      //   edge case.
+
+      // if (record.accounts.length !== 2) {
+      //   throw new Error(
+      //     `Incorrect number of account subrecords (expected 2, found ${record.accounts.length}).`
+      //   );
+      // }
+      // record.type = TRANSACTION_TYPES.CREDIT_CARD_CHARGE;
+      // record.description = 'Credit card charge';
+      // record.accounts[0].amount = dollarsToCents(record.accounts[0].amount);
+      // record.accounts[1].amount = record.accounts[0].amount;
+      // record.categories = [{
+      //   categoryId: SYSTEM_IDS.CATEGORIES.ACCOUNT_TRANSFER,
+      //   isCredit: false,
+      //   amount: record.accounts[0].amount,
+      // }];
     } else if (record.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
       if (record.accounts.length !== 2) {
         throw new Error(
