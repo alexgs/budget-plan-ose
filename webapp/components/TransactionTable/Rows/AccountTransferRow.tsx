@@ -2,6 +2,9 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
+import { faPencil } from '@fortawesome/pro-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { UnstyledButton } from '@mantine/core';
 import React from 'react';
 
 import { getFriendlyAccountName, sumSubrecords } from '../../../shared-lib';
@@ -20,10 +23,18 @@ import { SmartAmountCell } from '../Components/SmartAmountCell';
 
 import { RowProps } from './row-props';
 
+interface Props extends RowProps {
+  onEditClick: (txnId: string) => void;
+}
+
 // TODO Add animation to expanding and collapsing rows
 
-export const AccountTransferRow: React.FC<RowProps> = (props) => {
+export const AccountTransferRow: React.FC<Props> = (props) => {
   const [isExpanded, setExpanded] = React.useState<boolean>(false);
+
+  function handleEditClick() {
+    props.onEditClick(props.txn.id);
+  }
 
   function renderSubrecords() {
     if (isExpanded) {
@@ -62,7 +73,11 @@ export const AccountTransferRow: React.FC<RowProps> = (props) => {
         <CategoryCell>{/* Category */}</CategoryCell>
         <NotesCell>{/* Notes */}</NotesCell>
         <SmartAmountCell amount={sumSubrecords(props.txn.accounts)} />
-        <ButtonsCell>{/* Buttons */}</ButtonsCell>
+        <ButtonsCell>
+          <UnstyledButton onClick={handleEditClick}>
+            <FontAwesomeIcon icon={faPencil} />
+          </UnstyledButton>
+        </ButtonsCell>
       </Row>
       {renderSubrecords()}
     </>

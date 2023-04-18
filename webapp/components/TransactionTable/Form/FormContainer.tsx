@@ -35,26 +35,46 @@ interface Props extends Omit<RowProps, 'txn'> {
 }
 
 export const FormContainer: React.FC<Props> = (props) => {
+  function getInitialAccountSubrecords(): ApiSchema.UpdateTransaction['accounts'] {
+    if (!props.data?.accounts) {
+      return [
+        {
+          accountId: props.accountData[0].id,
+          amount: 0,
+          isCredit: false as boolean,
+          status: AMOUNT_STATUS.PENDING,
+        },
+      ];
+    }
+
+    return props.data.accounts.map((subrecord) => ({
+      ...subrecord,
+      amount: subrecord.amount / 100,
+    }));
+  }
+
+  function getInitialCategorySubrecords(): ApiSchema.UpdateTransaction['categories'] {
+    if (!props.data?.categories) {
+      return [
+        {
+          amount: 0,
+          categoryId: props.categoryData[0].id,
+          isCredit: false as boolean,
+        },
+      ];
+    }
+
+    return props.data.categories.map((subrecord) => ({
+      ...subrecord,
+      amount: subrecord.amount / 100,
+    }));
+  }
+
   const form: NewTransactionFormHook = useForm({
     initialValues: {
-      accounts: [
-        {
-          accountId:
-            props.data?.accounts[0].accountId ?? props.accountData[0].id,
-          amount: (props.data?.accounts[0].amount ?? 0) / 100,
-          isCredit: props.data?.accounts[0].isCredit ?? (false as boolean),
-          status: props.data?.accounts[0].status ?? AMOUNT_STATUS.PENDING,
-        },
-      ],
+      accounts: getInitialAccountSubrecords(),
       balance: 0, // Client-only field
-      categories: [
-        {
-          amount: (props.data?.categories[0].amount ?? 0) / 100,
-          categoryId:
-            props.data?.categories[0].categoryId ?? props.categoryData[0].id,
-          isCredit: props.data?.categories[0].isCredit ?? (false as boolean),
-        },
-      ],
+      categories: getInitialCategorySubrecords(),
       date: props.data?.date ?? new Date(),
       description: props.data?.description ?? '',
       isCredit: false as boolean, // Client-only field

@@ -203,6 +203,7 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
             key={txn.id}
             accountData={props.accountData}
             categoryData={props.categoryData}
+            onEditClick={handleEditClick}
             txn={txn}
           />
         );
