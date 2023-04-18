@@ -116,7 +116,7 @@ export const FormContainer: React.FC<Props> = (props) => {
         amount: 0,
         categoryId: props.categoryData[0].id,
         isCredit: false as boolean,
-      })
+      });
     } else if (accountType === ACCOUNT_TYPES.CREDIT_CARD) {
       form.setFieldValue('type', TRANSACTION_TYPES.CREDIT_CARD_CHARGE);
     } else {
@@ -149,13 +149,25 @@ export const FormContainer: React.FC<Props> = (props) => {
     const isCreditCardCharge =
       record.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER &&
       getAccountType(record.accounts[0].accountId) ===
-      ACCOUNT_TYPES.CREDIT_CARD;
+        ACCOUNT_TYPES.CREDIT_CARD;
 
     if (isCreditCardCharge && isCreditCardPayment) {
-      throw new Error('Balance transfers are unsupported at this time.')
+      throw new Error('Balance transfers are unsupported at this time.');
     }
 
-    if (isSimplePayment) {
+    if (record.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
+      if (record.categories.length < 2) {
+        throw new Error(
+          `Incorrect number of category subrecords (expected at least 2, found ${record.categories.length}).`
+        );
+      }
+      debugger;
+      record.accounts = [];
+      record.categories = record.categories.map((subrecord) => ({
+        ...subrecord,
+        amount: dollarsToCents(subrecord.amount),
+      }));
+    } else if (isSimplePayment) {
       record.categories[0].amount = dollarsToCents(record.categories[0].amount);
       record.accounts[0].amount = record.categories[0].amount;
       record.accounts[0].isCredit = record.categories[0].isCredit;
