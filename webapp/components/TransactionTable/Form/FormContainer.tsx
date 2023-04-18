@@ -136,7 +136,14 @@ export const FormContainer: React.FC<Props> = (props) => {
       record.accounts.length === 1 && record.categories.length === 1;
     const isSplitCategory =
       record.accounts.length === 1 && record.categories.length > 1;
-    // TODO Handle account transfers that are really credit card payments or charges
+    const isCreditCardPayment =
+      record.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER &&
+      getAccountType(record.accounts[1].accountId) ===
+        ACCOUNT_TYPES.CREDIT_CARD;
+    // TODO Handle account transfers that are really credit card payments
+    // TODO Handle account transfers that are really credit card charges
+    // TODO Fail gracefully if both accounts are credit cards
+
     if (isSimplePayment) {
       record.categories[0].amount = dollarsToCents(record.categories[0].amount);
       record.accounts[0].amount = record.categories[0].amount;
@@ -148,6 +155,18 @@ export const FormContainer: React.FC<Props> = (props) => {
       }));
       record.accounts[0].amount = dollarsToCents(balance);
       record.accounts[0].isCredit = isCredit;
+    } else if (isCreditCardPayment) {
+      if (record.accounts.length !== 2) {
+        throw new Error(
+          `Incorrect number of account subrecords (expected 2, found ${record.accounts.length}).`
+        );
+      }
+      record.type = TRANSACTION_TYPES.CREDIT_CARD_PAYMENT;
+      record.description = 'Credit card payment';
+      // We don't need to set the category here; we just need to send the account subrecords to the server, and it will take care of the business logic
+      record.categories = [];
+      record.accounts[0].amount = dollarsToCents(record.accounts[0].amount);
+      record.accounts[1].amount = record.accounts[0].amount;
     } else if (record.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
       if (record.accounts.length !== 2) {
         throw new Error(
