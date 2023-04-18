@@ -140,9 +140,15 @@ export const FormContainer: React.FC<Props> = (props) => {
       record.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER &&
       getAccountType(record.accounts[1].accountId) ===
         ACCOUNT_TYPES.CREDIT_CARD;
-    // TODO Handle account transfers that are really credit card payments
     // TODO Handle account transfers that are really credit card charges
-    // TODO Fail gracefully if both accounts are credit cards
+    const isCreditCardCharge =
+      record.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER &&
+      getAccountType(record.accounts[0].accountId) ===
+      ACCOUNT_TYPES.CREDIT_CARD;
+
+    if (isCreditCardCharge && isCreditCardPayment) {
+      throw new Error('Balance transfers are unsupported at this time.')
+    }
 
     if (isSimplePayment) {
       record.categories[0].amount = dollarsToCents(record.categories[0].amount);
