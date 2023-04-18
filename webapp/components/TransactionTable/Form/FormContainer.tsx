@@ -111,6 +111,12 @@ export const FormContainer: React.FC<Props> = (props) => {
       });
     } else if (accountType === EXTRA_ACCOUNT_OPTIONS.CATEGORY_TRANSFER) {
       form.setFieldValue('type', TRANSACTION_TYPES.CATEGORY_TRANSFER);
+      form.setFieldValue('description', 'Category transfer');
+      form.insertListItem('categories', {
+        amount: 0,
+        categoryId: props.categoryData[0].id,
+        isCredit: false as boolean,
+      })
     } else if (accountType === ACCOUNT_TYPES.CREDIT_CARD) {
       form.setFieldValue('type', TRANSACTION_TYPES.CREDIT_CARD_CHARGE);
     } else {
@@ -237,6 +243,7 @@ export const FormContainer: React.FC<Props> = (props) => {
         mantineForm={form}
         onAccountChange={handleAccountChange}
         onCancel={handleCancel}
+        onSplitCategory={handleSplitCategory}
         onSubmit={handleSubmit}
       />
     );
