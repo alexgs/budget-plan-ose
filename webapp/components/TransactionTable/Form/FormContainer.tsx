@@ -140,7 +140,6 @@ export const FormContainer: React.FC<Props> = (props) => {
       record.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER &&
       getAccountType(record.accounts[1].accountId) ===
         ACCOUNT_TYPES.CREDIT_CARD;
-    // TODO Handle account transfers that are really credit card charges
     const isCreditCardCharge =
       record.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER &&
       getAccountType(record.accounts[0].accountId) ===
@@ -173,6 +172,27 @@ export const FormContainer: React.FC<Props> = (props) => {
       record.categories = [];
       record.accounts[0].amount = dollarsToCents(record.accounts[0].amount);
       record.accounts[1].amount = record.accounts[0].amount;
+    } else if (isCreditCardCharge) {
+      throw new Error('Unimplemented');
+
+      // TODO I don't think the below approach is correct, but I haven't really
+      //   thought this through. Account transfers from a credit card are an
+      //   edge case.
+
+      // if (record.accounts.length !== 2) {
+      //   throw new Error(
+      //     `Incorrect number of account subrecords (expected 2, found ${record.accounts.length}).`
+      //   );
+      // }
+      // record.type = TRANSACTION_TYPES.CREDIT_CARD_CHARGE;
+      // record.description = 'Credit card charge';
+      // record.accounts[0].amount = dollarsToCents(record.accounts[0].amount);
+      // record.accounts[1].amount = record.accounts[0].amount;
+      // record.categories = [{
+      //   categoryId: SYSTEM_IDS.CATEGORIES.ACCOUNT_TRANSFER,
+      //   isCredit: false,
+      //   amount: record.accounts[0].amount,
+      // }];
     } else if (record.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
       if (record.accounts.length !== 2) {
         throw new Error(
