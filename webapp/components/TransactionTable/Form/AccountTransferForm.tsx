@@ -35,6 +35,7 @@ interface Props {
 }
 
 export const AccountTransferForm: React.FC<Props> = (props) => {
+  const description = props.mantineForm.values.description || 'Account transfer';
   const key = 'new-account-transfer';
   return (
     <form
@@ -52,7 +53,7 @@ export const AccountTransferForm: React.FC<Props> = (props) => {
             {...props.mantineForm.getInputProps('date')}
           />
         </DateCell>
-        <AccountCell>Account transfer</AccountCell>
+        <AccountCell>{description}</AccountCell>
         <Cell style={{ display: 'flex', alignItems: 'center' }}>
           From:{' '}
           <AccountField

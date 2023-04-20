@@ -197,7 +197,7 @@ export const FormContainer: React.FC<Props> = (props) => {
       }));
       record.accounts[0].amount = dollarsToCents(balance);
       record.accounts[0].isCredit = isCredit;
-    } else if (isCreditCardPayment) {
+    } else if (isCreditCardPayment || record.type === TRANSACTION_TYPES.CREDIT_CARD_PAYMENT) {
       if (record.accounts.length !== 2) {
         throw new Error(
           `Incorrect number of account subrecords (expected 2, found ${record.accounts.length}).`
@@ -253,7 +253,7 @@ export const FormContainer: React.FC<Props> = (props) => {
     }
   }
 
-  if (form.values.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
+  if (form.values.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER || form.values.type === TRANSACTION_TYPES.CREDIT_CARD_PAYMENT) {
     return (
       <AccountTransferForm
         accountData={props.accountData}
