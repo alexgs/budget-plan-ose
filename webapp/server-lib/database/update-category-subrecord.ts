@@ -8,7 +8,7 @@ import { ApiSchema } from '../../shared-lib';
 export async function updateCategorySubrecord(
   subrecord: ApiSchema.UpdateCategorySubrecord
 ): Promise<void> {
-  prisma.transactionCategory.update({
+  await prisma.transactionCategory.update({
     where: { id: subrecord.id },
     data: subrecord,
   });
