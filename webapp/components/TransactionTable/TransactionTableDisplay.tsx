@@ -15,7 +15,6 @@ import {
   Account,
   ApiSchema,
   Category,
-  TransactionType,
 } from '../../shared-lib';
 import { DepositForm } from '../DepositForm';
 import { space } from '../tokens';
@@ -215,6 +214,7 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
             key={txn.id}
             accountData={props.accountData}
             categoryData={props.categoryData}
+            onEditClick={handleEditClick}
             txn={txn}
           />
         );

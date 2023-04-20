@@ -181,7 +181,6 @@ export const FormContainer: React.FC<Props> = (props) => {
           `Incorrect number of category subrecords (expected at least 2, found ${record.categories.length}).`
         );
       }
-      debugger;
       record.accounts = [];
       record.categories = record.categories.map((subrecord) => ({
         ...subrecord,

@@ -9,5 +9,5 @@ export const newCategorySubrecord = yup.object({
   amount: yup.number().required(),
   categoryId: yup.string().required(),
   isCredit: yup.boolean().required(),
-  notes: yup.string(),
+  notes: yup.string().nullable(),
 }).noUnknown();
