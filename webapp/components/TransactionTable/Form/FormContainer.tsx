@@ -20,6 +20,7 @@ import {
   TransactionType,
   dollarsToCents,
   schemaObjects,
+  sumSubrecords,
 } from '../../../shared-lib';
 import { AccountTransferForm } from './AccountTransferForm';
 import { CategoryTransferForm } from './CategoryTransferForm';
@@ -70,11 +71,12 @@ export const FormContainer: React.FC<Props> = (props) => {
     }));
   }
 
+  const categorySubrecords = getInitialCategorySubrecords();
   const form: NewTransactionFormHook = useForm({
     initialValues: {
       accounts: getInitialAccountSubrecords(),
-      balance: 0, // Client-only field
-      categories: getInitialCategorySubrecords(),
+      balance: Math.abs(sumSubrecords(categorySubrecords)), // Client-only field
+      categories: categorySubrecords,
       date: props.data?.date ?? new Date(),
       description: props.data?.description ?? '',
       isCredit: false as boolean, // Client-only field
@@ -197,7 +199,10 @@ export const FormContainer: React.FC<Props> = (props) => {
       }));
       record.accounts[0].amount = dollarsToCents(balance);
       record.accounts[0].isCredit = isCredit;
-    } else if (isCreditCardPayment || record.type === TRANSACTION_TYPES.CREDIT_CARD_PAYMENT) {
+    } else if (
+      isCreditCardPayment ||
+      record.type === TRANSACTION_TYPES.CREDIT_CARD_PAYMENT
+    ) {
       if (record.accounts.length !== 2) {
         throw new Error(
           `Incorrect number of account subrecords (expected 2, found ${record.accounts.length}).`
@@ -253,7 +258,10 @@ export const FormContainer: React.FC<Props> = (props) => {
     }
   }
 
-  if (form.values.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER || form.values.type === TRANSACTION_TYPES.CREDIT_CARD_PAYMENT) {
+  if (
+    form.values.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER ||
+    form.values.type === TRANSACTION_TYPES.CREDIT_CARD_PAYMENT
+  ) {
     return (
       <AccountTransferForm
         accountData={props.accountData}
