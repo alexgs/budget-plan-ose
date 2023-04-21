@@ -53,10 +53,11 @@ function HomePage() {
       // This is just for type safety, should never throw (in production)
       throw new Error(`Unable to find data for category ID ${row.id}`);
     }
+    const indentation = 10 * (row.depth + 1)
     return (
       <tr key={row.id}>
-        <td>{row.label}</td>
-        <td>{formatAmount(row.balance)}</td>
+        <td style={{paddingLeft: indentation}}>{row.label}</td>
+        <td style={{paddingLeft: indentation}}>{formatAmount(row.balance)}</td>
         <td style={{ display: 'flex', justifyContent: 'space-around' }}>
           <AddSubcategoryButton parentId={row.id} />
           <EditCategoryButton data={data} />

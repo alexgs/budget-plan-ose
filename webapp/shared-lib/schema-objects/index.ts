@@ -3,19 +3,23 @@
  */
 
 import { newAccount } from './new-account';
+import { newAccountSubrecord } from './new-account-subrecord';
 import { newCategory } from './new-category';
+import { newCategorySubrecord } from './new-category-subrecord';
 import { newTransaction } from './new-transaction';
-import { patchCategory } from './patch-category';
-import { putTransaction } from './put-transaction';
-import { transactionAccount } from './transaction-account';
-import { transactionCategory } from './transaction-category';
+import { updateAccountSubrecord } from './update-account-subrecord';
+import { updateCategory } from './update-category';
+import { updateCategorySubrecord } from './update-category-subrecord';
+import { updateTransaction } from './update-transaction';
 
 export const schemaObjects = {
   newAccount,
+  newAccountSubrecord,
   newCategory,
+  newCategorySubrecord,
   newTransaction,
-  patchCategory,
-  putTransaction,
-  transactionAccount,
-  transactionCategory,
+  updateAccountSubrecord,
+  updateCategory,
+  updateCategorySubrecord,
+  updateTransaction,
 };

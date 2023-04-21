@@ -3,8 +3,8 @@
  */
 
 export { buildCategoryTree } from './build-category-tree';
-export { getCategoryList } from './get-category-list';
+export { cloneCategoryTree } from './clone-category-tree';
 export { formatAmount } from './format-amount';
 export { formatClientDate } from './format-client-date';
+export { getCategoryList } from './get-category-list';
 export { globalFetcher } from './global-fetcher';
-export { cloneCategoryTree } from './clone-category-tree';

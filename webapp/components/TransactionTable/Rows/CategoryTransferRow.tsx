@@ -2,21 +2,29 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
+import { faPencil } from '@fortawesome/pro-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { UnstyledButton } from '@mantine/core';
 import React from 'react';
-import { formatAmount } from '../../../client-lib';
-import {
-  Account,
-  ApiSchema,
-  Category,
-  getFriendlyAccountName,
-  getFriendlyCategoryName,
-} from '../../../shared-lib';
-import { ExpandRowButton } from '../BuildingBlocks';
 
-interface Props {
-  accountData: Account[];
-  categoryData: Category[];
-  txn: ApiSchema.Transaction;
+import { getFriendlyCategoryName, sumSubrecords } from '../../../shared-lib';
+import {
+  AccountCell,
+  ButtonsCell,
+  CategoryCell,
+  ChevronCell,
+  DateCell,
+  DescriptionCell,
+  NotesCell,
+} from '../Components/Cell';
+import { ExpandRowButton } from '../Components/ExpandRowButton';
+import { Row } from '../Components/Row';
+import { SmartAmountCell } from '../Components/SmartAmountCell';
+
+import { RowProps } from './row-props';
+
+interface Props extends RowProps {
+  onEditClick: (txnId: string) => void;
 }
 
 // TODO Add animation to expanding and collapsing rows
@@ -24,21 +32,25 @@ interface Props {
 export const CategoryTransferRow: React.FC<Props> = (props) => {
   const [isExpanded, setExpanded] = React.useState<boolean>(false);
 
+  function handleEditClick() {
+    props.onEditClick(props.txn.id);
+  }
+
   function renderSubrecords() {
     if (isExpanded) {
-      return props.txn.categories.map((subrecord) => (
-        <tr key={subrecord.id}>
-          <td />{/* Checkbox, maybe other controls */}
-          <td />{/* Date */}
-          <td />{/* Account name */}
-          <td />{/* Description */}
-          <td>
+      return props.txn.categories.map((subrecord, index) => (
+        <Row key={`${props.txn.id}-cat-subrecords-${index}}`}>
+          <ChevronCell>{/* Checkbox */}</ChevronCell>
+          <DateCell>{/* Date */}</DateCell>
+          <AccountCell>{/* Account */}</AccountCell>
+          <DescriptionCell />
+          <CategoryCell style={{ paddingLeft: 8 }}>
             {getFriendlyCategoryName(props.categoryData, subrecord.categoryId)}
-          </td>
-          <td />{/* Notes */}
-          <td>{formatAmount(subrecord.amount)}</td>
-          <td />{/* Status icons (pending, cleared, etc.), maybe other controls */}
-        </tr>
+          </CategoryCell>
+          <NotesCell>{/* Notes */}</NotesCell>
+          <SmartAmountCell style={{ paddingLeft: 8 }} subrecord={subrecord} />
+          <ButtonsCell>{/* Buttons */}</ButtonsCell>
+        </Row>
       ));
     }
     return null;
@@ -46,22 +58,25 @@ export const CategoryTransferRow: React.FC<Props> = (props) => {
 
   return (
     <>
-      <tr>
-        <td>
-          {/* Checkbox, maybe other controls */}
+      <Row>
+        <ChevronCell>
           <ExpandRowButton
             isExpanded={isExpanded}
             onClick={() => setExpanded((prevState) => !prevState)}
           />
-        </td>
-        <td>{props.txn.date}</td>
-        <td>{/* Account name */}</td>
-        <td>{props.txn.description}</td>
-        <td style={{ fontStyle: 'italic' }}>Transfer</td>
-        <td />{/* Notes */}
-        <td>{/* Amount */}</td>
-        <td />{/* Status icons (pending, cleared, etc.), maybe other controls */}
-      </tr>
+        </ChevronCell>
+        <DateCell>{props.txn.date.substring(5)}</DateCell>
+        <AccountCell>{/* Account */}</AccountCell>
+        <DescriptionCell>{props.txn.description}</DescriptionCell>
+        <CategoryCell style={{ fontStyle: 'italic' }}>Transfer</CategoryCell>
+        <NotesCell>{/* Notes */}</NotesCell>
+        <SmartAmountCell amount={sumSubrecords(props.txn.accounts)} />
+        <ButtonsCell>
+          <UnstyledButton onClick={handleEditClick}>
+            <FontAwesomeIcon icon={faPencil} />
+          </UnstyledButton>
+        </ButtonsCell>
+      </Row>
       {renderSubrecords()}
     </>
   );

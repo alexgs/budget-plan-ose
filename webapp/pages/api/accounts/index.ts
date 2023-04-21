@@ -22,7 +22,7 @@ export default async function handler(
     } else if (req.method === 'POST') {
       let payload: ApiSchema.NewAccount = { accountType: ACCOUNT_TYPES.OTHER, description: '' };
       try {
-        payload = await schemaObjects.newAccount.validate(req.body);
+        payload = await schemaObjects.newAccount.validate(req.body, {stripUnknown: false});
       } catch (e: any) {
         if (e.name && e.name === 'ValidationError') {
           const error: ValidationError = e as ValidationError;

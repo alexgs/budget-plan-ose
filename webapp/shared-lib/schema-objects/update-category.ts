@@ -4,7 +4,7 @@
 
 import * as yup from 'yup';
 
-export const patchCategory = yup.object({
+export const updateCategory = yup.object({
   name: yup.string(),
   parentId: yup.string().nullable(),
 });

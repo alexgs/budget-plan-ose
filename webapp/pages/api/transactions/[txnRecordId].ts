@@ -26,10 +26,10 @@ export default async function handler(
   const session = await unstable_getServerSession(req, res, nextAuthOptions);
 
   if (session) {
-    if (req.method === 'PUT') {
+    if (req.method === 'POST') {
       // --- VALIDATE PAYLOAD ---
 
-      let payload: ApiSchema.PutTransaction = {
+      let payload: ApiSchema.UpdateTransaction = {
         accounts: [
           {
             accountId: '',
@@ -52,11 +52,15 @@ export default async function handler(
       };
       try {
         // TODO Validate that the date is in YYYY-MM-DD format before converting to a `Date` object
-        payload = await schemaObjects.putTransaction.validate(req.body);
+        payload = await schemaObjects.updateTransaction.validate(req.body, {
+          stripUnknown: false,
+        });
       } catch (e: any) {
         if (e.name && e.name === 'ValidationError') {
           const error: ValidationError = e as ValidationError;
-          console.error(`>> POST /api/transactions 400 ${error.errors} <<`);
+          console.error(
+            `>> POST /api/transactions/[txnRecordId] 400 Validation failed: ${error.errors} <<`
+          );
           res
             .status(400)
             .send(
@@ -83,14 +87,14 @@ export default async function handler(
 
       // TODO For payments and credit card charges, check that each `category` subrecord has a different category ID
 
-      let result: Transaction | null = await service.updateTransaction(payload);
+      let result: Transaction | null = await service.processTransaction(payload);
       if (result) {
         res.send(formatTransaction(result));
       } else {
         res.status(500).send(`Unknown transaction type: ${payload.type}`);
       }
     } else {
-      res.status(405).setHeader('Allow', 'PUT').send('Method not allowed.');
+      res.status(405).setHeader('Allow', 'POST').send('Method not allowed.');
     }
   } else {
     res.status(400).send('Bad request.');

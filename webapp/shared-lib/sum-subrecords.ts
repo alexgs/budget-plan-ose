@@ -2,12 +2,7 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-export {};
-
-interface Subrecord {
-  amount: number;
-  isCredit: boolean;
-}
+import { Subrecord } from './types';
 
 /**
  * Takes a bunch of values from the form and returns their sum. The output is

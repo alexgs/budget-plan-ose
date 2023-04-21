@@ -27,7 +27,7 @@ export default async function handler(
       let accountId = '';
       try {
         accountId = await yup.string().required().validate(req.query.accountId);
-        payload = await patchAccountSchema.validate(req.body);
+        payload = await patchAccountSchema.validate(req.body, {stripUnknown: false});
       } catch (e: any) {
         if (e.name && e.name === 'ValidationError') {
           const error: ValidationError = e as ValidationError;

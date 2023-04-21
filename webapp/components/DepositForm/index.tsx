@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
+ * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
 import {
@@ -11,118 +11,167 @@ import {
   TextInput,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
-import { useForm } from '@mantine/form';
-import { showNotification } from '@mantine/notifications';
-import { FC, PropsWithChildren } from 'react';
+import { useForm, yupResolver } from '@mantine/form';
+import React from 'react';
 
-import { formatAmount, formatClientDate } from '../../client-lib';
-import { CategoryValues } from '../../client-lib/types';
+import { formatAmount } from '../../client-lib';
+import {
+  CategoryValues,
+  NewTransactionFormHook,
+  NewTransactionFormValues,
+} from '../../client-lib/types';
 import {
   AMOUNT_STATUS,
   TRANSACTION_TYPES,
+  ApiSchema,
+  TransactionType,
   dollarsToCents,
+  schemaObjects,
+  sumSubrecords,
 } from '../../shared-lib';
 
-interface CategoryAmount {
-  amount: number;
-  categoryId: string;
-}
-
-interface FormValues {
-  accountId: string;
-  amounts: { [id: string]: CategoryAmount };
-  date: Date;
-  description: string;
-  totalAmount: number;
-}
-
-interface Props extends PropsWithChildren {
-  accounts: { label: string; value: string }[];
-  categories: CategoryValues[];
-}
-
-export const DepositForm: FC<Props> = (props) => {
-  const initialAmounts = props.categories.reduce((output, current) => {
-    return {
-      ...output,
-      [current.id]: {
-        amount: 0,
-        categoryId: current.id,
+function convertDepositFormValuesToRequestPayload(
+  values: NewTransactionFormValues
+): ApiSchema.NewTransaction {
+  const categories: ApiSchema.NewCategorySubrecord[] = values.categories
+    .filter((category) => category.amount !== 0)
+    .map((category) => {
+      return {
+        amount: dollarsToCents(category.amount),
+        categoryId: category.categoryId,
+        isCredit: true,
+      };
+    });
+  const { balance, isCredit, ...otherValues } = values;
+  return {
+    ...otherValues,
+    categories,
+    accounts: [
+      {
+        ...otherValues.accounts[0],
+        amount: dollarsToCents(balance),
       },
+    ],
+    type: TRANSACTION_TYPES.DEPOSIT,
+  };
+}
+
+function getInitialValues(
+  accounts: { label: string; value: string }[],
+  categories: CategoryValues[],
+  data?: ApiSchema.UpdateTransaction
+): NewTransactionFormValues {
+  if (data) {
+    const accounts = data.accounts.map((sub) => ({
+      accountId: sub.accountId,
+      amount: sub.amount / 100,
+      isCredit: sub.isCredit,
+      status: sub.status,
+    }));
+    const categorySubrecords = categories.map((category) => {
+      const subrecord = data.categories.find(
+        (sub) => sub.categoryId === category.id
+      );
+      if (subrecord) {
+        const output: ApiSchema.UpdateCategorySubrecord = {
+          amount: subrecord.amount / 100,
+          categoryId: category.id,
+          id: 'id' in subrecord ? subrecord.id : '',
+          isCredit: subrecord.isCredit,
+        };
+        return output;
+      }
+
+      const output: ApiSchema.NewCategorySubrecord = {
+        amount: 0,
+        categoryId: category.id,
+        isCredit: true as boolean,
+      };
+      return output;
+    });
+    const balance = sumSubrecords(categorySubrecords);
+    const isCredit = balance >= 0;
+    return {
+      accounts,
+      isCredit,
+      balance: Math.abs(balance),
+      categories: categorySubrecords,
+      date: new Date(data.date),
+      description: data.description,
+      type: data.type as TransactionType,
     };
-  }, {} as { [id: string]: CategoryAmount });
-
-  const form = useForm<FormValues>({
-    // TODO These types need to be fixed
-    initialValues: {
-      amounts: initialAmounts,
-      accountId: props.accounts[0].value,
-      date: new Date(),
-      description: '',
-      totalAmount: 0,
-    },
-  });
-
-  function handleSubmit(values: FormValues) {
-    // TODO Display a loading modal
-    void requestDeposit(values);
   }
 
-  async function requestDeposit(values: FormValues) {
-    const amounts = Object.values(values.amounts)
-      .filter((amount) => amount.amount !== 0)
-      .map((amount) => {
-        return {
-          accountId: values.accountId,
-          amount: dollarsToCents(amount.amount),
-          categoryId: amount.categoryId,
-          isCredit: true,
-          status: AMOUNT_STATUS.PENDING,
-        };
-      });
-    const payload = {
-      amounts,
-      date: formatClientDate(values.date),
-      description: values.description,
-      type: TRANSACTION_TYPES.PAYMENT, // TODO Should this be "deposit" to better reflect the intent of this "event"?
-    };
-    console.log(payload);
-
-    const responseData = await fetch('/api/transactions', {
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-Type': 'application/json',
+  return {
+    accounts: [
+      {
+        accountId: accounts[0].value,
+        amount: 0,
+        isCredit: true as boolean,
+        status: AMOUNT_STATUS.PENDING,
       },
-      method: 'POST',
-    })
-      .then((response) => response.json())
-      .catch((e) => {
-        console.error(e);
-        showNotification({
-          color: 'red',
-          message: 'Something went wrong! Please check the logs.',
-          title: 'Error',
-        });
-      });
+    ],
+    balance: 0, // Client-only field
+    categories: categories.map((category) => ({
+      amount: 0,
+      categoryId: category.id,
+      isCredit: true as boolean,
+    })),
+    date: new Date(),
+    description: '',
+    isCredit: true as boolean, // Client-only field
+    type: TRANSACTION_TYPES.PAYMENT as TransactionType,
+  };
+}
 
-    showNotification({
-      message: `Saved deposit "${responseData.description}"`,
-      title: 'Success',
-    });
+interface Props extends React.PropsWithChildren {
+  accounts: { label: string; value: string }[];
+  categories: CategoryValues[];
+  data?: ApiSchema.UpdateTransaction;
+  onSubmit: (
+    values: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction
+  ) => void;
+}
+
+export const DepositForm: React.FC<Props> = (props) => {
+  const form: NewTransactionFormHook = useForm({
+    initialValues: getInitialValues(
+      props.accounts,
+      props.categories,
+      props.data
+    ),
+    validate: yupResolver(schemaObjects.newTransaction),
+    validateInputOnChange: true,
+  });
+
+  function handleSubmit(values: NewTransactionFormValues) {
+    if (props.data?.id) {
+      const payload: ApiSchema.UpdateTransaction = {
+        ...convertDepositFormValuesToRequestPayload(values),
+        id: props.data.id,
+      };
+      props.onSubmit(payload);
+    } else {
+      const payload: ApiSchema.NewTransaction =
+        convertDepositFormValuesToRequestPayload(values);
+      props.onSubmit(payload);
+    }
   }
 
   function sumAllocations(): number {
-    const allocations: CategoryAmount[] = Object.values(form.values.amounts);
-    return allocations.reduce((output, current) => output + current.amount, 0);
+    return form.values.categories.reduce(
+      (output, current) => output + current.amount,
+      0
+    );
   }
 
-  const rows = props.categories.map((row) => {
+  const rows = props.categories.map((row, index) => {
     const input = row.isLeaf ? (
       <NumberInput
         decimalSeparator="."
         hideControls
         precision={2}
-        {...form.getInputProps(`amounts.${row.id}.amount`)}
+        {...form.getInputProps(`categories.${index}.amount`)}
       />
     ) : null;
     return (
@@ -134,7 +183,7 @@ export const DepositForm: FC<Props> = (props) => {
     );
   });
 
-  const amountRemaining = form.values.totalAmount - sumAllocations();
+  const amountRemaining = form.values.balance - sumAllocations();
   return (
     <form
       onSubmit={form.onSubmit(handleSubmit, (values) => console.error(values))}
@@ -159,7 +208,7 @@ export const DepositForm: FC<Props> = (props) => {
         label="Account"
         my="sm"
         required
-        {...form.getInputProps('accountId')}
+        {...form.getInputProps('accounts.0.accountId')}
       />
       <Group position="apart">
         <NumberInput
@@ -170,7 +219,7 @@ export const DepositForm: FC<Props> = (props) => {
           precision={2}
           required
           style={{ width: '45%' }}
-          {...form.getInputProps('totalAmount')}
+          {...form.getInputProps('balance')}
         />
         <div style={{ width: '45%' }}>
           Amount Remaining: {formatAmount(dollarsToCents(amountRemaining))}

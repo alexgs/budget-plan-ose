@@ -3,14 +3,19 @@
  */
 
 import { ApiSchema, Transaction } from '../../shared-lib';
-import { database } from '../database';
+import { service } from './index';
 
 export async function processAccountTransfer(
-  payload: ApiSchema.NewTransaction
+  payload: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction
 ): Promise<Transaction> {
   // The payload contains zero category subrecords
   const { accounts, ...record } = payload;
 
+  if (accounts.length !== 2) {
+    throw new Error(
+      'Account transfer must contain exactly two account subrecords.'
+    );
+  }
   if (accounts[0].isCredit === accounts[1].isCredit) {
     throw new Error(
       `One amount must be a credit and the other amount must be a debit.`
@@ -20,5 +25,5 @@ export async function processAccountTransfer(
     throw new Error(`Credit and debit amounts must be the same.`);
   }
 
-  return database.saveTransaction(record, accounts, []);
+  return service.saveTransaction(payload);
 }
