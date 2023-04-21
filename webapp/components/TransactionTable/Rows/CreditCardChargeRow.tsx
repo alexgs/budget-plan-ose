@@ -2,6 +2,9 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
+import { faPencil } from '@fortawesome/pro-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { UnstyledButton } from '@mantine/core';
 import React from 'react';
 
 import {
@@ -22,7 +25,11 @@ import { SmartAmountCell } from '../Components/SmartAmountCell';
 
 import { RowProps } from './row-props';
 
-export const CreditCardChargeRow: React.FC<RowProps> = (props) => {
+interface Props extends RowProps {
+  onEditClick: (txnId: string) => void;
+}
+
+export const CreditCardChargeRow: React.FC<Props> = (props) => {
   function getUserCategorySubrecord() {
     const subrecordCategoryIds = props.txn.categories.map(
       (subrecord) => subrecord.categoryId
@@ -38,6 +45,10 @@ export const CreditCardChargeRow: React.FC<RowProps> = (props) => {
     return props.txn.categories[0].categoryId === userCatId
       ? props.txn.categories[0]
       : props.txn.categories[1];
+  }
+
+  function handleEditClick() {
+    props.onEditClick(props.txn.id);
   }
 
   const categorySubrecord = getUserCategorySubrecord();
@@ -60,7 +71,11 @@ export const CreditCardChargeRow: React.FC<RowProps> = (props) => {
       </CategoryCell>
       <NotesCell>{/* Notes */}</NotesCell>
       <SmartAmountCell subrecord={categorySubrecord} />
-      <ButtonsCell>{/* Buttons */}</ButtonsCell>
+      <ButtonsCell>
+        <UnstyledButton onClick={handleEditClick}>
+          <FontAwesomeIcon icon={faPencil} />
+        </UnstyledButton>
+      </ButtonsCell>
     </Row>
   );
 };

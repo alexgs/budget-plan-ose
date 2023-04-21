@@ -15,7 +15,6 @@ import {
   Account,
   ApiSchema,
   Category,
-  TransactionType,
 } from '../../shared-lib';
 import { DepositForm } from '../DepositForm';
 import { space } from '../tokens';
@@ -154,11 +153,36 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
         const data = txnToUpdateTxn(txn);
         return (
           <FormContainer
+            key={txn.id}
             accountData={props.accountData}
             categoryData={props.categoryData}
             data={data}
             onCancel={handleCancel}
             onSubmit={handleSubmit}
+          />
+        );
+      }
+
+      if (txn.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER || txn.type === TRANSACTION_TYPES.CREDIT_CARD_PAYMENT) {
+        return (
+          <AccountTransferRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            onEditClick={handleEditClick}
+            txn={txn}
+          />
+        );
+      }
+
+      if (txn.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
+        return (
+          <CategoryTransferRow
+            key={txn.id}
+            accountData={props.accountData}
+            categoryData={props.categoryData}
+            onEditClick={handleEditClick}
+            txn={txn}
           />
         );
       }
@@ -169,6 +193,7 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
             key={txn.id}
             accountData={props.accountData}
             categoryData={props.categoryData}
+            onEditClick={handleEditClick}
             txn={txn}
           />
         );
@@ -189,28 +214,6 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
       if (txn.accounts.length > 1 && txn.categories.length === 1) {
         return (
           <SplitAccountRow
-            key={txn.id}
-            accountData={props.accountData}
-            categoryData={props.categoryData}
-            txn={txn}
-          />
-        );
-      }
-
-      if (txn.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
-        return (
-          <AccountTransferRow
-            key={txn.id}
-            accountData={props.accountData}
-            categoryData={props.categoryData}
-            txn={txn}
-          />
-        );
-      }
-
-      if (txn.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
-        return (
-          <CategoryTransferRow
             key={txn.id}
             accountData={props.accountData}
             categoryData={props.categoryData}

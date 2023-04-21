@@ -8,7 +8,7 @@ import { ApiSchema } from '../../shared-lib';
 export async function updateAccountSubrecord(
   subrecord: ApiSchema.UpdateAccountSubrecord
 ): Promise<void> {
-  prisma.transactionAccount.update({
+  await prisma.transactionAccount.update({
     where: { id: subrecord.id },
     data: subrecord,
   });

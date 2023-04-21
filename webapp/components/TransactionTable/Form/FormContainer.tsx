@@ -20,6 +20,7 @@ import {
   TransactionType,
   dollarsToCents,
   schemaObjects,
+  sumSubrecords,
 } from '../../../shared-lib';
 import { AccountTransferForm } from './AccountTransferForm';
 import { CategoryTransferForm } from './CategoryTransferForm';
@@ -35,26 +36,47 @@ interface Props extends Omit<RowProps, 'txn'> {
 }
 
 export const FormContainer: React.FC<Props> = (props) => {
+  function getInitialAccountSubrecords(): ApiSchema.UpdateTransaction['accounts'] {
+    if (!props.data?.accounts) {
+      return [
+        {
+          accountId: props.accountData[0].id,
+          amount: 0,
+          isCredit: false as boolean,
+          status: AMOUNT_STATUS.PENDING,
+        },
+      ];
+    }
+
+    return props.data.accounts.map((subrecord) => ({
+      ...subrecord,
+      amount: subrecord.amount / 100,
+    }));
+  }
+
+  function getInitialCategorySubrecords(): ApiSchema.UpdateTransaction['categories'] {
+    if (!props.data?.categories) {
+      return [
+        {
+          amount: 0,
+          categoryId: props.categoryData[0].id,
+          isCredit: false as boolean,
+        },
+      ];
+    }
+
+    return props.data.categories.map((subrecord) => ({
+      ...subrecord,
+      amount: subrecord.amount / 100,
+    }));
+  }
+
+  const categorySubrecords = getInitialCategorySubrecords();
   const form: NewTransactionFormHook = useForm({
     initialValues: {
-      accounts: [
-        {
-          accountId:
-            props.data?.accounts[0].accountId ?? props.accountData[0].id,
-          amount: (props.data?.accounts[0].amount ?? 0) / 100,
-          isCredit: props.data?.accounts[0].isCredit ?? (false as boolean),
-          status: props.data?.accounts[0].status ?? AMOUNT_STATUS.PENDING,
-        },
-      ],
-      balance: 0, // Client-only field
-      categories: [
-        {
-          amount: (props.data?.categories[0].amount ?? 0) / 100,
-          categoryId:
-            props.data?.categories[0].categoryId ?? props.categoryData[0].id,
-          isCredit: props.data?.categories[0].isCredit ?? (false as boolean),
-        },
-      ],
+      accounts: getInitialAccountSubrecords(),
+      balance: Math.abs(sumSubrecords(categorySubrecords)), // Client-only field
+      categories: categorySubrecords,
       date: props.data?.date ?? new Date(),
       description: props.data?.description ?? '',
       isCredit: false as boolean, // Client-only field
@@ -161,7 +183,6 @@ export const FormContainer: React.FC<Props> = (props) => {
           `Incorrect number of category subrecords (expected at least 2, found ${record.categories.length}).`
         );
       }
-      debugger;
       record.accounts = [];
       record.categories = record.categories.map((subrecord) => ({
         ...subrecord,
@@ -178,7 +199,10 @@ export const FormContainer: React.FC<Props> = (props) => {
       }));
       record.accounts[0].amount = dollarsToCents(balance);
       record.accounts[0].isCredit = isCredit;
-    } else if (isCreditCardPayment) {
+    } else if (
+      isCreditCardPayment ||
+      record.type === TRANSACTION_TYPES.CREDIT_CARD_PAYMENT
+    ) {
       if (record.accounts.length !== 2) {
         throw new Error(
           `Incorrect number of account subrecords (expected 2, found ${record.accounts.length}).`
@@ -234,7 +258,10 @@ export const FormContainer: React.FC<Props> = (props) => {
     }
   }
 
-  if (form.values.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
+  if (
+    form.values.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER ||
+    form.values.type === TRANSACTION_TYPES.CREDIT_CARD_PAYMENT
+  ) {
     return (
       <AccountTransferForm
         accountData={props.accountData}

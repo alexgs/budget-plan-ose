@@ -8,7 +8,6 @@ import { UnstyledButton } from '@mantine/core';
 import React from 'react';
 
 import {
-  TRANSACTION_TYPES,
   getFriendlyAccountName,
   getFriendlyCategoryName,
   sumSubrecords,
@@ -39,19 +38,6 @@ export const SplitCategoryRow: React.FC<Props> = (props) => {
 
   function handleEditClick() {
     props.onEditClick(props.txn.id);
-  }
-
-  function renderButtonsCell() {
-    if (props.txn.type === TRANSACTION_TYPES.DEPOSIT) {
-      return (
-        <ButtonsCell>
-          <UnstyledButton onClick={handleEditClick}>
-            <FontAwesomeIcon icon={faPencil} />
-          </UnstyledButton>
-        </ButtonsCell>
-      );
-    }
-    return <ButtonsCell>{/* Buttons */}</ButtonsCell>;
   }
 
   function renderSubrecords() {
@@ -99,7 +85,11 @@ export const SplitCategoryRow: React.FC<Props> = (props) => {
         <CategoryCell style={{ fontStyle: 'italic' }}>Split</CategoryCell>
         <NotesCell>{/* Notes */}</NotesCell>
         <SmartAmountCell amount={sumSubrecords(props.txn.categories)} />
-        {renderButtonsCell()}
+        <ButtonsCell>
+          <UnstyledButton onClick={handleEditClick}>
+            <FontAwesomeIcon icon={faPencil} />
+          </UnstyledButton>
+        </ButtonsCell>
       </Row>
       {renderSubrecords()}
     </>
