@@ -147,8 +147,6 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
 
   function renderRows() {
     return props.txnData.map((txn) => {
-      // TODO Add a row-type for credit card payments
-
       if (txn.id === nowEditing) {
         const data = txnToUpdateTxn(txn);
         return (
@@ -157,13 +155,17 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
             accountData={props.accountData}
             categoryData={props.categoryData}
             data={data}
+            isSaving={isSaving}
             onCancel={handleCancel}
             onSubmit={handleSubmit}
           />
         );
       }
 
-      if (txn.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER || txn.type === TRANSACTION_TYPES.CREDIT_CARD_PAYMENT) {
+      if (
+        txn.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER ||
+        txn.type === TRANSACTION_TYPES.CREDIT_CARD_PAYMENT
+      ) {
         return (
           <AccountTransferRow
             key={txn.id}
@@ -239,10 +241,11 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
     if (isNewTxnFormVisible) {
       return (
         <FormContainer
-          onCancel={handleCancel}
-          onSubmit={handleSubmit}
           accountData={props.accountData}
           categoryData={props.categoryData}
+          isSaving={isSaving}
+          onCancel={handleCancel}
+          onSubmit={handleSubmit}
         />
       );
     }

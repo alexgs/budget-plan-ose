@@ -2,6 +2,7 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
+import { Loader } from '@mantine/core';
 import { useForm, yupResolver } from '@mantine/form';
 import React from 'react';
 
@@ -9,6 +10,7 @@ import {
   NewTransactionFormHook,
   NewTransactionFormValues,
 } from '../../../client-lib/types';
+import { Row } from '../Components/Row';
 import { EXTRA_ACCOUNT_OPTIONS, ExtraAccountOptions } from '../constants';
 import { RowProps } from '../Rows/row-props';
 import {
@@ -29,6 +31,7 @@ import { DefaultForm } from './DefaultForm';
 
 interface Props extends Omit<RowProps, 'txn'> {
   data?: ApiSchema.UpdateTransaction;
+  isSaving: boolean;
   onCancel: VoidFunction;
   onSubmit: (
     values: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction
@@ -256,6 +259,14 @@ export const FormContainer: React.FC<Props> = (props) => {
     } else {
       props.onSubmit(record);
     }
+  }
+
+  if (props.isSaving) {
+    return (
+      <Row>
+        <Loader variant="bars" />
+      </Row>
+    );
   }
 
   if (
