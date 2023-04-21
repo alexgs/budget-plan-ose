@@ -52,7 +52,7 @@ export const DefaultForm: React.FC<Props> = (props) => {
 
     return props.mantineForm.values.categories.map((subrecord, index) => {
       return (
-        <Row border={false}>
+        <Row border={false} key={`cat-subrecord-${index}}`}>
           <ChevronCell>{/* Checkbox */}</ChevronCell>
           <DateCell></DateCell>
           <AccountCell></AccountCell>
