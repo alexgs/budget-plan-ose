@@ -1,85 +1,94 @@
 /*
- * Copyright 2022 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
+ * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed
+ * under the Open Software License version 3.0.
  */
 
-import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Alert, Loader, Table } from '@mantine/core';
+import { Table } from '@mantine/core';
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
 import React from 'react';
-import useSWR from 'swr';
 
-import {
-  buildCategoryTree,
-  formatAmount,
-  getCategoryList,
-} from '../../client-lib';
-import {
-  AddCategoryButton,
-  AddSubcategoryButton,
-  EditCategoryButton,
-  Page,
-} from '../../components';
+import { AddCategoryButton, Page } from '../../components';
 import { space } from '../../components/tokens';
-import { Category } from '../../shared-lib';
+
+interface TransactionRow {
+  date: string;
+  account: string;
+  description: string;
+  category: string;
+  notes: string;
+  amount: number;
+}
+
+const initialData: TransactionRow[] = [
+  {
+    date: '2021-01-01',
+    account: 'Account 1',
+    description: 'Transaction 1',
+    category: 'Category 1',
+    notes: 'Notes 1',
+    amount: 100,
+  },
+];
+
+const columnHelper = createColumnHelper<TransactionRow>();
+
+const columns = [
+  columnHelper.accessor('date', {
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('account', {
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('description', {
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('category', {
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('notes', {
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('amount', {
+    cell: (info) => info.getValue(),
+  }),
+];
 
 function NewTablePage() {
-  // Get sorted categories and balances
-  // const { error, data: catData } = useSWR<Category[]>('/api/categories', {
-  //   refreshInterval: 1000,
-  // });
-  // if (error) {
-  //   console.error(error);
-  //   return (
-  //     <Alert
-  //       color="red"
-  //       icon={<FontAwesomeIcon icon={faTriangleExclamation} />}
-  //       title="Error!"
-  //     >
-  //       A network error occurred. Please check the console logs for details.
-  //     </Alert>
-  //   );
-  // }
-  //
-  // if (!catData) {
-  //   return <Loader variant="bars" />;
-  // }
-
-  // const topLevelBalances = getCategoryList(buildCategoryTree(catData));
-  // const rows = topLevelBalances.map((row) => {
-  //   const data: Category | undefined = catData.find(
-  //     (value) => value.id === row.id
-  //   );
-  //   if (!data) {
-  //     // This is just for type safety, should never throw (in production)
-  //     throw new Error(`Unable to find data for category ID ${row.id}`);
-  //   }
-  //   const indentation = 10 * (row.depth + 1)
-  //   return (
-  //     <tr key={row.id}>
-  //       <td style={{paddingLeft: indentation}}>{row.label}</td>
-  //       <td style={{paddingLeft: indentation}}>{formatAmount(row.balance)}</td>
-  //       <td style={{ display: 'flex', justifyContent: 'space-around' }}>
-  //         <AddSubcategoryButton parentId={row.id} />
-  //         <EditCategoryButton data={data} />
-  //       </td>
-  //     </tr>
-  //   );
-  // });
+  const [data, _setData] = React.useState(() => [...initialData]);
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
     <Page>
       <Table>
         <thead>
           <tr>
+            <th>Date</th>
+            <th>Account</th>
+            <th>Description</th>
             <th>Category</th>
-            <th>Balance</th>
-            <th />
+            <th>Notes</th>
+            <th>Amount</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Test</td>
-          </tr>
+          {table.getRowModel().rows.map((row) => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
         </tbody>
       </Table>
       <div style={{ marginTop: space.xl }}>
