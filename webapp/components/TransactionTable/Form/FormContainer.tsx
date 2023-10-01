@@ -44,7 +44,7 @@ export const FormContainer: React.FC<Props> = (props) => {
     if (!props.data?.accounts) {
       return [
         {
-          accountId: props.accountData[0].id,
+          accountId: props.lastUsedAccountId || props.accountData[0].id,
           amount: 0,
           isCredit: false as boolean,
           status: AMOUNT_STATUS.PENDING,
@@ -89,11 +89,6 @@ export const FormContainer: React.FC<Props> = (props) => {
     validate: yupResolver(schemaObjects.newTransaction),
     validateInputOnChange: true,
   });
-
-  // Set default values
-  React.useEffect(() => {
-    form.setFieldValue('accounts.0.accountId', props.lastUsedAccountId);
-  }, []);
 
   function getAccountType(
     accountId: string
