@@ -36,6 +36,7 @@ interface Props extends Omit<RowProps, 'txn'> {
   onSubmit: (
     values: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction
   ) => void;
+  lastUsedAccountId: string;
 }
 
 export const FormContainer: React.FC<Props> = (props) => {
@@ -43,7 +44,7 @@ export const FormContainer: React.FC<Props> = (props) => {
     if (!props.data?.accounts) {
       return [
         {
-          accountId: props.accountData[0].id,
+          accountId: props.lastUsedAccountId || props.accountData[0].id,
           amount: 0,
           isCredit: false as boolean,
           status: AMOUNT_STATUS.PENDING,
