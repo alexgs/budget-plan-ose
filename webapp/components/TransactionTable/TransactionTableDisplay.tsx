@@ -54,6 +54,7 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
     React.useState<boolean>(false);
   const [isDepositModalVisible, setDepositModalVisible] = React.useState(false);
   const [isSaving, setSaving] = React.useState<boolean>(false);
+  const [lastUsedAccountId, setLastUsedAccountId] = React.useState<string>('');
   const [nowEditing, setNowEditing] = React.useState<string | null>(null);
 
   function handleCancel() {
@@ -86,6 +87,8 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
     values: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction
   ) {
     setSaving(true);
+    setLastUsedAccountId(values.accounts[0].accountId);
+
     let promise: Promise<Response>;
     if ('id' in values) {
       const updateValues: ApiSchema.UpdateTransaction = values;
@@ -156,6 +159,7 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
             categoryData={props.categoryData}
             data={data}
             isSaving={isSaving}
+            lastUsedAccountId={lastUsedAccountId}
             onCancel={handleCancel}
             onSubmit={handleSubmit}
           />
@@ -244,6 +248,7 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
           accountData={props.accountData}
           categoryData={props.categoryData}
           isSaving={isSaving}
+          lastUsedAccountId={lastUsedAccountId}
           onCancel={handleCancel}
           onSubmit={handleSubmit}
         />

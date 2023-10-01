@@ -36,6 +36,7 @@ interface Props extends Omit<RowProps, 'txn'> {
   onSubmit: (
     values: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction
   ) => void;
+  lastUsedAccountId: string;
 }
 
 export const FormContainer: React.FC<Props> = (props) => {
@@ -88,6 +89,11 @@ export const FormContainer: React.FC<Props> = (props) => {
     validate: yupResolver(schemaObjects.newTransaction),
     validateInputOnChange: true,
   });
+
+  // Set default values
+  React.useEffect(() => {
+    form.setFieldValue('accounts.0.accountId', props.lastUsedAccountId);
+  }, []);
 
   function getAccountType(
     accountId: string
