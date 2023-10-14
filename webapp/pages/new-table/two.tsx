@@ -3,6 +3,7 @@
  * under the Open Software License version 3.0.
  */
 
+import styled from '@emotion/styled';
 import { Table } from '@mantine/core';
 import {
   ExpandedState,
@@ -18,6 +19,27 @@ import React from 'react';
 
 import { AddCategoryButton, Page } from '../../components';
 import { space } from '../../components/tokens';
+
+const HeaderCell = styled.th({
+  position: 'relative',
+});
+
+const Resizer = styled.div({
+  background: 'rgba(255, 0, 0, 0.5)',
+  cursor: 'col-resize',
+  height: '100%',
+  position: 'absolute',
+  right: 0,
+  top: 0,
+  touchAction: 'none',
+  userSelect: 'none',
+  width: 5,
+
+  '.isResizing': {
+    background: 'blue',
+    opacity: 1,
+  },
+});
 
 interface TransactionRow {
   date: string;
@@ -85,21 +107,27 @@ const columns = [
         {getValue()}
       </div>
     ),
+    header: 'Date',
   }),
   columnHelper.accessor('account', {
     cell: (info) => info.getValue(),
+    header: 'Account',
   }),
   columnHelper.accessor('description', {
     cell: (info) => info.getValue(),
+    header: 'Description',
   }),
   columnHelper.accessor('category', {
     cell: (info) => info.getValue(),
+    header: 'Category',
   }),
   columnHelper.accessor('notes', {
     cell: (info) => info.getValue(),
+    header: 'Notes',
   }),
   columnHelper.accessor('amount', {
     cell: (info) => info.getValue(),
+    header: 'Amount',
   }),
 ];
 
@@ -109,6 +137,7 @@ function NewTablePage() {
   const table = useReactTable({
     columns,
     data,
+    columnResizeMode: 'onChange',
     debugTable: true,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
@@ -121,22 +150,39 @@ function NewTablePage() {
 
   return (
     <Page>
-      <Table>
+      <Table style={{ width: table.getCenterTotalSize() }}>
         <thead>
-          <tr>
-            <th>Date</th>
-            <th>Account</th>
-            <th>Description</th>
-            <th>Category</th>
-            <th>Notes</th>
-            <th>Amount</th>
-          </tr>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <HeaderCell
+                  key={header.id}
+                  colSpan={header.colSpan}
+                  style={{ width: header.getSize() }}
+                >
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  <Resizer
+                    onMouseDown={header.getResizeHandler()}
+                    onTouchStart={header.getResizeHandler()}
+                    className={
+                      header.column.getIsResizing() ? 'isResizing' : ''
+                    }
+                  />
+                </HeaderCell>
+              ))}
+            </tr>
+          ))}
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
+                <td key={cell.id} style={{ width: cell.column.getSize() }}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
