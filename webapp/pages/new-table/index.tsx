@@ -3,7 +3,9 @@
  * under the Open Software License version 3.0.
  */
 
-import { Table } from '@mantine/core';
+import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Alert, Loader, Table } from '@mantine/core';
 import {
   createColumnHelper,
   flexRender,
@@ -11,9 +13,19 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import React from 'react';
+import useSWR from 'swr';
+import {
+  formatSubrecordAmount
+} from '../../client-lib/format-subrecord-amount';
 
 import { AddCategoryButton, Page } from '../../components';
 import { space } from '../../components/tokens';
+import {
+  Account,
+  ApiSchema,
+  Category,
+  getFriendlyAccountName, getFriendlyCategoryName
+} from '../../shared-lib';
 
 interface TransactionRow {
   date: string;
@@ -21,19 +33,8 @@ interface TransactionRow {
   description: string;
   category: string;
   notes: string;
-  amount: number;
+  amount: string;
 }
-
-const initialData: TransactionRow[] = [
-  {
-    date: '2021-01-01',
-    account: 'Account 1',
-    description: 'Transaction 1',
-    category: 'Category 1',
-    notes: 'Notes 1',
-    amount: 100,
-  },
-];
 
 const columnHelper = createColumnHelper<TransactionRow>();
 
@@ -59,12 +60,88 @@ const columns = [
 ];
 
 function NewTablePage() {
-  const [data, _setData] = React.useState(() => [...initialData]);
+  const { error: txnError, data: txnData } = useSWR<ApiSchema.Transaction[]>(
+    '/api/transactions',
+    { refreshInterval: 1000 }
+  );
+
+  const { error: accountError, data: accountData } = useSWR<Account[]>(
+    '/api/accounts',
+    { refreshInterval: 1000 }
+  );
+
+  const { error: categoryError, data: categoryData } = useSWR<Category[]>(
+    '/api/categories',
+    { refreshInterval: 1000 }
+  );
+  const anyError = accountError ?? categoryError ?? txnError;
+
+  const data = React.useMemo((): TransactionRow[] => {
+    if (accountData && categoryData && txnData) {
+      return txnData.map((txn) => {
+        if (txn.accounts.length > 0 && txn.categories.length > 0) {
+          return {
+            date: txn.date,
+            account: getFriendlyAccountName(
+              accountData,
+              txn.accounts[0].accountId
+            ),
+            description: txn.description,
+            category: getFriendlyCategoryName(
+              categoryData,
+              txn.categories[0].categoryId
+            ),
+            notes: '',
+            amount: formatSubrecordAmount(txn.categories[0]),
+          };
+        } else {
+          return {
+            date: '0000-00-00',
+            amount: '0',
+            account: 'Unknown',
+            category: 'Unknown',
+            description: 'Unknown',
+            notes: 'Unknown',
+          }
+        }
+      });
+    } else {
+      return [
+        {
+          date: '0000-00-00',
+          amount: '0',
+          account: 'Unknown',
+          category: 'Unknown',
+          description: 'Unknown',
+          notes: 'Unknown',
+        }
+      ]
+    }
+  }, [accountData, categoryData, txnData]);
+
+  // const [data, _setData] = React.useState(() => [...initialData]);
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  if (anyError) {
+    console.error(anyError);
+    return (
+      <Alert
+        color="red"
+        icon={<FontAwesomeIcon icon={faTriangleExclamation} />}
+        title="Error!"
+      >
+        A network error occurred. Please check the console logs for details.
+      </Alert>
+    );
+  }
+
+  if (!accountData || !categoryData || !txnData) {
+    return <Loader variant="bars" />;
+  }
 
   return (
     <Page>
