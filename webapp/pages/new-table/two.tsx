@@ -3,29 +3,21 @@
  * under the Open Software License version 3.0.
  */
 
-import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Alert, Loader, Table } from '@mantine/core';
+import { Table } from '@mantine/core';
 import {
+  ExpandedState,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
 import React from 'react';
-import useSWR from 'swr';
-import {
-  formatSubrecordAmount
-} from '../../client-lib/format-subrecord-amount';
 
 import { AddCategoryButton, Page } from '../../components';
 import { space } from '../../components/tokens';
-import {
-  Account,
-  ApiSchema,
-  Category,
-  getFriendlyAccountName, getFriendlyCategoryName
-} from '../../shared-lib';
 
 interface TransactionRow {
   date: string;
@@ -60,7 +52,15 @@ const initialData: TransactionRow[] = [
         description: '',
         category: 'Category 1',
         notes: 'Notes 1',
-        amount: 100,
+        amount: 50,
+      },
+      {
+        date: '',
+        account: '',
+        description: '',
+        category: 'Category 2',
+        notes: 'More notes',
+        amount: 50,
       },
     ],
   },
@@ -70,7 +70,21 @@ const columnHelper = createColumnHelper<TransactionRow>();
 
 const columns = [
   columnHelper.accessor('date', {
-    cell: (info) => info.getValue(),
+    cell: ({ row, getValue }) => (
+      <div>
+        {row.getCanExpand() ? (
+          <button
+            onClick={row.getToggleExpandedHandler()}
+            style={{ cursor: 'pointer' }}
+          >
+            {row.getIsExpanded() ? '👇' : '👉'}
+          </button>
+        ) : (
+          '🔵'
+        )}{' '}
+        {getValue()}
+      </div>
+    ),
   }),
   columnHelper.accessor('account', {
     cell: (info) => info.getValue(),
@@ -91,10 +105,18 @@ const columns = [
 
 function NewTablePage() {
   const [data, _setData] = React.useState(() => [...initialData]);
+  const [expanded, setExpanded] = React.useState<ExpandedState>({});
   const table = useReactTable({
-    data,
     columns,
+    data,
+    debugTable: true,
     getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSubRows: (row) => row.subrecords,
+    onExpandedChange: setExpanded,
+    state: { expanded },
   });
 
   return (
