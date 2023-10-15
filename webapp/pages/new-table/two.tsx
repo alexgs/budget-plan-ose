@@ -4,9 +4,12 @@
  */
 
 import styled from '@emotion/styled';
-import { Table } from '@mantine/core';
+import { Table, TextInput } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
+import { rankItem } from '@tanstack/match-sorter-utils'
 import {
   ExpandedState,
+  FilterFn,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
@@ -14,6 +17,10 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
+  getSortedRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFacetedMinMaxValues
 } from '@tanstack/react-table';
 import React from 'react';
 
@@ -107,6 +114,7 @@ const columns = [
         {getValue()}
       </div>
     ),
+    enableColumnFilter: false,
     header: 'Date',
   }),
   columnHelper.accessor('account', {
@@ -131,9 +139,25 @@ const columns = [
   }),
 ];
 
+const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+  // Rank the item
+  const itemRank = rankItem(row.getValue(columnId), value)
+
+  // Store the itemRank info
+  addMeta({
+    itemRank,
+  })
+
+  // Return if the item should be filtered in/out
+  return itemRank.passed
+}
+
 function NewTablePage() {
   const [data, _setData] = React.useState(() => [...initialData]);
   const [expanded, setExpanded] = React.useState<ExpandedState>({});
+  const [globalFilter, setGlobalFilter] = React.useState('')
+
+  const [debouncedFilter] = useDebouncedValue(globalFilter, 200);
   const table = useReactTable({
     columns,
     data,
@@ -141,15 +165,30 @@ function NewTablePage() {
     debugTable: true,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
+    getFacetedMinMaxValues: getFacetedMinMaxValues(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     getSubRows: (row) => row.subrecords,
+    globalFilterFn: fuzzyFilter,
     onExpandedChange: setExpanded,
-    state: { expanded },
+    onGlobalFilterChange: setGlobalFilter,
+    state: {
+      expanded,
+      globalFilter: debouncedFilter,
+    },
   });
 
   return (
     <Page>
+      <TextInput
+        label="Search"
+        value={globalFilter}
+        style={{ flex: 1 }}
+        onChange={(event) => setGlobalFilter(event.currentTarget.value)}
+      />
       <Table style={{ width: table.getCenterTotalSize() }}>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
