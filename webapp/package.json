@@ -46,6 +46,8 @@
     "@mantine/next": "^5.5.5",
     "@mantine/notifications": "^5.5.5",
     "@prisma/client": "^4.4.0",
+    "@tanstack/match-sorter-utils": "^8.8.4",
+    "@tanstack/react-table": "^8.10.1",
     "date-fns": "^2.29.3",
     "date-fns-tz": "^2.0.0",
     "env-var": "^7.3.0",
