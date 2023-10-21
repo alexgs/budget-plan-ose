@@ -33,6 +33,6 @@ export const NewCategory = Category.pick({
   parentId: true,
 });
 
-export const UpdateCategory = NewCategory.partial().omit({
+export const UpdateCategory = NewCategory.omit({
   /* omit nothing */
 });
