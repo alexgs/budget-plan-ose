@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-import { ACCOUNT_TYPES } from '../constants';
+import { ACCOUNT_TYPES } from '../../constants';
 
 // Sample object
 // {

@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-import { TRANSACTION_TYPES } from '../constants';
+import { TRANSACTION_TYPES } from '../../constants';
 import {
   AccountSubrecord,
   NewAccountSubrecord,

@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-import { AMOUNT_STATUS } from '../constants';
+import { AMOUNT_STATUS } from '../../constants';
 
 // Sample object
 // {

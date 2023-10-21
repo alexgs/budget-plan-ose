@@ -17,7 +17,7 @@ import {
 } from './category-subrecord';
 import { NewTransaction, Transaction, UpdateTransaction } from './transaction';
 
-export const ApiSchema = {
+export const Validators = {
   Account,
   AccountSubrecord,
   Category,
