@@ -18,12 +18,13 @@ import { ACCOUNT_TYPES } from '../constants';
 // }
 
 export const Account = z.object({
+  id: z.string().uuid(),
   accountType: z.nativeEnum(ACCOUNT_TYPES),
   balance: z.number(),
-  createdAt: z.string().datetime(),
   description: z.string(),
-  id: z.string().uuid(),
   isSystem: z.boolean(),
+  order: z.number().nullable(),
+  createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 });
 
