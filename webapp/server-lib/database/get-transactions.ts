@@ -3,8 +3,11 @@
  */
 
 import { prisma } from '../index';
+import { DbSchema } from '../../shared-lib/schema-v2/database-schema';
 
-export async function getTransactions(accountId?: string) {
+export async function getTransactions(
+  accountId?: string
+): Promise<DbSchema.Transaction[]> {
   if (accountId) {
     return prisma.transactionRecord.findMany({
       include: { accounts: true, categories: true },

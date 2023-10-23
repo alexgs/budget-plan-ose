@@ -7,7 +7,36 @@ import { z } from 'zod';
 import { Validators } from './validators';
 
 export namespace ModelSchema {
-  export type Account = z.infer<typeof Validators.Account>;
+  export type Account = Omit<
+    z.infer<typeof Validators.Account>,
+    'createdAt' | 'updatedAt'
+  > & {
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  export type AccountSubrecord = Omit<
+    z.infer<typeof Validators.AccountSubrecord>,
+    'createdAt' | 'updatedAt'
+  > & {
+    createdAt: Date;
+    updatedAt: Date;
+  };
   export type Category = z.infer<typeof Validators.Category>;
-  export type Transaction = z.infer<typeof Validators.Transaction>;
+  export type CategorySubrecord = Omit<
+    z.infer<typeof Validators.CategorySubrecord>,
+    'createdAt' | 'updatedAt'
+  > & {
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  export type Transaction = Omit<
+    z.infer<typeof Validators.Transaction>,
+    'accounts' | 'categories' | 'createdAt' | 'date' | 'updatedAt'
+  > & {
+    accounts: AccountSubrecord[];
+    categories: CategorySubrecord[];
+    date: Date;
+    createdAt: Date;
+    updatedAt: Date;
+  };
 }
