@@ -5,11 +5,9 @@
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
-import {
-  formatTransaction,
-  nextAuthOptions,
-  service
-} from '../../../../server-lib';
+import { nextAuthOptions } from '../../../../server-lib';
+import { service } from '../../../../server-lib/service-v2';
+import { transformers } from '../../../../shared-lib/transformers';
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,14 +16,13 @@ export default async function handler(
   const session = await getServerSession(req, res, nextAuthOptions);
   if (session) {
     if (req.method === 'GET') {
-      const txns = await service.getAllTransactions(req.query.accountId as string); // TODO
-      const payload = txns.map((txn) => formatTransaction(txn)); // TODO
+      const txns = await service.getAllTransactions(
+        req.query.accountId as string
+      );
+      const payload = txns.map((txn) => transformers.txnModelToApi(txn));
       res.send(payload);
     } else {
-      res
-        .status(405)
-        .setHeader('Allow', 'GET')
-        .send('Method not allowed.');
+      res.status(405).setHeader('Allow', 'GET').send('Method not allowed.');
     }
   } else {
     res.status(400).send('Bad request.');
