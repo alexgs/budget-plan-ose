@@ -3,8 +3,10 @@
  * under the Open Software License version 3.0.
  */
 
+import { txnApiToModel } from './txn-api-to-model';
 import { txnModelToApi } from './txn-model-to-api';
 
 export const transformers = {
+  txnApiToModel,
   txnModelToApi,
 };

@@ -1,0 +1,27 @@
+/*
+ * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed
+ * under the Open Software License version 3.0.
+ */
+
+import useSWR from 'swr';
+import { ApiSchema } from '../../shared-lib/schema-v2/api-schema';
+import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
+import { transformers } from '../../shared-lib/transformers';
+
+interface AllTransactionsResponse {
+  error?: Error;
+  isLoading: boolean;
+  transactions?: ModelSchema.Transaction[];
+}
+
+export function useAllTransactions(): AllTransactionsResponse {
+  const { data, error, isLoading } = useSWR<ApiSchema.Transaction[], Error>(
+    `/api/v2/transactions`
+  );
+  const transactions = data?.map((txn) => transformers.txnApiToModel(txn));
+  return {
+    error,
+    isLoading,
+    transactions,
+  };
+}
