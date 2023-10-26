@@ -25,8 +25,8 @@ import {
   getFacetedMinMaxValues,
 } from '@tanstack/react-table';
 import React from 'react';
-import { useAllTransactions } from '../../../client-lib/api/use-all-transactions';
 
+import { useAllTransactions } from '../../../client-lib/api/use-all-transactions';
 import { AddCategoryButton, Page } from '../../../components';
 import { space } from '../../../components/tokens';
 
@@ -61,47 +61,6 @@ interface TransactionRow {
   debit: number;
   subrecords?: TransactionRow[];
 }
-
-const initialData: TransactionRow[] = [
-  {
-    date: '2021-01-01',
-    account: '',
-    description: 'Transaction 1',
-    category: '',
-    notes: '',
-    credit: 0,
-    debit: 0,
-    subrecords: [
-      {
-        date: '',
-        account: 'Account 1',
-        description: '',
-        category: '',
-        notes: '',
-        credit: 100,
-        debit: 0,
-      },
-      {
-        date: '',
-        account: '',
-        description: '',
-        category: 'Category 1',
-        notes: 'Notes 1',
-        debit: 50,
-        credit: 0,
-      },
-      {
-        date: '',
-        account: '',
-        description: '',
-        category: 'Category 2',
-        notes: 'More notes',
-        debit: 50,
-        credit: 0,
-      }
-    ]
-  }
-];
 
 const columnHelper = createColumnHelper<TransactionRow>();
 
@@ -165,60 +124,52 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 };
 
 function NewTablePage() {
-  // const { error, isLoading, transactions } = useAllTransactions();
-  const [data, _setData] = React.useState(() => [...initialData]);
+  const { error, transactions } = useAllTransactions();
+  const [data, setData] = React.useState<TransactionRow[]>(() => []);
   const [expanded, setExpanded] = React.useState<ExpandedState>({});
   const [globalFilter, setGlobalFilter] = React.useState('');
 
-  // const data = React.useMemo((): TransactionRow[] => {
-  //   if (!transactions) {
-  //     return [];
-  //   }
-  //
-  //   return transactions.map((transaction) => {
-  //     const accountSubrecords = transaction.accounts.map(
-  //       (account): TransactionRow => ({
-  //         date: '',
-  //         account: account.accountId,
-  //         description: '',
-  //         category: '',
-  //         notes: '',
-  //         credit: account.credit,
-  //         debit: account.debit,
-  //       })
-  //     );
-  //     const categorySubrecords = transaction.categories.map(
-  //       (category): TransactionRow => ({
-  //         date: '',
-  //         account: '',
-  //         description: '',
-  //         category: category.categoryId,
-  //         notes: '',
-  //         credit: category.credit,
-  //         debit: category.debit,
-  //       })
-  //     );
-  //     return {
-  //       account: '',
-  //       credit: 0,
-  //       category: '',
-  //       date: transaction.date.toISOString(),
-  //       debit: 0,
-  //       description: transaction.description,
-  //       notes: '',
-  //       // subrecords: accountSubrecords.concat(categorySubrecords),
-  //       subrecords: [{
-  //         date: '',
-  //         account: 'Account 1',
-  //         description: '',
-  //         category: '',
-  //         notes: '',
-  //         credit: 0,
-  //         debit: 10,
-  //       }]
-  //     };
-  //   });
-  // }, [transactions]);
+  React.useEffect(() => {
+    if (!transactions) {
+      return;
+    }
+
+    const txnData = transactions.map((transaction) => {
+      const accountSubrecords = transaction.accounts.map(
+        (account): TransactionRow => ({
+          date: '',
+          account: account.accountId,
+          description: '',
+          category: '',
+          notes: '',
+          credit: account.credit,
+          debit: account.debit,
+        })
+      );
+      const categorySubrecords = transaction.categories.map(
+        (category): TransactionRow => ({
+          date: '',
+          account: '',
+          description: '',
+          category: category.categoryId,
+          notes: '',
+          credit: category.credit,
+          debit: category.debit,
+        })
+      );
+      return {
+        account: '',
+        credit: 0,
+        category: '',
+        date: transaction.date.toISOString(),
+        debit: 0,
+        description: transaction.description,
+        notes: '',
+        subrecords: accountSubrecords.concat(categorySubrecords),
+      };
+    });
+    setData(txnData);
+  }, [transactions]);
 
   const [debouncedFilter] = useDebouncedValue(globalFilter, 200);
   const table = useReactTable({
@@ -244,7 +195,7 @@ function NewTablePage() {
     },
   });
 
-  // if (transactions) {
+  if (transactions) {
     return (
       <Page>
         <TextInput
@@ -298,22 +249,22 @@ function NewTablePage() {
         </div>
       </Page>
     );
-  // }
+  }
 
-  // if (error) {
-  //   console.error(error);
-  //   return (
-  //     <Alert
-  //       color="red"
-  //       icon={<FontAwesomeIcon icon={faTriangleExclamation} />}
-  //       title="Error!"
-  //     >
-  //       A network error occurred. Please check the console logs for details.
-  //     </Alert>
-  //   );
-  // }
+  if (error) {
+    console.error(error);
+    return (
+      <Alert
+        color="red"
+        icon={<FontAwesomeIcon icon={faTriangleExclamation} />}
+        title="Error!"
+      >
+        A network error occurred. Please check the console logs for details.
+      </Alert>
+    );
+  }
 
-  // return <Loader variant="bars" />;
+  return <Loader variant="bars" />;
 }
 
 export default NewTablePage;

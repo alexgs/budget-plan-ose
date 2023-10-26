@@ -3,6 +3,7 @@
  * under the Open Software License version 3.0.
  */
 
+import React from 'react';
 import useSWR from 'swr';
 import { ApiSchema } from '../../shared-lib/schema-v2/api-schema';
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
@@ -18,7 +19,10 @@ export function useAllTransactions(): AllTransactionsResponse {
   const { data, error, isLoading } = useSWR<ApiSchema.Transaction[], Error>(
     `/api/v2/transactions`
   );
-  const transactions = data?.map((txn) => transformers.txnApiToModel(txn));
+  const transactions = React.useMemo(
+    () => data?.map((txn) => transformers.txnApiToModel(txn)),
+    [data]
+  );
   return {
     error,
     isLoading,
