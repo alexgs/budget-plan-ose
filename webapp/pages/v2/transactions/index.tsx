@@ -9,6 +9,7 @@ import { Alert, Loader, TextInput } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import React from 'react';
 
+import { formatClientDate } from '../../../client-lib';
 import { useAllTransactions } from '../../../client-lib/api/use-all-transactions';
 import { TransactionRow } from '../../../client-lib/types';
 import { Page, TransactionTableV2 } from '../../../components';
@@ -50,7 +51,7 @@ function NewTablePage() {
         account: '',
         credit: 0,
         category: '',
-        date: transaction.date.toISOString(),
+        date: formatClientDate(transaction.date),
         debit: 0,
         description: transaction.description,
         notes: '',

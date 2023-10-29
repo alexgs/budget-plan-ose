@@ -44,7 +44,7 @@ export function getColumnDefs(options?: Options) {
       cell: (info) => info.getValue(),
       enableColumnFilter: false,
       header: 'Date',
-      size: 50,
+      size: 125,
     }),
     columnHelper.accessor('account', {
       cell: (info) => info.getValue(),
