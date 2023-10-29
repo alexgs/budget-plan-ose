@@ -58,8 +58,9 @@ interface TransactionRow {
 const columnHelper = createColumnHelper<TransactionRow>();
 
 const columns = [
-  columnHelper.accessor('date', {
-    cell: ({ row, getValue }) => (
+  columnHelper.display({
+    id: 'expander',
+    cell: ({ row }) => (
       <div>
         {row.getCanExpand() ? (
           <button
@@ -70,36 +71,47 @@ const columns = [
           </button>
         ) : (
           '🔵'
-        )}{' '}
-        {getValue()}
+        )}
       </div>
     ),
+    enableResizing: false,
+    size: 40,
+  }),
+  columnHelper.accessor('date', {
+    cell: (info) => info.getValue(),
     enableColumnFilter: false,
     header: 'Date',
+    size: 50,
   }),
   columnHelper.accessor('account', {
     cell: (info) => info.getValue(),
     header: 'Account',
+    size: 50,
   }),
   columnHelper.accessor('description', {
     cell: (info) => info.getValue(),
     header: 'Description',
+    size: 450,
   }),
   columnHelper.accessor('category', {
     cell: (info) => info.getValue(),
     header: 'Category',
+    size: 50,
   }),
   columnHelper.accessor('notes', {
     cell: (info) => info.getValue(),
     header: 'Notes',
+    size: 300,
   }),
   columnHelper.accessor('credit', {
     cell: (info) => info.getValue(),
     header: 'Credit',
+    size: 50,
   }),
   columnHelper.accessor('debit', {
     cell: (info) => info.getValue(),
     header: 'Debit',
+    size: 50,
   }),
 ];
 
@@ -207,13 +219,13 @@ function NewTablePage() {
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                    <Resizer
+                    {header.column.getCanResize() ? <Resizer
                       onMouseDown={header.getResizeHandler()}
                       onTouchStart={header.getResizeHandler()}
                       className={
                         header.column.getIsResizing() ? 'isResizing' : ''
                       }
-                    />
+                    /> : null}
                   </HeaderCell>
                 ))}
               </tr>
