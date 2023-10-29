@@ -3,135 +3,19 @@
  * under the Open Software License version 3.0.
  */
 
-import styled from '@emotion/styled';
 import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Alert, Loader, Table, TextInput } from '@mantine/core';
+import { Alert, Loader, TextInput } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { rankItem } from '@tanstack/match-sorter-utils';
-import {
-  ExpandedState,
-  FilterFn,
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  getExpandedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
 import React from 'react';
 
 import { useAllTransactions } from '../../../client-lib/api/use-all-transactions';
-import { Page } from '../../../components';
-
-const HeaderCell = styled.th({
-  position: 'relative',
-});
-
-const Resizer = styled.div({
-  background: 'rgba(255, 0, 0, 0.5)',
-  cursor: 'col-resize',
-  height: '100%',
-  position: 'absolute',
-  right: 0,
-  top: 0,
-  touchAction: 'none',
-  userSelect: 'none',
-  width: 5,
-
-  '.isResizing': {
-    background: 'blue',
-    opacity: 1,
-  },
-});
-
-interface TransactionRow {
-  date: string;
-  account: string;
-  description: string;
-  category: string;
-  notes: string;
-  credit: number;
-  debit: number;
-  subrecords?: TransactionRow[];
-}
-
-const columnHelper = createColumnHelper<TransactionRow>();
-
-const columns = [
-  columnHelper.display({
-    id: 'expander',
-    cell: ({ row }) => (
-      <div>
-        {row.getCanExpand() ? (
-          <button
-            onClick={row.getToggleExpandedHandler()}
-            style={{ cursor: 'pointer' }}
-          >
-            {row.getIsExpanded() ? '👇' : '👉'}
-          </button>
-        ) : (
-          '🔵'
-        )}
-      </div>
-    ),
-    enableResizing: false,
-    size: 40,
-  }),
-  columnHelper.accessor('date', {
-    cell: (info) => info.getValue(),
-    enableColumnFilter: false,
-    header: 'Date',
-    size: 50,
-  }),
-  columnHelper.accessor('account', {
-    cell: (info) => info.getValue(),
-    header: 'Account',
-    size: 50,
-  }),
-  columnHelper.accessor('description', {
-    cell: (info) => info.getValue(),
-    header: 'Description',
-    size: 450,
-  }),
-  columnHelper.accessor('category', {
-    cell: (info) => info.getValue(),
-    header: 'Category',
-    size: 50,
-  }),
-  columnHelper.accessor('notes', {
-    cell: (info) => info.getValue(),
-    header: 'Notes',
-    size: 300,
-  }),
-  columnHelper.accessor('credit', {
-    cell: (info) => info.getValue(),
-    header: 'Credit',
-    size: 50,
-  }),
-  columnHelper.accessor('debit', {
-    cell: (info) => info.getValue(),
-    header: 'Debit',
-    size: 50,
-  }),
-];
-
-const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-  // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value);
-
-  // Store the itemRank info
-  addMeta({
-    itemRank,
-  });
-
-  // Return if the item should be filtered in/out
-  return itemRank.passed;
-};
+import { TransactionRow } from '../../../client-lib/types';
+import { Page, TransactionTableV2 } from '../../../components';
 
 function NewTablePage() {
   const { error, transactions } = useAllTransactions();
   const [data, setData] = React.useState<TransactionRow[]>(() => []);
-  const [expanded, setExpanded] = React.useState<ExpandedState>({});
   const [globalFilter, setGlobalFilter] = React.useState('');
 
   React.useEffect(() => {
@@ -177,22 +61,6 @@ function NewTablePage() {
   }, [transactions]);
 
   const [debouncedFilter] = useDebouncedValue(globalFilter, 200);
-  const table = useReactTable({
-    columns,
-    data,
-    columnResizeMode: 'onChange',
-    debugTable: false,
-    getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
-    getSubRows: (row) => row.subrecords,
-    globalFilterFn: fuzzyFilter,
-    onExpandedChange: setExpanded,
-    onGlobalFilterChange: setGlobalFilter,
-    state: {
-      expanded,
-      globalFilter: debouncedFilter,
-    },
-  });
 
   if (transactions) {
     return (
@@ -203,46 +71,7 @@ function NewTablePage() {
           style={{ flex: 1 }}
           onChange={(event) => setGlobalFilter(event.currentTarget.value)}
         />
-        <Table style={{ width: table.getCenterTotalSize() }}>
-          <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <HeaderCell
-                    key={header.id}
-                    colSpan={header.colSpan}
-                    style={{ width: header.getSize() }}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    {header.column.getCanResize() ? <Resizer
-                      onMouseDown={header.getResizeHandler()}
-                      onTouchStart={header.getResizeHandler()}
-                      className={
-                        header.column.getIsResizing() ? 'isResizing' : ''
-                      }
-                    /> : null}
-                  </HeaderCell>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} style={{ width: cell.column.getSize() }}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <TransactionTableV2 data={data} filter={debouncedFilter} />
       </Page>
     );
   }
