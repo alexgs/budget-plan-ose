@@ -69,7 +69,7 @@ const dateRegex = new RegExp(
 
 export const Transaction = z.object({
   id: z.string().uuid(),
-  date: z.custom<{ arg: string }>((value) => {
+  date: z.custom<string>((value) => {
     return typeof value === 'string' ? dateRegex.test(value) : false;
   }),
   description: z.string(),

@@ -3,7 +3,12 @@
  * under the Open Software License version 3.0.
  */
 
-import { Prisma } from '@prisma/client';
+import {
+  Prisma,
+  TransactionAccount,
+  TransactionCategory,
+  TransactionRecord
+} from '@prisma/client';
 
 export namespace DbSchema {
   export type NewAccount = Prisma.FinancialAccountCreateInput;
@@ -14,4 +19,11 @@ export namespace DbSchema {
   >;
   export type NewCategorySubrecord = Prisma.TransactionCategoryCreateInput;
   export type NewTransaction = Prisma.TransactionRecordCreateInput;
+
+  export type Account = TransactionAccount;
+  export type Category = TransactionCategory;
+  export type Transaction = TransactionRecord & {
+    accounts: Account[];
+    categories: Category[];
+  }
 }
