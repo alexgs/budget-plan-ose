@@ -16,19 +16,12 @@ import {
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
   useReactTable,
-  getSortedRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFacetedMinMaxValues,
 } from '@tanstack/react-table';
 import React from 'react';
 
 import { useAllTransactions } from '../../../client-lib/api/use-all-transactions';
-import { AddCategoryButton, Page } from '../../../components';
-import { space } from '../../../components/tokens';
+import { Page } from '../../../components';
 
 const HeaderCell = styled.th({
   position: 'relative',
@@ -179,12 +172,6 @@ function NewTablePage() {
     debugTable: false,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
-    getFacetedMinMaxValues: getFacetedMinMaxValues(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     getSubRows: (row) => row.subrecords,
     globalFilterFn: fuzzyFilter,
     onExpandedChange: setExpanded,
@@ -244,9 +231,6 @@ function NewTablePage() {
             ))}
           </tbody>
         </Table>
-        <div style={{ marginTop: space.xl }}>
-          <AddCategoryButton />
-        </div>
       </Page>
     );
   }
