@@ -6,6 +6,7 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import React from 'react';
 import { TransactionRow } from '../../client-lib/types';
+import { ChevronButton } from './ChevronButton';
 import { DollarAmountRenderer } from './DollarAmountRenderer';
 
 const columnHelper = createColumnHelper<TransactionRow>();
@@ -24,20 +25,7 @@ export function getColumnDefs(options?: Options) {
   const output = [
     columnHelper.display({
       id: 'expander',
-      cell: ({ row }) => (
-        <div>
-          {row.getCanExpand() ? (
-            <button
-              onClick={row.getToggleExpandedHandler()}
-              style={{ cursor: 'pointer' }}
-            >
-              {row.getIsExpanded() ? '👇' : '👉'}
-            </button>
-          ) : (
-            '🔵'
-          )}
-        </div>
-      ),
+      cell: ({ row }) => <ChevronButton row={row} />,
       enableResizing: false,
       size: 40,
     }),
