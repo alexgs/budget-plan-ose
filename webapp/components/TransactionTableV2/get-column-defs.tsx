@@ -6,6 +6,7 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import React from 'react';
 import { TransactionRow } from '../../client-lib/types';
+import { DollarAmountRenderer } from './DollarAmountRenderer';
 
 const columnHelper = createColumnHelper<TransactionRow>();
 
@@ -67,12 +68,12 @@ export function getColumnDefs(options?: Options) {
       size: 300,
     }),
     columnHelper.accessor('credit', {
-      cell: (info) => info.getValue(),
+      cell: (info) => <DollarAmountRenderer amountInCents={info.getValue()} />,
       header: 'Credit',
       size: 50,
     }),
     columnHelper.accessor('debit', {
-      cell: (info) => info.getValue(),
+      cell: (info) => <DollarAmountRenderer amountInCents={info.getValue()} />,
       header: 'Debit',
       size: 50,
     }),
