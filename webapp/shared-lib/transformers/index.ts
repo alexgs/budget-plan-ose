@@ -3,10 +3,14 @@
  * under the Open Software License version 3.0.
  */
 
+import { accountApiToModel } from './account-api-to-model';
+import { accountModelToApi } from './account-model-to-api';
 import { txnApiToModel } from './txn-api-to-model';
 import { txnModelToApi } from './txn-model-to-api';
 
 export const transformers = {
+  accountApiToModel,
+  accountModelToApi,
   txnApiToModel,
   txnModelToApi,
 };

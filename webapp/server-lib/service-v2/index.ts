@@ -4,7 +4,9 @@
  */
 
 import { getAllTransactions } from './get-all-transactions';
+import { getPublicAccounts } from './get-public-accounts';
 
 export const service = {
   getAllTransactions,
+  getPublicAccounts,
 };
