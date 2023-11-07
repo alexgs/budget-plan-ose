@@ -13,11 +13,13 @@ import {
 } from '@tanstack/react-table';
 import React from 'react';
 import { TransactionRow } from '../../client-lib/types';
+import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
 import { fuzzyFilter } from './fuzzy-filter';
 import { getColumnDefs } from './get-column-defs';
 import { HeaderCell, Resizer } from './HeaderCell';
 
 interface Props {
+  accounts?: ModelSchema.Account[];
   data: TransactionRow[];
   filter?: string;
 }

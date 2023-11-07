@@ -10,11 +10,13 @@ import { useDebouncedValue } from '@mantine/hooks';
 import React from 'react';
 
 import { formatClientDate } from '../../../client-lib';
+import { useAllAccounts } from '../../../client-lib/api/use-all-accounts';
 import { useAllTransactions } from '../../../client-lib/api/use-all-transactions';
 import { TransactionRow } from '../../../client-lib/types';
 import { Page, TransactionTableV2 } from '../../../components';
 
 function NewTablePage() {
+  const { error: accountsError, accounts } = useAllAccounts();
   const { error, transactions } = useAllTransactions();
   const [data, setData] = React.useState<TransactionRow[]>(() => []);
   const [globalFilter, setGlobalFilter] = React.useState('');
@@ -72,7 +74,11 @@ function NewTablePage() {
           style={{ flex: 1 }}
           onChange={(event) => setGlobalFilter(event.currentTarget.value)}
         />
-        <TransactionTableV2 data={data} filter={debouncedFilter} />
+        <TransactionTableV2
+          accounts={accounts}
+          data={data}
+          filter={debouncedFilter}
+        />
       </Page>
     );
   }
