@@ -5,26 +5,13 @@
 
 import { createColumnHelper } from '@tanstack/react-table';
 import React from 'react';
-import {
-  getFriendlyAccountName
-} from '../../client-lib/get-friendly-account-name';
 import { TransactionRow } from '../../client-lib/types';
-import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
 import { ChevronButton } from './ChevronButton';
 import { DollarAmountRenderer } from './DollarAmountRenderer';
 
 const columnHelper = createColumnHelper<TransactionRow>();
 
-function renderAccountName(accountId: string, accounts?: ModelSchema.Account[]) {
-  if (!accounts) {
-    return '...';
-  }
-
-  return getFriendlyAccountName(accounts, accountId);
-}
-
 export interface Options {
-  accounts?: ModelSchema.Account[];
   showAccountColumn?: boolean;
 }
 
@@ -49,7 +36,7 @@ export function getColumnDefs(options?: Options) {
       size: 125,
     }),
     columnHelper.accessor('account', {
-      cell: (info) => renderAccountName(info.getValue(), opt.accounts),
+      cell: (info) => info.getValue(),
       header: 'Account',
       size: 50,
     }),

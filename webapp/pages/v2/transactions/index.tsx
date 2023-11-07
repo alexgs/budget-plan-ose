@@ -12,10 +12,23 @@ import React from 'react';
 import { formatClientDate } from '../../../client-lib';
 import { useAllAccounts } from '../../../client-lib/api/use-all-accounts';
 import { useAllTransactions } from '../../../client-lib/api/use-all-transactions';
+import {
+  getFriendlyAccountName
+} from '../../../client-lib/get-friendly-account-name';
 import { TransactionRow } from '../../../client-lib/types';
 import { Page, TransactionTableV2 } from '../../../components';
+import { ModelSchema } from '../../../shared-lib/schema-v2/model-schema';
+
+function getAccountNameIfAvailable(accountId: string, accounts?: ModelSchema.Account[]) {
+  if (!accounts) {
+    return '...';
+  }
+
+  return getFriendlyAccountName(accounts, accountId);
+}
 
 function NewTablePage() {
+  // TODO Handle errors
   const { error: accountsError, accounts } = useAllAccounts();
   const { error, transactions } = useAllTransactions();
   const [data, setData] = React.useState<TransactionRow[]>(() => []);
@@ -30,7 +43,7 @@ function NewTablePage() {
       const accountSubrecords = transaction.accounts.map(
         (account): TransactionRow => ({
           date: '',
-          account: account.accountId,
+          account: getAccountNameIfAvailable(account.accountId, accounts),
           description: '',
           category: '',
           notes: '',
@@ -61,7 +74,7 @@ function NewTablePage() {
       };
     });
     setData(txnData);
-  }, [transactions]);
+  }, [accounts, transactions]);
 
   const [debouncedFilter] = useDebouncedValue(globalFilter, 200);
 
