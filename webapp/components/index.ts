@@ -13,3 +13,4 @@ export { DepositForm } from './DepositForm';
 export { NextAuthProvider } from './NextAuthProvider';
 export { Page } from './Page';
 export { TransactionTable } from './TransactionTable';
+export { TransactionTableV2 } from './TransactionTableV2';
