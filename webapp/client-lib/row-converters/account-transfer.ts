@@ -10,17 +10,34 @@ import getAccountNameIfAvailable from './get-account-name-if-available';
 
 export default function accountTransferRowConverter(
   txn: ModelSchema.Transaction,
-  accounts?: ModelSchema.Account[],
+  accounts?: ModelSchema.Account[]
 ): TransactionRow {
-  const fromAccount = getAccountNameIfAvailable(txn.accounts[0].accountId, accounts);
-  const toAccount = getAccountNameIfAvailable(txn.accounts[1].accountId, accounts);
+  if (txn.accounts.length !== 2 && txn.categories.length !== 0) {
+    console.warn(`Invalid account transfer transaction: ${txn.id}`);
+  }
+
+  let fromSubrecord = null;
+  let toSubrecord = null;
+  if (txn.accounts[0].debit > 0) {
+    fromSubrecord = txn.accounts[0];
+    toSubrecord = txn.accounts[1];
+  } else {
+    fromSubrecord = txn.accounts[1];
+    toSubrecord = txn.accounts[0];
+  }
+
+  const fromAccount = getAccountNameIfAvailable(
+    fromSubrecord.accountId,
+    accounts
+  );
+  const toAccount = getAccountNameIfAvailable(toSubrecord.accountId, accounts);
   return {
     account: fromAccount,
-    credit: txn.accounts[0].credit,
+    credit: 0,
     category: '',
     date: formatClientDate(txn.date),
-    debit: txn.accounts[0].debit,
+    debit: fromSubrecord.debit,
     description: `Transfer to ${toAccount}`,
     notes: '',
-  }
+  };
 }
