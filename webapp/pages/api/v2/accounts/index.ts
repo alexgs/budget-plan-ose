@@ -17,7 +17,9 @@ export default async function handler(
   if (session) {
     if (req.method === 'GET') {
       const accounts = await service.getPublicAccounts();
-      const payload = accounts.map((account) => transformers.accountModelToApi(account));
+      const payload = accounts.map((account) =>
+        transformers.accountModelToApi(account)
+      );
       res.send(payload);
     } else {
       res.status(405).setHeader('Allow', 'GET').send('Method not allowed.');

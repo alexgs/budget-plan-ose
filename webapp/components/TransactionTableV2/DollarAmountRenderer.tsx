@@ -14,5 +14,5 @@ export const DollarAmountRenderer: React.FC<Props> = (props) => {
   if (props.amountInCents === 0) {
     return null;
   }
-  return <>{formatAmount(props.amountInCents)}</>
-}
+  return <>{formatAmount(props.amountInCents)}</>;
+};

@@ -25,4 +25,3 @@ export const Resizer = styled.div({
     opacity: 1,
   },
 });
-

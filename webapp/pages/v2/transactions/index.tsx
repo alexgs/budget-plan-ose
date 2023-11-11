@@ -13,15 +13,16 @@ import { formatClientDate } from '../../../client-lib';
 import { useAllAccounts } from '../../../client-lib/api/use-all-accounts';
 import { useAllCategories } from '../../../client-lib/api/use-all-categories';
 import { useAllTransactions } from '../../../client-lib/api/use-all-transactions';
-import {
-  getFriendlyAccountName
-} from '../../../client-lib/get-friendly-account-name';
+import { getFriendlyAccountName } from '../../../client-lib/get-friendly-account-name';
 import { TransactionRow } from '../../../client-lib/types';
 import { Page, TransactionTableV2 } from '../../../components';
 import { getFriendlyCategoryName } from '../../../shared-lib'; // TODO This function should live in `client-lib`
 import { ModelSchema } from '../../../shared-lib/schema-v2/model-schema';
 
-function getAccountNameIfAvailable(accountId: string, accounts?: ModelSchema.Account[]) {
+function getAccountNameIfAvailable(
+  accountId: string,
+  accounts?: ModelSchema.Account[]
+) {
   if (!accounts) {
     return '...';
   }
@@ -29,7 +30,10 @@ function getAccountNameIfAvailable(accountId: string, accounts?: ModelSchema.Acc
   return getFriendlyAccountName(accounts, accountId);
 }
 
-function getCategoryNameIfAvailable(categoryId: string, categories?: ModelSchema.Category[]) {
+function getCategoryNameIfAvailable(
+  categoryId: string,
+  categories?: ModelSchema.Category[]
+) {
   if (!categories) {
     return '...';
   }

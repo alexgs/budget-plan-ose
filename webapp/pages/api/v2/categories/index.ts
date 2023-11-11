@@ -17,7 +17,9 @@ export default async function handler(
   if (session) {
     if (req.method === 'GET') {
       const categories = await service.getPublicCategories();
-      const payload = categories.map((category) => transformers.categoryModelToApi(category));
+      const payload = categories.map((category) =>
+        transformers.categoryModelToApi(category)
+      );
       res.send(payload);
     } else {
       res.status(405).setHeader('Allow', 'GET').send('Method not allowed.');

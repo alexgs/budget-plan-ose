@@ -3,10 +3,7 @@
  * under the Open Software License version 3.0.
  */
 
-import {
-  AMOUNT_STATUS,
-  TRANSACTION_TYPES,
-} from '../../shared-lib';
+import { AMOUNT_STATUS, TRANSACTION_TYPES } from '../../shared-lib';
 import { DbSchema } from '../../shared-lib/schema-v2/database-schema';
 import { database } from '../database';
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';

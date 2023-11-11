@@ -83,7 +83,13 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
         {table.getRowModel().rows.map((row) => (
           <tr key={row.id}>
             {row.getVisibleCells().map((cell) => (
-              <BodyCell key={cell.id} style={{ maxWidth: cell.column.getSize(), width: cell.column.getSize() }}>
+              <BodyCell
+                key={cell.id}
+                style={{
+                  maxWidth: cell.column.getSize(),
+                  width: cell.column.getSize(),
+                }}
+              >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </BodyCell>
             ))}

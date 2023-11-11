@@ -3,7 +3,10 @@
  * under the Open Software License version 3.0.
  */
 
-import { faChevronRight, faChevronDown } from '@fortawesome/pro-regular-svg-icons';
+import {
+  faChevronRight,
+  faChevronDown,
+} from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ActionIcon } from '@mantine/core';
 import { Row } from '@tanstack/table-core';
