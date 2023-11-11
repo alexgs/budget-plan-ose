@@ -3,35 +3,17 @@
  * under the Open Software License version 3.0.
  */
 
-import { getFriendlyCategoryName } from '../../shared-lib'; // TODO This function should live in `client-lib`
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
 import { formatClientDate } from '../format-client-date';
-import { getFriendlyAccountName } from '../get-friendly-account-name';
 import { TransactionRow } from '../types';
+import getAccountNameIfAvailable from './get-account-name-if-available';
+import getCategoryNameIfAvailable from './get-category-name-if-available';
 
-function getAccountNameIfAvailable(
-  accountId: string,
-  accounts?: ModelSchema.Account[]
-) {
-  if (!accounts) {
-    return '...';
-  }
-
-  return getFriendlyAccountName(accounts, accountId);
-}
-
-function getCategoryNameIfAvailable(
-  categoryId: string,
-  categories?: ModelSchema.Category[]
-) {
-  if (!categories) {
-    return '...';
-  }
-
-  return getFriendlyCategoryName(categories, categoryId);
-}
-
-export default function defaultRowConverter(transaction: ModelSchema.Transaction, accounts?: ModelSchema.Account[], categories?: ModelSchema.Category[]): TransactionRow {
+export default function defaultRowConverter(
+  transaction: ModelSchema.Transaction,
+  accounts?: ModelSchema.Account[],
+  categories?: ModelSchema.Category[],
+): TransactionRow {
   const accountSubrecords = transaction.accounts.map(
     (account): TransactionRow => ({
       date: '',
@@ -64,5 +46,4 @@ export default function defaultRowConverter(transaction: ModelSchema.Transaction
     notes: '',
     subrecords: accountSubrecords.concat(categorySubrecords),
   };
-
 }

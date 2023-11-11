@@ -12,7 +12,7 @@ import React from 'react';
 import { useAllAccounts } from '../../../client-lib/api/use-all-accounts';
 import { useAllCategories } from '../../../client-lib/api/use-all-categories';
 import { useAllTransactions } from '../../../client-lib/api/use-all-transactions';
-import defaultRowConverter from '../../../client-lib/row-converters/default';
+import { getRows } from '../../../client-lib/row-converters';
 import { TransactionRow } from '../../../client-lib/types';
 import { Page, TransactionTableV2 } from '../../../components';
 
@@ -29,10 +29,7 @@ function NewTablePage() {
       return;
     }
 
-    const txnData = transactions.map((transaction) =>
-      defaultRowConverter(transaction, accounts, categories)
-    );
-    setData(txnData);
+    setData(getRows(transactions, accounts, categories));
   }, [accounts, categories, transactions]);
 
   const [debouncedFilter] = useDebouncedValue(globalFilter, 200);
