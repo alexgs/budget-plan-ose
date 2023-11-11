@@ -21,7 +21,13 @@ export namespace ModelSchema {
     createdAt: Date;
     updatedAt: Date;
   };
-  export type Category = z.infer<typeof Validators.Category>;
+  export type Category = Omit<
+    z.infer<typeof Validators.Category>,
+    'createdAt' | 'updatedAt'
+  > & {
+    createdAt: Date;
+    updatedAt: Date;
+  };
   export type CategorySubrecord = Omit<
     z.infer<typeof Validators.CategorySubrecord>,
     'createdAt' | 'updatedAt'

@@ -5,12 +5,16 @@
 
 import { accountApiToModel } from './account-api-to-model';
 import { accountModelToApi } from './account-model-to-api';
+import { categoryApiToModel } from './category-api-to-model';
+import { categoryModelToApi } from './category-model-to-api';
 import { txnApiToModel } from './txn-api-to-model';
 import { txnModelToApi } from './txn-model-to-api';
 
 export const transformers = {
   accountApiToModel,
   accountModelToApi,
+  categoryApiToModel,
+  categoryModelToApi,
   txnApiToModel,
   txnModelToApi,
 };

@@ -6,7 +6,9 @@
 import { ApiSchema } from '../schema-v2/api-schema';
 import { ModelSchema } from '../schema-v2/model-schema';
 
-export function accountModelToApi(account: ModelSchema.Account): ApiSchema.Account {
+export function accountModelToApi(
+  account: ModelSchema.Account
+): ApiSchema.Account {
   return {
     ...account,
     createdAt: account.createdAt.toISOString(),

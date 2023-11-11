@@ -6,12 +6,10 @@
 import { ApiSchema } from '../schema-v2/api-schema';
 import { ModelSchema } from '../schema-v2/model-schema';
 
-export function accountApiToModel(
-  account: ApiSchema.Account
-): ModelSchema.Account {
+export function categoryModelToApi(category: ModelSchema.Category): ApiSchema.Category {
   return {
-    ...account,
-    createdAt: new Date(account.createdAt),
-    updatedAt: new Date(account.updatedAt),
+    ...category,
+    createdAt: category.createdAt.toISOString(),
+    updatedAt: category.updatedAt.toISOString()
   };
 }
