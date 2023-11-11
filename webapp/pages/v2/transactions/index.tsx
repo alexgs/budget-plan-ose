@@ -11,12 +11,14 @@ import React from 'react';
 
 import { formatClientDate } from '../../../client-lib';
 import { useAllAccounts } from '../../../client-lib/api/use-all-accounts';
+import { useAllCategories } from '../../../client-lib/api/use-all-categories';
 import { useAllTransactions } from '../../../client-lib/api/use-all-transactions';
 import {
   getFriendlyAccountName
 } from '../../../client-lib/get-friendly-account-name';
 import { TransactionRow } from '../../../client-lib/types';
 import { Page, TransactionTableV2 } from '../../../components';
+import { getFriendlyCategoryName } from '../../../shared-lib'; // TODO This function should live in `client-lib`
 import { ModelSchema } from '../../../shared-lib/schema-v2/model-schema';
 
 function getAccountNameIfAvailable(accountId: string, accounts?: ModelSchema.Account[]) {
@@ -27,9 +29,18 @@ function getAccountNameIfAvailable(accountId: string, accounts?: ModelSchema.Acc
   return getFriendlyAccountName(accounts, accountId);
 }
 
+function getCategoryNameIfAvailable(categoryId: string, categories?: ModelSchema.Category[]) {
+  if (!categories) {
+    return '...';
+  }
+
+  return getFriendlyCategoryName(categories, categoryId);
+}
+
 function NewTablePage() {
   // TODO Handle errors
   const { error: accountsError, accounts } = useAllAccounts();
+  const { error: categoriesError, categories } = useAllCategories();
   const { error, transactions } = useAllTransactions();
   const [data, setData] = React.useState<TransactionRow[]>(() => []);
   const [globalFilter, setGlobalFilter] = React.useState('');
@@ -56,7 +67,7 @@ function NewTablePage() {
           date: '',
           account: '',
           description: '',
-          category: category.categoryId,
+          category: getCategoryNameIfAvailable(category.categoryId, categories),
           notes: '',
           credit: category.credit,
           debit: category.debit,
