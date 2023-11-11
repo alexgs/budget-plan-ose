@@ -10,7 +10,7 @@ export const HeaderCell = styled.th({
 });
 
 export const Resizer = styled.div({
-  background: 'rgba(255, 0, 0, 0.5)',
+  background: 'rgba(255, 255, 255, 0.15)',
   cursor: 'col-resize',
   height: '100%',
   position: 'absolute',

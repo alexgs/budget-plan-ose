@@ -14,6 +14,7 @@ import {
 import React from 'react';
 import { TransactionRow } from '../../client-lib/types';
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
+import { BodyCell } from './BodyCell';
 import { fuzzyFilter } from './fuzzy-filter';
 import { getColumnDefs } from './get-column-defs';
 import { HeaderCell, Resizer } from './HeaderCell';
@@ -82,9 +83,9 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
         {table.getRowModel().rows.map((row) => (
           <tr key={row.id}>
             {row.getVisibleCells().map((cell) => (
-              <td key={cell.id} style={{ width: cell.column.getSize() }}>
+              <BodyCell key={cell.id} style={{ maxWidth: cell.column.getSize(), width: cell.column.getSize() }}>
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </td>
+              </BodyCell>
             ))}
           </tr>
         ))}

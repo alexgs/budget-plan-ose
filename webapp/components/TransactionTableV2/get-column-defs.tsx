@@ -27,7 +27,7 @@ export function getColumnDefs(options?: Options) {
       id: 'expander',
       cell: ({ row }) => <ChevronButton row={row} />,
       enableResizing: false,
-      size: 40,
+      size: 30,
     }),
     columnHelper.accessor('date', {
       cell: (info) => info.getValue(),
@@ -38,32 +38,32 @@ export function getColumnDefs(options?: Options) {
     columnHelper.accessor('account', {
       cell: (info) => info.getValue(),
       header: 'Account',
-      size: 50,
+      size: 125,
     }),
     columnHelper.accessor('description', {
       cell: (info) => info.getValue(),
       header: 'Description',
-      size: 450,
+      size: 190,
     }),
     columnHelper.accessor('category', {
       cell: (info) => info.getValue(),
       header: 'Category',
-      size: 50,
+      size: 125,
     }),
     columnHelper.accessor('notes', {
       cell: (info) => info.getValue(),
       header: 'Notes',
-      size: 300,
+      size: 100,
     }),
     columnHelper.accessor('credit', {
       cell: (info) => <DollarAmountRenderer amountInCents={info.getValue()} />,
       header: 'Credit',
-      size: 50,
+      size: 90,
     }),
     columnHelper.accessor('debit', {
       cell: (info) => <DollarAmountRenderer amountInCents={info.getValue()} />,
       header: 'Debit',
-      size: 50,
+      size: 90,
     }),
   ];
 
