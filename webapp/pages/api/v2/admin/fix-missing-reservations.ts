@@ -15,7 +15,7 @@ export default async function handler(
   const session = await getServerSession(req, res, nextAuthOptions);
   if (session) {
     if (req.method === 'POST') {
-      await service.fixCreditCardCharges();
+      await service.fixMissingReservations();
       // @ts-ignore -- This is valid for a 204 response
       res.status(204).send();
     } else {

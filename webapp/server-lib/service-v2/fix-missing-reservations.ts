@@ -5,6 +5,6 @@
 
 import { database } from '../database';
 
-export async function fixCreditCardCharges() {
-  return database.fixCreditCardCharges();
+export async function fixMissingReservations() {
+  return database.fixMissingReservations();
 }

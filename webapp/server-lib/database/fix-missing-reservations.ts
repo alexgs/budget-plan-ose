@@ -3,15 +3,12 @@
  * under the Open Software License version 3.0.
  */
 
-import { v5 as uuidV5 } from 'uuid';
 import {
   sumSubrecords,
   TRANSACTION_TYPES,
-  UUID_NAMESPACE,
 } from '../../shared-lib';
 import { getReservationCategoryId } from '../../shared-lib/get-reservation-category-id';
 import { DbSchema } from '../../shared-lib/schema-v2/database-schema';
-import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
 import { prisma } from '../index';
 import { service } from '../service-v2';
 
@@ -22,7 +19,7 @@ function hasReservationCategory(
   return txn.categories.some((cat) => cat.categoryId === reservationCategoryId);
 }
 
-export async function fixCreditCardCharges() {
+export async function fixMissingReservations() {
   const accounts = await service.getPublicAccounts();
 
   // Get all credit card charges

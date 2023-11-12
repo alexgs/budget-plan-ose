@@ -13,9 +13,9 @@ const ButtonContainer = styled.div({ marginLeft: '2rem' });
 function AdminPage() {
   const [disableAll, setDisableAll] = React.useState(false);
 
-  async function handleFixCreditCardChargesClick() {
+  async function handleFixMissingReservationsClick() {
     setDisableAll(true);
-    await fetch('/api/v2/admin/fix-credit-card-charges', { method: 'POST' });
+    await fetch('/api/v2/admin/fix-missing-reservations', { method: 'POST' });
     setDisableAll(false);
   }
 
@@ -33,7 +33,7 @@ function AdminPage() {
         <ButtonContainer>
           <Button
             disabled={disableAll}
-            onClick={handleFixCreditCardChargesClick}
+            onClick={handleFixMissingReservationsClick}
           >
             Fix
           </Button>
