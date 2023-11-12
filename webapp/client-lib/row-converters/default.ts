@@ -14,6 +14,7 @@ export default function defaultRowConverter(
   accounts?: ModelSchema.Account[],
   categories?: ModelSchema.Category[],
 ): TransactionRow {
+  console.log(`Default row converter used for transaction: ${txn.id}`);
   const accountSubrecords = txn.accounts.map(
     (account): TransactionRow => ({
       date: '',

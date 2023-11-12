@@ -9,6 +9,7 @@ import { TransactionRow } from '../types';
 import accountTransferRowConverter from './account-transfer';
 import creditCardChargeRowConverter from './credit-card-charge';
 import defaultRowConverter from './default';
+import paymentRowConverter from './payment';
 
 export function getRows(
   transactions: ModelSchema.Transaction[],
@@ -21,6 +22,9 @@ export function getRows(
     }
     if (txn.type === TRANSACTION_TYPES.CREDIT_CARD_CHARGE) {
       return creditCardChargeRowConverter(txn, accounts, categories);
+    }
+    if (txn.type === TRANSACTION_TYPES.PAYMENT) {
+      return paymentRowConverter(txn, accounts, categories);
     }
     return defaultRowConverter(txn, accounts, categories);
   });
