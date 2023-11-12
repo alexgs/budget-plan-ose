@@ -1,0 +1,54 @@
+/*
+ * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed
+ * under the Open Software License version 3.0.
+ */
+
+import styled from '@emotion/styled';
+import { Button } from '@mantine/core';
+import React from 'react';
+import { Page } from '../../components';
+
+const ButtonContainer = styled.div({ marginLeft: '2rem' });
+
+function AdminPage() {
+  const [disableAll, setDisableAll] = React.useState(false);
+
+  async function handleFixCreditCardChargesClick() {
+    setDisableAll(true);
+    await fetch('/api/v2/admin/fix-credit-card-charges', { method: 'POST' });
+    setDisableAll(false);
+  }
+
+  async function handleReconcileClick() {
+    setDisableAll(true);
+    await fetch('/api/v2/admin/reconcile-all-transactions', { method: 'POST' });
+    setDisableAll(false);
+  }
+
+  return (
+    <Page>
+      <h1>Administration</h1>
+      <div>
+        <p>Fix credit card charges that are missing reservations.</p>
+        <ButtonContainer>
+          <Button
+            disabled={disableAll}
+            onClick={handleFixCreditCardChargesClick}
+          >
+            Fix
+          </Button>
+        </ButtonContainer>
+      </div>
+      <div>
+        <p>Reconcile all transactions.</p>
+        <ButtonContainer>
+          <Button disabled={disableAll} onClick={handleReconcileClick}>
+            Reconcile
+          </Button>
+        </ButtonContainer>
+      </div>
+    </Page>
+  );
+}
+
+export default AdminPage;

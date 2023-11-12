@@ -33,7 +33,8 @@ export async function fixCreditCardCharges() {
   });
 
   // Look at each charge and see if it has a reservation; if not, add one
-  txns.forEach((txn) => {
+  for (let i = 0; i < txns.length; i++) {
+    const txn = txns[i];
     const account = accounts.find(
       (acct) => acct.id === txn.accounts[0].accountId
     );
@@ -53,7 +54,7 @@ export async function fixCreditCardCharges() {
         isCredit: true,
         recordId: txn.id,
       };
-      prisma.transactionCategory.create({ data: reservationSubrecord });
+      await prisma.transactionCategory.create({ data: reservationSubrecord });
     }
-  });
+  }
 }
