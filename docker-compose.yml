@@ -4,7 +4,7 @@ services:
     container_name: database
     restart: unless-stopped
     networks:
-      - app-network
+      - bpl-network
     ports:
       - "${DATABASE_PORT}:5432"
     volumes:
@@ -13,6 +13,6 @@ services:
     working_dir: /host
 
 networks:
-  app-network:
+  bpl-network:
     driver: bridge
-    name: app-network
+    name: bpl-network

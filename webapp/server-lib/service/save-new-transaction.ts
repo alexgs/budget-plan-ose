@@ -11,6 +11,7 @@ export async function saveNewTransaction(
   categorySubrecords: ApiSchema.NewCategorySubrecord[]
 ): Promise<Transaction> {
   // TODO If we tracked the balance for the base transaction, then we could detect when there are missing subrecords
+  // TODO All of the DB updates in here should be wrapped in a single DB transaction
 
   const txnBase = await database.saveNewTransactionBase(base);
   await Promise.all(

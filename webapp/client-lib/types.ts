@@ -50,10 +50,11 @@ export interface RawCategory {
 
 export interface TransactionRow {
   account: string;
-  amount: number;
   category: string;
-  date: Date;
+  credit: number;
+  date: string;
+  debit: number;
   description: string;
-  order: number;
-  status: string;
+  notes: string;
+  subrecords?: TransactionRow[];
 }
