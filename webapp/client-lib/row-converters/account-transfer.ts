@@ -13,7 +13,7 @@ export default function accountTransferRowConverter(
   accounts?: ModelSchema.Account[]
 ): TransactionRow {
   if (txn.accounts.length !== 2 && txn.categories.length !== 0) {
-    console.warn(`Invalid account transfer transaction: ${txn.id}`);
+    console.log(`Invalid account transfer transaction: ${txn.id}`);
   }
 
   let fromSubrecord = null;

@@ -10,11 +10,11 @@ import getAccountNameIfAvailable from './get-account-name-if-available';
 import getCategoryNameIfAvailable from './get-category-name-if-available';
 
 export default function defaultRowConverter(
-  transaction: ModelSchema.Transaction,
+  txn: ModelSchema.Transaction,
   accounts?: ModelSchema.Account[],
   categories?: ModelSchema.Category[],
 ): TransactionRow {
-  const accountSubrecords = transaction.accounts.map(
+  const accountSubrecords = txn.accounts.map(
     (account): TransactionRow => ({
       date: '',
       account: getAccountNameIfAvailable(account.accountId, accounts),
@@ -25,7 +25,7 @@ export default function defaultRowConverter(
       debit: account.debit,
     })
   );
-  const categorySubrecords = transaction.categories.map(
+  const categorySubrecords = txn.categories.map(
     (category): TransactionRow => ({
       date: '',
       account: '',
@@ -40,9 +40,9 @@ export default function defaultRowConverter(
     account: '',
     credit: 0,
     category: '',
-    date: formatClientDate(transaction.date),
+    date: formatClientDate(txn.date),
     debit: 0,
-    description: transaction.description,
+    description: txn.description,
     notes: '',
     subrecords: accountSubrecords.concat(categorySubrecords),
   };
