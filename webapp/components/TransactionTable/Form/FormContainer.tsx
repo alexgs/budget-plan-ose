@@ -115,7 +115,7 @@ export const FormContainer: React.FC<Props> = (props) => {
       return props.data.type;
     }
 
-    const accountType = getAccountType(props.accountData[0].id);
+    const accountType = getAccountType(props.lastUsedAccountId || props.accountData[0].id);
     if (accountType === ACCOUNT_TYPES.CREDIT_CARD) {
       return TRANSACTION_TYPES.CREDIT_CARD_CHARGE;
     } else {
