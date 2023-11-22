@@ -1,5 +1,6 @@
 /*
- * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
+ * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed
+ * under the Open Software License version 3.0.
  */
 
 import { faPencil } from '@fortawesome/pro-regular-svg-icons';
@@ -37,7 +38,7 @@ export const CreditCardChargeRow: React.FC<Props> = (props) => {
     const catData = props.categoryData.filter((cat) =>
       subrecordCategoryIds.includes(cat.id)
     );
-    if (catData.length !== 2) {
+    if (catData.length < 2) {
       throw new Error('Something went wrong (part 1)');
     }
     // Get the ID of the user (i.e. non-system) category
