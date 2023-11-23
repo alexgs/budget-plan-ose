@@ -15,6 +15,7 @@ import React from 'react';
 import { TransactionRow } from '../../client-lib/types';
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
 import { BodyCell } from './BodyCell';
+import { BodyRow } from './BodyRow';
 import { fuzzyFilter } from './fuzzy-filter';
 import { getColumnDefs } from './get-column-defs';
 import { HeaderCell, Resizer } from './HeaderCell';
@@ -49,6 +50,27 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
     },
   });
 
+  function renderBodyRows() {
+    return table.getRowModel().rows.map((row) => (
+      <BodyRow key={row.id} row={row} />
+    ));
+  }
+
+  function renderNewTxnForm() {
+    if (props.showNewTxnForm) {
+      return (
+        <tr>
+          <td colSpan={columns.length}>
+            <div style={{ padding: '1rem' }}>
+              <h3>New transaction form goes here</h3>
+            </div>
+          </td>
+        </tr>
+      );
+    }
+    return null;
+  }
+
   return (
     <Table style={{ width: table.getCenterTotalSize() }}>
       <thead>
@@ -81,30 +103,8 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
         ))}
       </thead>
       <tbody>
-        {(props.showNewTxnForm) ? (
-          <tr>
-            <td colSpan={columns.length}>
-              <div style={{ padding: '1rem' }}>
-                <h3>New transaction form goes here</h3>
-              </div>
-            </td>
-          </tr>
-        ) : null}
-        {table.getRowModel().rows.map((row) => (
-          <tr key={row.id}>
-            {row.getVisibleCells().map((cell) => (
-              <BodyCell
-                key={cell.id}
-                style={{
-                  maxWidth: cell.column.getSize(),
-                  width: cell.column.getSize(),
-                }}
-              >
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </BodyCell>
-            ))}
-          </tr>
-        ))}
+        {renderNewTxnForm()}
+        {renderBodyRows()}
       </tbody>
     </Table>
   );
