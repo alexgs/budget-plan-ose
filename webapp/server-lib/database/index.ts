@@ -11,6 +11,7 @@ import { deleteTransaction } from './delete-transaction';
 import { ensureAccount } from './ensure-account';
 import { ensureCategory } from './ensure-category';
 import { fixMissingReservations } from './fix-missing-reservations';
+import { fixZeroAccountSubrecords } from './fix-zero-account-subrecords';
 import { getAccount } from './get-account';
 import { getAccountsExceptIds } from './get-accounts-except-ids';
 import { getCategoriesExceptIds } from './get-categories-except-ids';
@@ -48,6 +49,7 @@ export const database = {
   getTransaction,
   getTransactions,
   fixMissingReservations,
+  fixZeroAccountSubrecords,
   moveTransactionsToNewCategory,
   reconcileAllTransactions,
   removeExtraCategorySubrecords,

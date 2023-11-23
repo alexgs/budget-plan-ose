@@ -4,6 +4,7 @@
  */
 
 import { fixMissingReservations } from './fix-missing-reservations';
+import { fixZeroAccountSubrecords } from './fix-zero-account-subrecords';
 import { getAllTransactions } from './get-all-transactions';
 import { getPublicAccounts } from './get-public-accounts';
 import { getPublicCategories } from './get-public-categories';
@@ -17,6 +18,7 @@ export const service = {
   getPublicAccounts,
   getPublicCategories,
   fixMissingReservations,
+  fixZeroAccountSubrecords,
   reconcileAllTransactions,
   removeExtraCategorySubrecords,
 };

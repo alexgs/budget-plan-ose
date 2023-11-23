@@ -19,6 +19,12 @@ function AdminPage() {
     setDisableAll(false);
   }
 
+  async function handleFixZeroAccountSubrecordsClick() {
+    setDisableAll(true);
+    await fetch('/api/v2/admin/fix-zero-account-subrecords', { method: 'POST' });
+    setDisableAll(false);
+  }
+
   async function handleReconcileClick() {
     setDisableAll(true);
     await fetch('/api/v2/admin/reconcile-all-transactions', { method: 'POST' });
@@ -34,6 +40,17 @@ function AdminPage() {
   return (
     <Page>
       <h1>Administration</h1>
+      <div>
+        <p>Fix credit card charge account subrecords that have $0 amount.</p>
+        <ButtonContainer>
+          <Button
+            disabled={disableAll}
+            onClick={handleFixZeroAccountSubrecordsClick}
+          >
+            Fix
+          </Button>
+        </ButtonContainer>
+      </div>
       <div>
         <p>Fix credit card charges that are missing reservations.</p>
         <ButtonContainer>
