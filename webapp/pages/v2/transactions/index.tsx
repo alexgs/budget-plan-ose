@@ -33,7 +33,11 @@ function NewTablePage() {
   const [debouncedFilter] = useDebouncedValue(globalFilter, 200);
 
   function handleAddTxnClick() {
-    setShowNewTxnForm(!showNewTxnForm);
+    setShowNewTxnForm(true);
+  }
+
+  function handleCancelClick() {
+    setShowNewTxnForm(false);
   }
 
   if (transactions) {
@@ -57,6 +61,7 @@ function NewTablePage() {
           data={data}
           filter={debouncedFilter}
           showNewTxnForm={showNewTxnForm}
+          onCancel={handleCancelClick}
         />
       </Page>
     );
