@@ -25,6 +25,12 @@ function AdminPage() {
     setDisableAll(false);
   }
 
+  async function handleRemoveExtraCategoriesClick() {
+    setDisableAll(true);
+    await fetch('/api/v2/admin/remove-extra-category-subrecords', { method: 'POST' });
+    setDisableAll(false);
+  }
+
   return (
     <Page>
       <h1>Administration</h1>
@@ -44,6 +50,17 @@ function AdminPage() {
         <ButtonContainer>
           <Button disabled={disableAll} onClick={handleReconcileClick}>
             Reconcile
+          </Button>
+        </ButtonContainer>
+      </div>
+      <div>
+        <p>Remove extraneous category subrecords (i.e. ones for $0).</p>
+        <ButtonContainer>
+          <Button
+            disabled={disableAll}
+            onClick={handleRemoveExtraCategoriesClick}
+          >
+            Remove
           </Button>
         </ButtonContainer>
       </div>

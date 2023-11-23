@@ -8,6 +8,9 @@ import { getAllTransactions } from './get-all-transactions';
 import { getPublicAccounts } from './get-public-accounts';
 import { getPublicCategories } from './get-public-categories';
 import { reconcileAllTransactions } from './reconcile-all-transactions';
+import {
+  removeExtraCategorySubrecords
+} from './remove-extra-category-subrecords';
 
 export const service = {
   getAllTransactions,
@@ -15,4 +18,5 @@ export const service = {
   getPublicCategories,
   fixMissingReservations,
   reconcileAllTransactions,
+  removeExtraCategorySubrecords,
 };

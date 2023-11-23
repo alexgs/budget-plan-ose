@@ -21,6 +21,9 @@ import {
   moveTransactionsToNewCategory
 } from './move-transactions-to-new-category';
 import { reconcileAllTransactions } from './reconcile-all-transactions';
+import {
+  removeExtraCategorySubrecords
+} from './remove-extra-category-subrecords';
 import { saveNewAccountSubrecord } from './save-new-account-subrecord';
 import { saveNewCategorySubrecord } from './save-new-category-subrecord';
 import { saveNewTransactionBase } from './save-new-transaction-base';
@@ -47,6 +50,7 @@ export const database = {
   fixMissingReservations,
   moveTransactionsToNewCategory,
   reconcileAllTransactions,
+  removeExtraCategorySubrecords,
   saveNewAccountSubrecord,
   saveNewCategorySubrecord,
   saveNewTransactionBase,
