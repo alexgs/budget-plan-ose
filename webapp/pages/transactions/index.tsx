@@ -6,26 +6,20 @@ import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader } from '@mantine/core';
 import React from 'react';
-import useSWR from 'swr';
 
+import { api } from '../../client-lib';
 import { TransactionTable, Page } from '../../components';
-import { Account, ApiSchema, Category } from '../../shared-lib';
+import { ApiSchema } from '../../shared-lib';
 
 const Transactions: React.FC = () => {
-  const { error: txnError, data: txnData } = useSWR<ApiSchema.Transaction[]>(
-    '/api/transactions',
-    { refreshInterval: 1000 }
-  );
-
-  const { error: accountError, data: accountData } = useSWR<Account[]>(
-    '/api/accounts',
-    { refreshInterval: 1000 }
-  );
-
-  const { error: categoryError, data: categoryData } = useSWR<Category[]>(
-    '/api/categories',
-    { refreshInterval: 1000 }
-  );
+  const { error: txnError, transactions: txnData } =
+    api.useAllTransactions() as {
+      error?: Error;
+      transactions?: ApiSchema.Transaction[];
+    };
+  const { error: accountError, accounts: accountData } = api.useAllAccounts();
+  const { error: categoryError, categories: categoryData } =
+    api.useAllCategories();
 
   const anyError = accountError ?? categoryError ?? txnError;
   if (anyError) {

@@ -6,18 +6,16 @@ import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader } from '@mantine/core';
 import { FC } from 'react';
-import useSWR from 'swr';
 
-import { buildCategoryTree, getCategoryList } from '../../client-lib';
-import { FinancialAccount, RawCategory } from '../../client-lib/types';
+import { api, buildCategoryTree, getCategoryList } from '../../client-lib';
 import { Page } from '../../components';
 
 const NewTransaction: FC = () => {
   // Get accounts and categories
-  const { error: accountsError, data: accountsData } =
-    useSWR<FinancialAccount[]>('/api/accounts');
-  const { error: categoriesError, data: categoriesData } =
-    useSWR<RawCategory[]>('/api/categories');
+  const { error: accountsError, accounts: accountsData } =
+    api.useAllAccounts();
+  const { error: categoriesError, categories: categoriesData } =
+    api.useAllCategories();
   if (accountsError || categoriesError) {
     console.error(accountsError ?? categoriesError);
     return (

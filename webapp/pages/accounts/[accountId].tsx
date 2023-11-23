@@ -8,9 +8,10 @@ import { Alert, Loader } from '@mantine/core';
 import { useRouter } from 'next/router';
 import React from 'react';
 import useSWR from 'swr';
+import { api } from '../../client-lib';
 
 import { Page, TransactionTable } from '../../components';
-import { Account, ApiSchema, Category } from '../../shared-lib';
+import { ApiSchema } from '../../shared-lib';
 
 const AccountDetail: React.FC = () => {
   const router = useRouter()
@@ -21,15 +22,9 @@ const AccountDetail: React.FC = () => {
     { refreshInterval: 1000 }
   );
 
-  const { error: accountError, data: accountData } = useSWR<Account[]>(
-    '/api/accounts',
-    { refreshInterval: 1000 }
-  );
+  const { error: accountError, accounts: accountData } = api.useAllAccounts();
 
-  const { error: categoryError, data: categoryData } = useSWR<Category[]>(
-    '/api/categories',
-    { refreshInterval: 1000 }
-  );
+  const { error: categoryError, categories: categoryData } = api.useAllCategories();
 
   const anyError = accountError ?? categoryError ?? txnError;
   if (anyError) {

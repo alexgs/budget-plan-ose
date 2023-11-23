@@ -2,18 +2,15 @@ import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader, Table } from '@mantine/core';
 import React from 'react';
-import useSWR from 'swr';
-import { formatAmount } from '../../client-lib';
 
+import { api, formatAmount } from '../../client-lib';
 import { FinancialAccount } from '../../client-lib/types';
 import { EditAccountButton, NewAccountButton, Page } from '../../components';
 import { space } from '../../components/tokens';
 import { getFriendlyAccountType } from '../../shared-lib';
 
 const AccountsPage: React.FC = () => {
-  const { error, data: accountsData } = useSWR('/api/accounts', {
-    refreshInterval: 1000,
-  });
+  const { error, accounts: accountsData } = api.useAllAccounts();
   if (error) {
     console.error(error);
     return (

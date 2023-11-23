@@ -11,15 +11,13 @@ import { Alert, Divider, Loader, NavLink } from '@mantine/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
-import useSWR from 'swr';
+import { api } from '../../client-lib';
 import { FinancialAccount } from '../../client-lib/types';
 
 export const AccountsList: React.FC = () => {
   const router = useRouter();
 
-  const { error, data: accountsData } = useSWR('/api/accounts', {
-    refreshInterval: 1000,
-  });
+  const { error, accounts: accountsData } = api.useAllAccounts();
   if (error) {
     console.error(error);
     return (

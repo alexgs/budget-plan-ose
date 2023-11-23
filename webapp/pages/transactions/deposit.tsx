@@ -6,22 +6,18 @@ import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
-import { FinancialAccount } from '@prisma/client';
 import React from 'react';
-import useSWR from 'swr';
 
-import { buildCategoryTree, getCategoryList } from '../../client-lib';
-import { api } from '../../client-lib/api';
-import { RawCategory } from '../../client-lib/types';
+import { api, buildCategoryTree, getCategoryList } from '../../client-lib';
 import { DepositForm, Page } from '../../components';
 import { ApiSchema } from '../../shared-lib';
 
 const Deposit: React.FC = () => {
   // Get accounts and categories
-  const { error: accountsError, data: accountsData } =
-    useSWR<FinancialAccount[]>('/api/accounts');
-  const { error: categoriesError, data: categoriesData } =
-    useSWR<RawCategory[]>('/api/categories');
+  const { error: accountsError, accounts: accountsData } =
+    api.useAllAccounts();
+  const { error: categoriesError, categories: categoriesData } =
+    api.useAllCategories();
   if (accountsError || categoriesError) {
     console.error(accountsError ?? categoriesError);
     return (

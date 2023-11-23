@@ -73,7 +73,7 @@ export const Transaction = z.object({
     return typeof value === 'string' ? dateRegex.test(value) : false;
   }),
   description: z.string(),
-  order: z.number().nullable(),
+  order: z.number(),
   templateId: z.string().uuid().nullable(),
   type: z.nativeEnum(TRANSACTION_TYPES),
   createdAt: z.string().datetime(),

@@ -6,9 +6,8 @@ import { faCircleExclamation } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader } from '@mantine/core';
 import { FC } from 'react';
-import useSWR from 'swr';
 
-import { buildCategoryTree, getCategoryList } from '../../client-lib';
+import { api, buildCategoryTree, getCategoryList } from '../../client-lib';
 import { NO_PARENT_CATEGORY, ApiSchema } from '../../shared-lib';
 
 import { AddCategoryForm } from './AddCategoryForm';
@@ -21,7 +20,7 @@ interface Props {
 }
 
 export const CategoryModal: FC<Props> = (props) => {
-  const { error, data: catData } = useSWR('/api/categories');
+  const { error, categories: catData } = api.useAllCategories();
   if (error) {
     console.error(error);
     return (

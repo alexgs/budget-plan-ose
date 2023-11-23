@@ -6,9 +6,9 @@ import { faTriangleExclamation } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Loader, Table } from '@mantine/core';
 import React from 'react';
-import useSWR from 'swr';
 
 import {
+  api,
   buildCategoryTree,
   formatAmount,
   getCategoryList,
@@ -24,9 +24,7 @@ import { Category } from '../shared-lib';
 
 function HomePage() {
   // Get sorted categories and balances
-  const { error, data: catData } = useSWR<Category[]>('/api/categories', {
-    refreshInterval: 1000,
-  });
+  const { error, categories: catData } = api.useAllCategories();
   if (error) {
     console.error(error);
     return (
