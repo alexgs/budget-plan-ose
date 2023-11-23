@@ -9,6 +9,7 @@ import { TransactionRow } from '../types';
 import accountTransferRowConverter from './account-transfer';
 import creditCardChargeRowConverter from './credit-card-charge';
 import defaultRowConverter from './default';
+import depositRowConverter from './deposit';
 import paymentRowConverter from './payment';
 
 export function getRows(
@@ -22,6 +23,9 @@ export function getRows(
     }
     if (txn.type === TRANSACTION_TYPES.CREDIT_CARD_CHARGE) {
       return creditCardChargeRowConverter(txn, accounts, categories);
+    }
+    if (txn.type === TRANSACTION_TYPES.DEPOSIT) {
+      return depositRowConverter(txn, accounts, categories);
     }
     if (txn.type === TRANSACTION_TYPES.PAYMENT) {
       return paymentRowConverter(txn, accounts, categories);
