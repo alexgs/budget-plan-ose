@@ -7,6 +7,7 @@ import { TRANSACTION_TYPES } from '../../shared-lib';
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
 import { TransactionRow } from '../types';
 import accountTransferRowConverter from './account-transfer';
+import categoryTransferRowConverter from './category-transfer';
 import creditCardChargeRowConverter from './credit-card-charge';
 import creditCardPaymentRowConverter from './credit-card-payment';
 import defaultRowConverter from './default';
@@ -21,6 +22,9 @@ export function getRows(
   return transactions.map((txn) => {
     if (txn.type === TRANSACTION_TYPES.ACCOUNT_TRANSFER) {
       return accountTransferRowConverter(txn, accounts);
+    }
+    if (txn.type === TRANSACTION_TYPES.CATEGORY_TRANSFER) {
+      return categoryTransferRowConverter(txn, accounts);
     }
     if (txn.type === TRANSACTION_TYPES.CREDIT_CARD_CHARGE) {
       return creditCardChargeRowConverter(txn, accounts, categories);
