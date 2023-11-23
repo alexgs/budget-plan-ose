@@ -6,13 +6,13 @@
 import { TRANSACTION_TYPES } from '../../shared-lib';
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
 import { TransactionRow } from '../types';
-import accountTransferRowConverter from './account-transfer';
-import categoryTransferRowConverter from './category-transfer';
-import creditCardChargeRowConverter from './credit-card-charge';
-import creditCardPaymentRowConverter from './credit-card-payment';
-import defaultRowConverter from './default';
-import depositRowConverter from './deposit';
-import paymentRowConverter from './payment';
+import { accountTransferRowConverter } from './account-transfer';
+import { categoryTransferRowConverter } from './category-transfer';
+import { creditCardChargeRowConverter } from './credit-card-charge';
+import { creditCardPaymentRowConverter } from './credit-card-payment';
+import { defaultRowConverter } from './default';
+import { depositRowConverter } from './deposit';
+import { paymentRowConverter } from './payment';
 
 export function getRows(
   transactions: ModelSchema.Transaction[],

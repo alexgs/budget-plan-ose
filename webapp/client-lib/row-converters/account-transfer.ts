@@ -8,7 +8,7 @@ import { formatClientDate } from '../format-client-date';
 import { TransactionRow } from '../types';
 import { getAccountNameIfAvailable } from './get-account-name-if-available';
 
-export default function accountTransferRowConverter(
+export function accountTransferRowConverter(
   txn: ModelSchema.Transaction,
   accounts?: ModelSchema.Account[]
 ): TransactionRow {

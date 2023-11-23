@@ -28,7 +28,7 @@ function lookupReservationCategoryId(
   return getReservationCategoryId(creditCardAccount);
 }
 
-export default function creditCardChargeRowConverter(
+export function creditCardChargeRowConverter(
   txn: ModelSchema.Transaction,
   accounts?: ModelSchema.Account[],
   categories?: ModelSchema.Category[]

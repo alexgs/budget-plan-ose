@@ -9,7 +9,7 @@ import { TransactionRow } from '../types';
 import { getAccountNameIfAvailable } from './get-account-name-if-available';
 import { getCategoryNameIfAvailable } from './get-category-name-if-available';
 
-export default function defaultRowConverter(
+export function defaultRowConverter(
   txn: ModelSchema.Transaction,
   accounts?: ModelSchema.Account[],
   categories?: ModelSchema.Category[],
