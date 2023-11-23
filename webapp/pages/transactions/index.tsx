@@ -12,11 +12,7 @@ import { TransactionTable, Page } from '../../components';
 import { ApiSchema } from '../../shared-lib';
 
 const Transactions: React.FC = () => {
-  const { error: txnError, transactions: txnData } =
-    api.useAllTransactions() as {
-      error?: Error;
-      transactions?: ApiSchema.Transaction[];
-    };
+  const { error: txnError, transactions: txnData } = api.useAllTransactions();
   const { error: accountError, accounts: accountData } = api.useAllAccounts();
   const { error: categoryError, categories: categoryData } =
     api.useAllCategories();

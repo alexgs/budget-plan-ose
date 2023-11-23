@@ -14,17 +14,16 @@ import { Page, TransactionTable } from '../../components';
 import { ApiSchema } from '../../shared-lib';
 
 const AccountDetail: React.FC = () => {
-  const router = useRouter()
+  const router = useRouter();
   const { accountId } = router.query as { accountId: string };
 
-  const { error: txnError, data: txnData } = useSWR<ApiSchema.Transaction[]>(
-    `/api/transactions?accountId=${accountId}`,
-    { refreshInterval: 1000 }
-  );
+  const { error: txnError, transactions: txnData } =
+    api.useAccountTransactions(accountId);
 
   const { error: accountError, accounts: accountData } = api.useAllAccounts();
 
-  const { error: categoryError, categories: categoryData } = api.useAllCategories();
+  const { error: categoryError, categories: categoryData } =
+    api.useAllCategories();
 
   const anyError = accountError ?? categoryError ?? txnError;
   if (anyError) {

@@ -9,15 +9,17 @@ import { ApiSchema } from '../../shared-lib/schema-v2/api-schema';
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
 import { transformers } from '../../shared-lib/transformers';
 
-interface AllTransactionsResponse {
+interface AccountTransactionsResponse {
   error?: Error;
   isLoading: boolean;
   transactions?: ModelSchema.Transaction[];
 }
 
-export function useAllTransactions(): AllTransactionsResponse {
+export function useAccountTransactions(
+  accountId: string
+): AccountTransactionsResponse {
   const { data, error, isLoading } = useSWR<ApiSchema.Transaction[], Error>(
-    `/api/v2/transactions`,
+    `/api/v2/transactions?accountId=${accountId}`,
     { refreshInterval: 1000 },
   );
   const transactions = React.useMemo(
