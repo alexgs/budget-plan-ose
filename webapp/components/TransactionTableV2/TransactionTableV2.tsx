@@ -23,6 +23,7 @@ interface Props {
   accounts?: ModelSchema.Account[];
   data: TransactionRow[];
   filter?: string;
+  showNewTxnForm?: boolean;
 }
 
 const columns = getColumnDefs();
@@ -80,6 +81,15 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
         ))}
       </thead>
       <tbody>
+        {(props.showNewTxnForm) ? (
+          <tr>
+            <td colSpan={columns.length}>
+              <div style={{ padding: '1rem' }}>
+                <h3>New transaction form goes here</h3>
+              </div>
+            </td>
+          </tr>
+        ) : null}
         {table.getRowModel().rows.map((row) => (
           <tr key={row.id}>
             {row.getVisibleCells().map((cell) => (
