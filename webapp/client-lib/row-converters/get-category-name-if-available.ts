@@ -6,7 +6,7 @@
 import { getFriendlyCategoryName } from '../../shared-lib'; // TODO This function should live in `client-lib`
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
 
-export default function getCategoryNameIfAvailable(
+export function getCategoryNameIfAvailable(
   categoryId: string,
   categories?: ModelSchema.Category[]
 ) {

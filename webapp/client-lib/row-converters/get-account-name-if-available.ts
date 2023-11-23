@@ -6,7 +6,7 @@
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
 import { getFriendlyAccountName } from '../get-friendly-account-name';
 
-export default function getAccountNameIfAvailable(
+export function getAccountNameIfAvailable(
   accountId: string,
   accounts?: ModelSchema.Account[]
 ) {

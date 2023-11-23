@@ -7,8 +7,8 @@ import { getReservationCategoryId } from '../../shared-lib/get-reservation-categ
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
 import { formatClientDate } from '../format-client-date';
 import { TransactionRow } from '../types';
-import getAccountNameIfAvailable from './get-account-name-if-available';
-import getCategoryNameIfAvailable from './get-category-name-if-available';
+import { getAccountNameIfAvailable } from './get-account-name-if-available';
+import { getCategoryNameIfAvailable } from './get-category-name-if-available';
 
 function lookupReservationCategoryId(
   creditCardAccountId: string,
@@ -28,7 +28,7 @@ function lookupReservationCategoryId(
   return getReservationCategoryId(creditCardAccount);
 }
 
-export default function creditCardChargeRowConverter(
+export function creditCardChargeRowConverter(
   txn: ModelSchema.Transaction,
   accounts?: ModelSchema.Account[],
   categories?: ModelSchema.Category[]
