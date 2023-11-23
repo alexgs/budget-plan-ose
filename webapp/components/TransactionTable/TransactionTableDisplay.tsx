@@ -6,9 +6,8 @@ import styled from '@emotion/styled';
 import { Modal, UnstyledButton } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import React from 'react';
-import { buildCategoryTree, getCategoryList } from '../../client-lib';
 
-import { api } from '../../client-lib/api';
+import { api, buildCategoryTree, getCategoryList } from '../../client-lib';
 import { txnToUpdateTxn } from '../../client-lib/txn-to-update-txn';
 import {
   TRANSACTION_TYPES,
@@ -16,6 +15,7 @@ import {
   ApiSchema,
   Category,
 } from '../../shared-lib';
+import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
 import { DepositForm } from '../DepositForm';
 import { space } from '../tokens';
 
@@ -46,7 +46,7 @@ interface Props {
   accountData: Account[];
   accountId?: string;
   categoryData: Category[];
-  txnData: ApiSchema.Transaction[];
+  txnData: ModelSchema.Transaction[];
 }
 
 export const TransactionTableDisplay: React.FC<Props> = (props) => {

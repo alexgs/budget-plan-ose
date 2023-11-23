@@ -3,12 +3,14 @@
  */
 
 import { ApiSchema, TransactionType } from '../shared-lib';
+import { ModelSchema } from '../shared-lib/schema-v2/model-schema';
 
 export function txnToUpdateTxn(
-  txn: ApiSchema.Transaction
+  txn: ModelSchema.Transaction
 ): ApiSchema.UpdateTransaction {
   const temp: Partial<ApiSchema.Transaction> = {
     ...txn,
+    date: txn.date.toISOString(),
     id: txn.id as string,
     type: txn.type as TransactionType,
   };
