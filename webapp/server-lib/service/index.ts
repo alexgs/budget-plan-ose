@@ -11,7 +11,6 @@ import { getAccountType } from './get-account-type';
 import { getAllTransactions } from './get-all-transactions';
 import { getPublicAccounts } from './get-public-accounts';
 import { getPublicCategories } from './get-public-categories';
-import { getReservationCategoryId } from './get-reservation-category-id';
 import { processAccountTransfer } from './process-account-transfer';
 import { processCategoryTransfer } from './process-category-transfer';
 import { processCreditCardCharge } from './process-credit-card-charge';
@@ -31,7 +30,6 @@ export const service = {
   getAllTransactions,
   getPublicAccounts,
   getPublicCategories,
-  getReservationCategoryId,
   processTransaction,
   updateCategory,
   validateTxnPayload,

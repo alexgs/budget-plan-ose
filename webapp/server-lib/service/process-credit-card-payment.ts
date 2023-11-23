@@ -2,7 +2,12 @@
  * Copyright 2022-2023 Phillip Gates-Shannon. All rights reserved. Licensed under the Open Software License version 3.0.
  */
 
-import { ACCOUNT_TYPES, ApiSchema, Transaction } from '../../shared-lib';
+import {
+  ACCOUNT_TYPES,
+  ApiSchema,
+  Transaction,
+  getReservationCategoryId,
+} from '../../shared-lib';
 import { database } from '../database';
 import { service } from './index';
 
@@ -18,7 +23,7 @@ async function determineCategoryId(
     accounts[0].accountType === ACCOUNT_TYPES.CREDIT_CARD
       ? accounts[0]
       : accounts[1];
-  return service.getReservationCategoryId(creditCardAccount);
+  return getReservationCategoryId(creditCardAccount);
 }
 
 export async function processCreditCardPayment(

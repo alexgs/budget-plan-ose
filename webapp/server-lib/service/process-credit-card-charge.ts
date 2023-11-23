@@ -6,6 +6,7 @@ import {
   Account,
   ApiSchema,
   Transaction,
+  getReservationCategoryId,
   sumSubrecords,
 } from '../../shared-lib';
 import { database } from '../database';
@@ -30,16 +31,13 @@ export async function processCreditCardCharge(
   const sum = Math.abs(sumSubrecords(categories));
   const reservationSubrecord: ApiSchema.NewCategorySubrecord = {
     amount: sum,
-    categoryId: service.getReservationCategoryId(account),
+    categoryId: getReservationCategoryId(account),
     isCredit: true,
   };
 
   return service.saveTransaction({
     ...record,
     accounts,
-    categories: [
-      ...categories,
-      reservationSubrecord,
-    ]
+    categories: [...categories, reservationSubrecord],
   });
 }
