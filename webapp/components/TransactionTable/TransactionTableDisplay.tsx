@@ -87,7 +87,7 @@ export const TransactionTableDisplay: React.FC<Props> = (props) => {
     values: ApiSchema.NewTransaction | ApiSchema.UpdateTransaction
   ) {
     setSaving(true);
-    setLastUsedAccountId(values.accounts[0].accountId);
+    setLastUsedAccountId(values.accounts[0]?.accountId ?? ''); // values.accounts[0] is undefined for category transfers
 
     let promise: Promise<Response>;
     if ('id' in values) {

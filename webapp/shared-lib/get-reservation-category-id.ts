@@ -3,11 +3,8 @@
  */
 
 import { v5 as uuidV5 } from 'uuid';
-import { ACCOUNT_TYPES, UUID_NAMESPACE, Account } from '../../shared-lib';
+import { ACCOUNT_TYPES, UUID_NAMESPACE, Account } from '.';
 
-/**
- * @deprecated Use the version from `shared-lib/get-reservation-category-id` instead.
- */
 export function getReservationCategoryId(account: Account) {
   if (account.accountType !== ACCOUNT_TYPES.CREDIT_CARD) {
     // This is a safety check for developers; it should never happen in production.
