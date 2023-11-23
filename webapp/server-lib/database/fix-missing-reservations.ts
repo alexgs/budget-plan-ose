@@ -7,7 +7,7 @@ import {
   sumSubrecords,
   TRANSACTION_TYPES,
 } from '../../shared-lib';
-import { getReservationCategoryId } from '../../shared-lib/get-reservation-category-id';
+import { getReservationCategoryId } from '../../shared-lib';
 import { DbSchema } from '../../shared-lib/schema-v2/database-schema';
 import { prisma } from '../index';
 import { service } from '../service-v2';

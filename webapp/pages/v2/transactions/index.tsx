@@ -9,18 +9,15 @@ import { Alert, Loader, TextInput } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import React from 'react';
 
-import { useAllAccounts } from '../../../client-lib/api/use-all-accounts';
-import { useAllCategories } from '../../../client-lib/api/use-all-categories';
-import { useAllTransactions } from '../../../client-lib/api/use-all-transactions';
-import { getRows } from '../../../client-lib/row-converters';
+import { api, getRows } from '../../../client-lib';
 import { TransactionRow } from '../../../client-lib/types';
 import { Page, TransactionTableV2 } from '../../../components';
 
 function NewTablePage() {
   // TODO Handle errors
-  const { error: accountsError, accounts } = useAllAccounts();
-  const { error: categoriesError, categories } = useAllCategories();
-  const { error, transactions } = useAllTransactions();
+  const { error: accountsError, accounts } = api.useAllAccounts();
+  const { error: categoriesError, categories } = api.useAllCategories();
+  const { error, transactions } = api.useAllTransactions();
   const [data, setData] = React.useState<TransactionRow[]>(() => []);
   const [globalFilter, setGlobalFilter] = React.useState('');
 

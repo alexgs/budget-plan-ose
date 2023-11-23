@@ -3,8 +3,7 @@
  * under the Open Software License version 3.0.
  */
 
-import { TRANSACTION_TYPES } from '../../shared-lib';
-import { getReservationCategoryId } from '../../shared-lib/get-reservation-category-id';
+import { TRANSACTION_TYPES, getReservationCategoryId } from '../../shared-lib';
 import { prisma } from '../index';
 import { service } from '../service-v2';
 
