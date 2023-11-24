@@ -3,10 +3,11 @@
  * under the Open Software License version 3.0.
  */
 
-import { Button, NumberInput, TextInput } from '@mantine/core';
+import { Button, NativeSelect, NumberInput, TextInput } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import React from 'react';
+import { useAllAccounts } from '../../client-lib/api/use-all-accounts';
 
 export const FORM_ID = 'transaction-form';
 
@@ -16,9 +17,20 @@ interface Props {
 }
 
 export const TransactionForm: React.FC<Props> = (props) => {
+  // TODO Handle errors
+  const { error: accountError, accounts } = useAllAccounts();
+  let accountsList: { value: string; label: string }[] = [];
+  if (accounts) {
+    accountsList = accounts
+      .map((account) => ({
+        value: account.id,
+        label: account.description,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }
   const form = useForm({
     initialValues: {
-      account: '',
+      account: accountsList[0].value,
       categories: [''],
       date: new Date(),
       description: '',
@@ -34,6 +46,7 @@ export const TransactionForm: React.FC<Props> = (props) => {
   }
 
   // TODO It will require some CSS finagling to turn off the border between rows
+  // TODO Setting `padding-left: 0; padding-right: 5px` on the input cells
   return (
     <>
       <tr>
@@ -47,7 +60,14 @@ export const TransactionForm: React.FC<Props> = (props) => {
             {...form.getInputProps('date')}
           />
         </td>
-        <td>{/* Account */}</td>
+        <td>
+          <NativeSelect
+            required
+            data={accountsList}
+            form={FORM_ID}
+            {...form.getInputProps('account')}
+          />
+        </td>
         <td>
           <TextInput
             required

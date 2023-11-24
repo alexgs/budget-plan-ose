@@ -14,6 +14,7 @@ interface Props {
 }
 
 export const BodyRow: React.FC<Props> = (props) => {
+  // TODO Set `padding: 0` on the chevron cell
   return (
     <tr key={props.row.id}>
       {props.row.getVisibleCells().map((cell) => (
