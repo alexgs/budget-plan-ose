@@ -3,9 +3,12 @@
  * under the Open Software License version 3.0.
  */
 
-import { Button, TextInput } from '@mantine/core';
+import { Button, NumberInput, TextInput } from '@mantine/core';
+import { DatePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import React from 'react';
+
+export const FORM_ID = 'transaction-form';
 
 interface Props {
   columnCount: number;
@@ -15,7 +18,13 @@ interface Props {
 export const TransactionForm: React.FC<Props> = (props) => {
   const form = useForm({
     initialValues: {
-      email: '',
+      account: '',
+      categories: [''],
+      date: new Date(),
+      description: '',
+      notes: '',
+      credit: 0,
+      debit: 0,
     },
   });
 
@@ -30,12 +39,50 @@ export const TransactionForm: React.FC<Props> = (props) => {
       <tr>
         <td />
         <td>
+          <DatePicker
+            allowFreeInput
+            required
+            form={FORM_ID}
+            inputFormat="YYYY-MM-DD"
+            {...form.getInputProps('date')}
+          />
+        </td>
+        <td>{/* Account */}</td>
+        <td>
           <TextInput
-            withAsterisk
-            form="new-txn-form"
-            label="Email"
-            placeholder="your@email.com"
-            {...form.getInputProps('email')}
+            required
+            form={FORM_ID}
+            placeholder="Payee"
+            {...form.getInputProps('description')}
+          />
+        </td>
+        <td>{/* Category */}</td>
+        <td>
+          <TextInput
+            required
+            form={FORM_ID}
+            placeholder="Notes"
+            {...form.getInputProps('Notes')}
+          />
+        </td>
+        <td>
+          <NumberInput
+            hideControls
+            required
+            decimalSeparator="."
+            form={FORM_ID}
+            precision={2}
+            {...form.getInputProps('credit')}
+          />
+        </td>
+        <td>
+          <NumberInput
+            hideControls
+            required
+            decimalSeparator="."
+            form={FORM_ID}
+            precision={2}
+            {...form.getInputProps('debit')}
           />
         </td>
       </tr>

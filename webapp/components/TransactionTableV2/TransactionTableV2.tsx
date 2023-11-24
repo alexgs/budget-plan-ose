@@ -18,7 +18,7 @@ import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
 
 import { BodyRow } from './BodyRow';
 import { HeaderCell, Resizer } from './HeaderCell';
-import { TransactionForm } from './TransactionForm';
+import { FORM_ID, TransactionForm } from './TransactionForm';
 import { fuzzyFilter } from './fuzzy-filter';
 import { getColumnDefs } from './get-column-defs';
 
@@ -73,7 +73,7 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
 
   return (
     <>
-      <form id="new-txn-form"></form>
+      <form id={FORM_ID}></form>
       <Table style={{ width: table.getCenterTotalSize() }}>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
