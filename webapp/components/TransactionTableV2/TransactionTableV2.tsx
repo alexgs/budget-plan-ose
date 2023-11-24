@@ -3,8 +3,7 @@
  * under the Open Software License version 3.0.
  */
 
-import { Button, Table, TextInput } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { Table } from '@mantine/core';
 import {
   ExpandedState,
   flexRender,
@@ -13,12 +12,15 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import React from 'react';
+
 import { TransactionRow } from '../../client-lib/types';
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
+
 import { BodyRow } from './BodyRow';
+import { HeaderCell, Resizer } from './HeaderCell';
+import { TransactionForm } from './TransactionForm';
 import { fuzzyFilter } from './fuzzy-filter';
 import { getColumnDefs } from './get-column-defs';
-import { HeaderCell, Resizer } from './HeaderCell';
 
 interface Props {
   accounts?: ModelSchema.Account[];
@@ -32,12 +34,6 @@ const columns = getColumnDefs();
 
 export const TransactionTableV2: React.FC<Props> = (props) => {
   const [expanded, setExpanded] = React.useState<ExpandedState>({});
-
-  const form = useForm({
-    initialValues: {
-      email: '',
-    },
-  });
 
   const table = useReactTable({
     columns,
@@ -63,33 +59,13 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
       .rows.map((row) => <BodyRow key={row.id} row={row} />);
   }
 
-  function handleCancelClick() {
-    props.onCancel();
-  }
-
   function renderNewTxnForm() {
     if (props.showNewTxnForm) {
-      // TODO It will require some CSS finagling to turn off the border between rows
       return (
-        <>
-          <tr>
-            <td />
-            <td>
-              <TextInput
-                withAsterisk
-                form="new-txn-form"
-                label="Email"
-                placeholder="your@email.com"
-                {...form.getInputProps('email')}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td colSpan={columns.length}>
-              <Button onClick={handleCancelClick}>Cancel</Button>
-            </td>
-          </tr>
-        </>
+        <TransactionForm
+          columnCount={columns.length}
+          onCancel={props.onCancel}
+        />
       );
     }
     return null;
