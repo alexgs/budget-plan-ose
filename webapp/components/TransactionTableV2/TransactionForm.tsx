@@ -3,8 +3,12 @@
  * under the Open Software License version 3.0.
  */
 
+import styled from '@emotion/styled';
+import { faPlusCircle } from '@fortawesome/pro-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
+  Group,
   NativeSelect,
   NumberInput,
   Select,
@@ -16,6 +20,14 @@ import React from 'react';
 import { api, buildCategoryTree, getCategoryList } from '../../client-lib';
 
 export const FORM_ID = 'transaction-form';
+
+const BottomRow = styled.tr({
+  td: {
+    // This is not great, but I'm not sure how to make the CSS selector more specific
+    borderTop: 'none !important',
+    paddingTop: '0 !important',
+  },
+});
 
 interface Props {
   columnCount: number;
@@ -52,7 +64,7 @@ export const TransactionForm: React.FC<Props> = (props) => {
     initialValues: {
       account: accountsList[0].value,
       categories: categoriesList[0].value,
-      date: new Date(),
+      date: new Date(), // TODO Scrub the timezone from the date before sending it to the backend
       description: '',
       notes: '',
       credit: 0,
@@ -135,11 +147,26 @@ export const TransactionForm: React.FC<Props> = (props) => {
           />
         </td>
       </tr>
-      <tr>
-        <td colSpan={props.columnCount}>
-          <Button onClick={handleCancelClick}>Cancel</Button>
+      <BottomRow>
+        <td colSpan={4} />
+        <td>
+          <Button
+            fullWidth
+            leftIcon={<FontAwesomeIcon icon={faPlusCircle} />}
+            variant="subtle"
+          >
+            Split
+          </Button>
         </td>
-      </tr>
+        <td colSpan={3}>
+          <Group position="right">
+            <Button compact onClick={handleCancelClick} variant="subtle">
+              Cancel
+            </Button>
+            <Button>Save</Button>
+          </Group>
+        </td>
+      </BottomRow>
     </>
   );
 };
