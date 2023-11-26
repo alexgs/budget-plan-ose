@@ -3,11 +3,17 @@
  * under the Open Software License version 3.0.
  */
 
-import { Button, NativeSelect, NumberInput, TextInput } from '@mantine/core';
+import {
+  Button,
+  NativeSelect,
+  NumberInput,
+  Select,
+  TextInput,
+} from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import React from 'react';
-import { useAllAccounts } from '../../client-lib/api/use-all-accounts';
+import { api, buildCategoryTree, getCategoryList } from '../../client-lib';
 
 export const FORM_ID = 'transaction-form';
 
@@ -18,7 +24,9 @@ interface Props {
 
 export const TransactionForm: React.FC<Props> = (props) => {
   // TODO Handle errors
-  const { error: accountError, accounts } = useAllAccounts();
+  const { error: accountError, accounts } = api.useAllAccounts();
+  const { error: categoryError, categories } = api.useAllCategories();
+
   let accountsList: { value: string; label: string }[] = [];
   if (accounts) {
     accountsList = accounts
@@ -28,10 +36,22 @@ export const TransactionForm: React.FC<Props> = (props) => {
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
   }
+
+  let categoriesList: { value: string; label: string }[] = [];
+  if (categories) {
+    categoriesList = getCategoryList(buildCategoryTree(categories))
+      .filter((cat) => cat.isLeaf)
+      .map((cat) => ({
+        value: cat.id,
+        label: cat.label,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }
+
   const form = useForm({
     initialValues: {
       account: accountsList[0].value,
-      categories: [''],
+      categories: categoriesList[0].value,
       date: new Date(),
       description: '',
       notes: '',
@@ -46,7 +66,7 @@ export const TransactionForm: React.FC<Props> = (props) => {
   }
 
   // TODO It will require some CSS finagling to turn off the border between rows
-  // TODO Setting `padding-left: 0; padding-right: 5px` on the input cells
+  // TODO Set `padding-left: 0; padding-right: 5px` on the input cells
   return (
     <>
       <tr>
@@ -76,7 +96,16 @@ export const TransactionForm: React.FC<Props> = (props) => {
             {...form.getInputProps('description')}
           />
         </td>
-        <td>{/* Category */}</td>
+        <td>
+          <Select
+            required
+            searchable
+            switchDirectionOnFlip
+            data={categoriesList}
+            form={FORM_ID}
+            {...form.getInputProps('categories')}
+          />
+        </td>
         <td>
           <TextInput
             required
