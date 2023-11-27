@@ -21,11 +21,20 @@ import { api, buildCategoryTree, getCategoryList } from '../../client-lib';
 
 export const FORM_ID = 'transaction-form';
 
+// Using "!important" is not great, but I'm not sure how to make the CSS selectors more specific
 const BottomRow = styled.tr({
   td: {
-    // This is not great, but I'm not sure how to make the CSS selector more specific
     borderTop: 'none !important',
     paddingTop: '0 !important',
+  },
+});
+
+const InputCell = styled.td({
+  paddingLeft: '0 !important',
+  paddingRight: '5px !important',
+
+  '& input, & select': {
+    paddingLeft: 6,
   },
 });
 
@@ -77,93 +86,99 @@ export const TransactionForm: React.FC<Props> = (props) => {
     props.onCancel();
   }
 
-  // TODO It will require some CSS finagling to turn off the border between rows
-  // TODO Set `padding-left: 0; padding-right: 5px` on the input cells
   return (
     <>
       <tr>
         <td />
-        <td>
+        <InputCell>
           <DatePicker
             allowFreeInput
             required
             form={FORM_ID}
             inputFormat="YYYY-MM-DD"
+            size="xs"
             {...form.getInputProps('date')}
           />
-        </td>
-        <td>
+        </InputCell>
+        <InputCell>
           <NativeSelect
             required
             data={accountsList}
             form={FORM_ID}
+            size="xs"
             {...form.getInputProps('account')}
           />
-        </td>
-        <td>
+        </InputCell>
+        <InputCell>
           <TextInput
             required
             form={FORM_ID}
             placeholder="Payee"
+            size="xs"
             {...form.getInputProps('description')}
           />
-        </td>
-        <td>
+        </InputCell>
+        <InputCell>
           <Select
             required
             searchable
             switchDirectionOnFlip
             data={categoriesList}
             form={FORM_ID}
+            size="xs"
             {...form.getInputProps('categories')}
           />
-        </td>
-        <td>
+        </InputCell>
+        <InputCell>
           <TextInput
             required
             form={FORM_ID}
             placeholder="Notes"
+            size="xs"
             {...form.getInputProps('Notes')}
           />
-        </td>
-        <td>
+        </InputCell>
+        <InputCell>
           <NumberInput
             hideControls
             required
             decimalSeparator="."
             form={FORM_ID}
             precision={2}
+            size="xs"
             {...form.getInputProps('credit')}
           />
-        </td>
-        <td>
+        </InputCell>
+        <InputCell>
           <NumberInput
             hideControls
             required
             decimalSeparator="."
             form={FORM_ID}
             precision={2}
+            size="xs"
             {...form.getInputProps('debit')}
           />
-        </td>
+        </InputCell>
       </tr>
       <BottomRow>
         <td colSpan={4} />
-        <td>
+        <InputCell>
           <Button
             fullWidth
             leftIcon={<FontAwesomeIcon icon={faPlusCircle} />}
+            size="xs"
             variant="subtle"
           >
             Split
           </Button>
-        </td>
+        </InputCell>
         <td colSpan={3}>
           <Group position="right">
-            <Button compact onClick={handleCancelClick} variant="subtle">
+            <Button onClick={handleCancelClick} size="xs" variant="subtle">
               Cancel
             </Button>
-            <Button>Save</Button>
+            <Button size="xs">Save</Button>
           </Group>
         </td>
       </BottomRow>

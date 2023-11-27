@@ -10,24 +10,39 @@ import { TransactionRow } from '../../client-lib/types';
 import { BodyCell } from './BodyCell';
 
 interface Props {
-  row:  Row<TransactionRow>
+  row: Row<TransactionRow>;
 }
 
 export const BodyRow: React.FC<Props> = (props) => {
-  // TODO Set `padding: 0` on the chevron cell
   return (
     <tr key={props.row.id}>
-      {props.row.getVisibleCells().map((cell) => (
-        <BodyCell
-          key={cell.id}
-          style={{
-            maxWidth: cell.column.getSize(),
-            width: cell.column.getSize(),
-          }}
-        >
-          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-        </BodyCell>
-      ))}
+      {props.row.getVisibleCells().map((cell, index) => {
+        if (index === 0) {
+          return (
+            <BodyCell
+              key={cell.id}
+              style={{
+                padding: 0,
+                maxWidth: cell.column.getSize(),
+                width: cell.column.getSize(),
+              }}
+            >
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </BodyCell>
+          );
+        }
+        return (
+          <BodyCell
+            key={cell.id}
+            style={{
+              maxWidth: cell.column.getSize(),
+              width: cell.column.getSize(),
+            }}
+          >
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </BodyCell>
+        );
+      })}
     </tr>
-  )
-}
+  );
+};

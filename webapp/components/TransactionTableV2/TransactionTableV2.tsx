@@ -74,7 +74,12 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
   return (
     <>
       <form id={FORM_ID}></form>
-      <Table style={{ width: table.getCenterTotalSize() }}>
+      <Table
+        fontSize="xs"
+        horizontalSpacing={6}
+        style={{ width: table.getCenterTotalSize() }}
+        verticalSpacing={4}
+      >
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
