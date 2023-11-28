@@ -6,18 +6,12 @@
 import styled from '@emotion/styled';
 import { faPlusCircle } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Button,
-  Group,
-  NativeSelect,
-  NumberInput,
-  Select,
-  TextInput,
-} from '@mantine/core';
-import { DatePicker } from '@mantine/dates';
+import { Button, Group } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import React from 'react';
 import { api, buildCategoryTree, getCategoryList } from '../../client-lib';
+import { MultiRowForm } from './MultiRowForm';
+import { SingleRowForm } from './SingleRowForm';
 
 export const FORM_ID = 'transaction-form';
 
@@ -29,7 +23,7 @@ const BottomRow = styled.tr({
   },
 });
 
-const InputCell = styled.td({
+export const InputCell = styled.td({
   paddingLeft: '0 !important',
   paddingRight: '5px !important',
 
@@ -37,6 +31,18 @@ const InputCell = styled.td({
     paddingLeft: 6,
   },
 });
+
+// This is somewhat confusing because (for array values) index 0 will be the
+// top-level form row, while the actual category subrecords start at index 1.
+export interface FormValues {
+  account: string;
+  categories: string[];
+  date: Date;
+  description: string;
+  notes: string[];
+  credit: number[];
+  debit: number[];
+}
 
 interface Props {
   columnCount: number;
@@ -69,15 +75,15 @@ export const TransactionForm: React.FC<Props> = (props) => {
       .sort((a, b) => a.label.localeCompare(b.label));
   }
 
-  const form = useForm({
+  const form = useForm<FormValues>({
     initialValues: {
       account: accountsList[0].value,
-      categories: categoriesList[0].value,
+      categories: [categoriesList[0].value],
       date: new Date(), // TODO Scrub the timezone from the date before sending it to the backend
       description: '',
-      notes: '',
-      credit: 0,
-      debit: 0,
+      notes: [''],
+      credit: [0],
+      debit: [0],
     },
   });
 
@@ -86,87 +92,42 @@ export const TransactionForm: React.FC<Props> = (props) => {
     props.onCancel();
   }
 
+  function handleCategoryPlusClick() {
+    form.insertListItem('categories', categoriesList[0].value);
+    form.insertListItem('notes', '');
+    form.insertListItem('credit', 0);
+    form.insertListItem('debit', 0);
+  }
+
+  function renderFormRows() {
+    if (form.values.categories.length === 1) {
+      return (
+        <SingleRowForm
+          accountsList={accountsList}
+          categoriesList={categoriesList}
+          form={form}
+        />
+      );
+    }
+    return (
+      <MultiRowForm
+        accountsList={accountsList}
+        categoriesList={categoriesList}
+        form={form}
+      />
+    );
+  }
+
   return (
     <>
-      <tr>
-        <td />
-        <InputCell>
-          <DatePicker
-            allowFreeInput
-            required
-            form={FORM_ID}
-            inputFormat="YYYY-MM-DD"
-            size="xs"
-            {...form.getInputProps('date')}
-          />
-        </InputCell>
-        <InputCell>
-          <NativeSelect
-            required
-            data={accountsList}
-            form={FORM_ID}
-            size="xs"
-            {...form.getInputProps('account')}
-          />
-        </InputCell>
-        <InputCell>
-          <TextInput
-            required
-            form={FORM_ID}
-            placeholder="Payee"
-            size="xs"
-            {...form.getInputProps('description')}
-          />
-        </InputCell>
-        <InputCell>
-          <Select
-            required
-            searchable
-            switchDirectionOnFlip
-            data={categoriesList}
-            form={FORM_ID}
-            size="xs"
-            {...form.getInputProps('categories')}
-          />
-        </InputCell>
-        <InputCell>
-          <TextInput
-            required
-            form={FORM_ID}
-            placeholder="Notes"
-            size="xs"
-            {...form.getInputProps('Notes')}
-          />
-        </InputCell>
-        <InputCell>
-          <NumberInput
-            hideControls
-            required
-            decimalSeparator="."
-            form={FORM_ID}
-            precision={2}
-            size="xs"
-            {...form.getInputProps('credit')}
-          />
-        </InputCell>
-        <InputCell>
-          <NumberInput
-            hideControls
-            required
-            decimalSeparator="."
-            form={FORM_ID}
-            precision={2}
-            size="xs"
-            {...form.getInputProps('debit')}
-          />
-        </InputCell>
-      </tr>
+      {renderFormRows()}
       <BottomRow>
         <td colSpan={4} />
         <InputCell>
           <Button
             fullWidth
             leftIcon={<FontAwesomeIcon icon={faPlusCircle} />}
+            onClick={handleCategoryPlusClick}
             size="xs"
             variant="subtle"
           >
