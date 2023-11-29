@@ -3,7 +3,6 @@
  * under the Open Software License version 3.0.
  */
 
-import styled from '@emotion/styled';
 import { faPlusCircle } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Group } from '@mantine/core';
@@ -70,7 +69,26 @@ export const TransactionForm: React.FC<Props> = (props) => {
       credit: [0],
       debit: [0],
     },
+    // TODO Add validation for the form data
   });
+
+  function calcCreditRemaining() {
+    return (
+      form.values.credit[0] -
+      form.values.credit.slice(1).reduce((sum, value) => sum + value, 0)
+    );
+  }
+
+  function calcDebitRemaining() {
+    return (
+      form.values.debit[0] -
+      form.values.debit.slice(1).reduce((sum, value) => sum + value, 0)
+    );
+  }
+
+  function enableSaveButton() {
+    return calcCreditRemaining() === 0 && calcDebitRemaining() === 0;
+  }
 
   function handleCancelClick() {
     // TODO Reset form state
@@ -83,6 +101,8 @@ export const TransactionForm: React.FC<Props> = (props) => {
     form.insertListItem('credit', 0);
     form.insertListItem('debit', 0);
   }
+
+  // TODO Handle saving a new transaction
 
   function renderCategoryPlusButton() {
     if (form.values.categories.length === 1) {
@@ -115,6 +135,8 @@ export const TransactionForm: React.FC<Props> = (props) => {
       <MultiRowForm
         accountsList={accountsList}
         categoriesList={categoriesList}
+        creditRemaining={calcCreditRemaining()}
+        debitRemaining={calcDebitRemaining()}
         form={form}
         onCategoryPlusClick={handleCategoryPlusClick}
       />
@@ -134,7 +156,7 @@ export const TransactionForm: React.FC<Props> = (props) => {
             <Button onClick={handleCancelClick} size="xs" variant="subtle">
               Cancel
             </Button>
-            <Button size="xs">Save</Button>
+            <Button disabled={!enableSaveButton()} size="xs">Save</Button>
           </Group>
         </td>
       </BorderlessRow>

@@ -22,9 +22,13 @@ import { FORM_ID, FormValues } from './TransactionForm';
 interface Props {
   accountsList: { value: string; label: string }[];
   categoriesList: { value: string; label: string }[];
+  creditRemaining: number;
+  debitRemaining: number;
   form: UseFormReturnType<FormValues>;
   onCategoryPlusClick: VoidFunction;
 }
+
+// TODO Remove rows (and make sure the form reverts to single-row mode when there's only one subrecord)
 
 export const MultiRowForm: React.FC<Props> = (props) => {
   const { accountsList, categoriesList, form } = props;
@@ -156,54 +160,10 @@ export const MultiRowForm: React.FC<Props> = (props) => {
             Split
           </Button>
         </InputCell>
-        <InputCell style={{ textAlign: 'right' }}>
-          Amount remaining:
-        </InputCell>
+        <InputCell style={{ textAlign: 'right' }}>Amount remaining:</InputCell>
+        <td>{props.creditRemaining}</td>
+        <td>{props.debitRemaining}</td>
       </BorderlessRow>
     </>
   );
 };
-
-/*
-      <InputCell>
-        <Select
-          required
-          searchable
-          switchDirectionOnFlip
-          data={categoriesList}
-          form={FORM_ID}
-          size="xs"
-          {...form.getInputProps('categories.0')}
-        />
-      </InputCell>
-      <InputCell>
-        <TextInput
-          required
-          form={FORM_ID}
-          placeholder="Notes"
-          size="xs"
-          {...form.getInputProps('Notes')}
-        />
-      </InputCell>
-      <InputCell>
-        <NumberInput
-          hideControls
-          required
-          decimalSeparator="."
-          form={FORM_ID}
-          precision={2}
-          size="xs"
-          {...form.getInputProps('credit')}
-        />
-      </InputCell>
-      <InputCell>
-        <NumberInput
-          hideControls
-          required
-          decimalSeparator="."
-          form={FORM_ID}
-          precision={2}
-          size="xs"
-          {...form.getInputProps('debit')}
-        />
- */
