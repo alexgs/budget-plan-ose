@@ -10,27 +10,12 @@ import { Button, Group } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import React from 'react';
 import { api, buildCategoryTree, getCategoryList } from '../../client-lib';
+import { BorderlessRow } from './BorderlessRow';
+import { InputCell } from './InputCell';
 import { MultiRowForm } from './MultiRowForm';
 import { SingleRowForm } from './SingleRowForm';
 
 export const FORM_ID = 'transaction-form';
-
-// Using "!important" is not great, but I'm not sure how to make the CSS selectors more specific
-const BottomRow = styled.tr({
-  td: {
-    borderTop: 'none !important',
-    paddingTop: '0 !important',
-  },
-});
-
-export const InputCell = styled.td({
-  paddingLeft: '0 !important',
-  paddingRight: '5px !important',
-
-  '& input, & select': {
-    paddingLeft: 6,
-  },
-});
 
 // This is somewhat confusing because (for array values) index 0 will be the
 // top-level form row, while the actual category subrecords start at index 1.
@@ -121,7 +106,7 @@ export const TransactionForm: React.FC<Props> = (props) => {
   return (
     <>
       {renderFormRows()}
-      <BottomRow>
+      <BorderlessRow>
         <td colSpan={4} />
         <InputCell>
           <Button
@@ -142,7 +127,7 @@ export const TransactionForm: React.FC<Props> = (props) => {
             <Button size="xs">Save</Button>
           </Group>
         </td>
-      </BottomRow>
+      </BorderlessRow>
     </>
   );
 };

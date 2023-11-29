@@ -7,7 +7,9 @@ import { NativeSelect, NumberInput, Select, TextInput } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { UseFormReturnType } from '@mantine/form';
 import React from 'react';
-import { FORM_ID, FormValues, InputCell } from './TransactionForm';
+import { BorderlessRow } from './BorderlessRow';
+import { InputCell } from './InputCell';
+import { FORM_ID, FormValues } from './TransactionForm';
 
 interface Props {
   accountsList: { value: string; label: string }[];
@@ -22,7 +24,7 @@ export const MultiRowForm: React.FC<Props> = (props) => {
     const output = [];
     for (let i = 1; i < form.values.categories.length; i++) {
       output.push(
-        <tr>
+        <BorderlessRow>
           <td />
           <td />
           <td />
@@ -69,7 +71,7 @@ export const MultiRowForm: React.FC<Props> = (props) => {
               {...form.getInputProps(`debit.${i}`)}
             />
           </InputCell>
-        </tr>
+        </BorderlessRow>
       );
     }
     return output;

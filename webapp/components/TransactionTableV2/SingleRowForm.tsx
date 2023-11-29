@@ -7,7 +7,8 @@ import { NativeSelect, NumberInput, Select, TextInput } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { UseFormReturnType } from '@mantine/form';
 import React from 'react';
-import { FORM_ID, FormValues, InputCell } from './TransactionForm';
+import { InputCell } from './InputCell';
+import { FORM_ID, FormValues } from './TransactionForm';
 
 interface Props {
   accountsList: { value: string; label: string }[];
