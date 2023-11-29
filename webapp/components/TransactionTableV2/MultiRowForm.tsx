@@ -3,7 +3,15 @@
  * under the Open Software License version 3.0.
  */
 
-import { NativeSelect, NumberInput, Select, TextInput } from '@mantine/core';
+import { faPlusCircle } from '@fortawesome/pro-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  Button,
+  NativeSelect,
+  NumberInput,
+  Select,
+  TextInput,
+} from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { UseFormReturnType } from '@mantine/form';
 import React from 'react';
@@ -15,6 +23,7 @@ interface Props {
   accountsList: { value: string; label: string }[];
   categoriesList: { value: string; label: string }[];
   form: UseFormReturnType<FormValues>;
+  onCategoryPlusClick: VoidFunction;
 }
 
 export const MultiRowForm: React.FC<Props> = (props) => {
@@ -109,9 +118,7 @@ export const MultiRowForm: React.FC<Props> = (props) => {
             {...form.getInputProps('description')}
           />
         </InputCell>
-        <td colSpan={2} style={{ textAlign: 'right' }}>
-          Amount remaining:
-        </td>
+        <td colSpan={2} />
         <InputCell>
           <NumberInput
             hideControls
@@ -136,6 +143,23 @@ export const MultiRowForm: React.FC<Props> = (props) => {
         </InputCell>
       </tr>
       {renderSubrecordRows()}
+      <BorderlessRow>
+        <td colSpan={4} />
+        <InputCell>
+          <Button
+            fullWidth
+            leftIcon={<FontAwesomeIcon icon={faPlusCircle} />}
+            onClick={props.onCategoryPlusClick}
+            size="xs"
+            variant="subtle"
+          >
+            Split
+          </Button>
+        </InputCell>
+        <InputCell style={{ textAlign: 'right' }}>
+          Amount remaining:
+        </InputCell>
+      </BorderlessRow>
     </>
   );
 };

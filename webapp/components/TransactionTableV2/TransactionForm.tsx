@@ -84,6 +84,23 @@ export const TransactionForm: React.FC<Props> = (props) => {
     form.insertListItem('debit', 0);
   }
 
+  function renderCategoryPlusButton() {
+    if (form.values.categories.length === 1) {
+      return (
+        <Button
+          fullWidth
+          leftIcon={<FontAwesomeIcon icon={faPlusCircle} />}
+          onClick={handleCategoryPlusClick}
+          size="xs"
+          variant="subtle"
+        >
+          Split
+        </Button>
+      );
+    }
+    return null;
+  }
+
   function renderFormRows() {
     if (form.values.categories.length === 1) {
       return (
@@ -99,6 +116,7 @@ export const TransactionForm: React.FC<Props> = (props) => {
         accountsList={accountsList}
         categoriesList={categoriesList}
         form={form}
+        onCategoryPlusClick={handleCategoryPlusClick}
       />
     );
   }
@@ -109,15 +127,7 @@ export const TransactionForm: React.FC<Props> = (props) => {
       <BorderlessRow>
         <td colSpan={4} />
         <InputCell>
-          <Button
-            fullWidth
-            leftIcon={<FontAwesomeIcon icon={faPlusCircle} />}
-            onClick={handleCategoryPlusClick}
-            size="xs"
-            variant="subtle"
-          >
-            Split
-          </Button>
+          {renderCategoryPlusButton()}
         </InputCell>
         <td colSpan={3}>
           <Group position="right">

@@ -53,7 +53,7 @@ export function getColumnDefs(options?: Options) {
     columnHelper.accessor('notes', {
       cell: (info) => info.getValue(),
       header: 'Notes',
-      size: 100,
+      size: 120,
     }),
     columnHelper.accessor('credit', {
       cell: (info) => <DollarAmountRenderer amountInCents={info.getValue()} />,
