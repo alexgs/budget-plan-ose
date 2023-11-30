@@ -7,10 +7,11 @@ import { ApiSchema } from '../schema-v2/api-schema';
 import { ModelSchema } from '../schema-v2/model-schema';
 
 function formatUtcDate(date: Date): string {
+  // Get date in the local timezone
   return [
-    date.getUTCFullYear(),
-    padTwoDigits(date.getUTCMonth() + 1),
-    padTwoDigits(date.getUTCDate()),
+    date.getFullYear(),
+    padTwoDigits(date.getMonth() + 1),
+    padTwoDigits(date.getDate()),
   ].join('-');
 }
 
