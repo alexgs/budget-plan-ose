@@ -31,8 +31,6 @@ interface Props {
   onCategoryMinusClick: (index: number) => void;
 }
 
-// TODO Remove rows (and make sure the form reverts to single-row mode when there's only one subrecord)
-
 export const MultiRowForm: React.FC<Props> = (props) => {
   const { accountsList, categoriesList, form } = props;
 

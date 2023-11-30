@@ -96,20 +96,44 @@ export const TransactionForm: React.FC<Props> = (props) => {
   }
 
   function handleCategoryMinusClick(index: number) {
-    form.removeListItem('categories', index);
-    form.removeListItem('notes', index);
-    form.removeListItem('credit', index);
-    form.removeListItem('debit', index);
+    if (form.values.categories.length === 3) {
+      // Remove two rows if it's the last split
+      form.removeListItem('categories', 2);
+      form.removeListItem('notes', 2);
+      form.removeListItem('credit', 2);
+      form.removeListItem('debit', 2);
+      form.removeListItem('categories', 1);
+      form.removeListItem('notes', 1);
+      form.removeListItem('credit', 1);
+      form.removeListItem('debit', 1);
+    } else {
+      form.removeListItem('categories', index);
+      form.removeListItem('notes', index);
+      form.removeListItem('credit', index);
+      form.removeListItem('debit', index);
+    }
   }
 
   function handleCategoryPlusClick() {
-    form.insertListItem('categories', categoriesList[0].value);
-    form.insertListItem('notes', '');
-    form.insertListItem('credit', 0);
-    form.insertListItem('debit', 0);
+    if (form.values.categories.length === 1) {
+      // Insert two rows if it's the first split
+      form.insertListItem('categories', categoriesList[0].value);
+      form.insertListItem('notes', '');
+      form.insertListItem('credit', 0);
+      form.insertListItem('debit', 0);
+      form.insertListItem('categories', categoriesList[0].value);
+      form.insertListItem('notes', '');
+      form.insertListItem('credit', 0);
+      form.insertListItem('debit', 0);
+    } else {
+      form.insertListItem('categories', categoriesList[0].value);
+      form.insertListItem('notes', '');
+      form.insertListItem('credit', 0);
+      form.insertListItem('debit', 0);
+    }
   }
 
-  // TODO Handle saving a new transaction
+  // TODO Handle saving a new transaction; obvi we'll have to handle a single row vs. multiple rows differently
 
   function renderCategoryPlusButton() {
     if (form.values.categories.length === 1) {
