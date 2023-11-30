@@ -95,6 +95,13 @@ export const TransactionForm: React.FC<Props> = (props) => {
     props.onCancel();
   }
 
+  function handleCategoryMinusClick(index: number) {
+    form.removeListItem('categories', index);
+    form.removeListItem('notes', index);
+    form.removeListItem('credit', index);
+    form.removeListItem('debit', index);
+  }
+
   function handleCategoryPlusClick() {
     form.insertListItem('categories', categoriesList[0].value);
     form.insertListItem('notes', '');
@@ -138,6 +145,7 @@ export const TransactionForm: React.FC<Props> = (props) => {
         creditRemaining={calcCreditRemaining()}
         debitRemaining={calcDebitRemaining()}
         form={form}
+        onCategoryMinusClick={handleCategoryMinusClick}
         onCategoryPlusClick={handleCategoryPlusClick}
       />
     );

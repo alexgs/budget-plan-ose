@@ -3,10 +3,12 @@
  * under the Open Software License version 3.0.
  */
 
-import { faPlusCircle } from '@fortawesome/pro-solid-svg-icons';
+import { faMinusCircle, faPlusCircle } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  ActionIcon,
   Button,
+  Group,
   NativeSelect,
   NumberInput,
   Select,
@@ -26,6 +28,7 @@ interface Props {
   debitRemaining: number;
   form: UseFormReturnType<FormValues>;
   onCategoryPlusClick: VoidFunction;
+  onCategoryMinusClick: (index: number) => void;
 }
 
 // TODO Remove rows (and make sure the form reverts to single-row mode when there's only one subrecord)
@@ -37,11 +40,22 @@ export const MultiRowForm: React.FC<Props> = (props) => {
     const output = [];
     for (let i = 1; i < form.values.categories.length; i++) {
       output.push(
-        <BorderlessRow>
+        <BorderlessRow key={i}>
           <td />
           <td />
           <td />
-          <td />
+          <InputCell>
+            <Group position="right">
+              {/* ActionIcon "size" attribute controls margins, not icon size */}
+              <ActionIcon
+                color="blue"
+                onClick={() => props.onCategoryMinusClick(i)}
+                size="xs"
+              >
+                <FontAwesomeIcon icon={faMinusCircle} />
+              </ActionIcon>
+            </Group>
+          </InputCell>
           <InputCell>
             <Select
               required
