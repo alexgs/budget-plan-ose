@@ -4,6 +4,7 @@
  */
 
 import { Table } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import {
   ExpandedState,
   flexRender,
@@ -13,12 +14,13 @@ import {
 } from '@tanstack/react-table';
 import React from 'react';
 
+import { api, buildCategoryTree, getCategoryList } from '../../client-lib';
 import { TransactionRow } from '../../client-lib/types';
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
 
 import { BodyRow } from './BodyRow';
 import { HeaderCell, Resizer } from './HeaderCell';
-import { FORM_ID, TransactionForm } from './TransactionForm';
+import { FORM_ID, FormValues, TransactionForm } from './TransactionForm';
 import { fuzzyFilter } from './fuzzy-filter';
 import { getColumnDefs } from './get-column-defs';
 
@@ -53,6 +55,44 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
     },
   });
 
+  // TODO Handle errors
+  const { error: accountError, accounts } = api.useAllAccounts();
+  const { error: categoryError, categories } = api.useAllCategories();
+
+  let accountsList: { value: string; label: string }[] = [];
+  if (accounts) {
+    accountsList = accounts
+      .map((account) => ({
+        value: account.id,
+        label: account.description,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }
+
+  let categoriesList: { value: string; label: string }[] = [];
+  if (categories) {
+    categoriesList = getCategoryList(buildCategoryTree(categories))
+      .filter((cat) => cat.isLeaf)
+      .map((cat) => ({
+        value: cat.id,
+        label: cat.label,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }
+
+  const form = useForm<FormValues>({
+    initialValues: {
+      account: accountsList[0].value,
+      categories: [categoriesList[0].value],
+      date: new Date(),
+      description: '',
+      notes: [''],
+      credit: [0],
+      debit: [0],
+    },
+    // TODO Add validation for the form data
+  });
+
   function renderBodyRows() {
     return table
       .getRowModel()
@@ -63,7 +103,10 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
     if (props.showNewTxnForm) {
       return (
         <TransactionForm
+          accountsList={accountsList}
+          categoriesList={categoriesList}
           columnCount={columns.length}
+          form={form}
           onCancel={props.onCancel}
         />
       );
@@ -73,7 +116,10 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
 
   return (
     <>
-      <form id={FORM_ID}></form>
+      <form
+        id={FORM_ID}
+        onSubmit={form.onSubmit((values) => console.log(values))}
+      ></form>
       <Table
         fontSize="xs"
         horizontalSpacing={6}

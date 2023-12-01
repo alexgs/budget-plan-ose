@@ -6,9 +6,8 @@
 import { faPlusCircle } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Group } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { UseFormReturnType } from '@mantine/form';
 import React from 'react';
-import { api, buildCategoryTree, getCategoryList } from '../../client-lib';
 import { BorderlessRow } from './BorderlessRow';
 import { InputCell } from './InputCell';
 import { MultiRowForm } from './MultiRowForm';
@@ -29,65 +28,33 @@ export interface FormValues {
 }
 
 interface Props {
+  accountsList: { value: string; label: string }[];
+  categoriesList: { value: string; label: string }[];
   columnCount: number;
+  form: UseFormReturnType<FormValues>;
   onCancel: VoidFunction;
 }
 
 export const TransactionForm: React.FC<Props> = (props) => {
-  // TODO Handle errors
-  const { error: accountError, accounts } = api.useAllAccounts();
-  const { error: categoryError, categories } = api.useAllCategories();
-
-  let accountsList: { value: string; label: string }[] = [];
-  if (accounts) {
-    accountsList = accounts
-      .map((account) => ({
-        value: account.id,
-        label: account.description,
-      }))
-      .sort((a, b) => a.label.localeCompare(b.label));
-  }
-
-  let categoriesList: { value: string; label: string }[] = [];
-  if (categories) {
-    categoriesList = getCategoryList(buildCategoryTree(categories))
-      .filter((cat) => cat.isLeaf)
-      .map((cat) => ({
-        value: cat.id,
-        label: cat.label,
-      }))
-      .sort((a, b) => a.label.localeCompare(b.label));
-  }
-
-  const form = useForm<FormValues>({
-    initialValues: {
-      account: accountsList[0].value,
-      categories: [categoriesList[0].value],
-      date: new Date(), // TODO Scrub the timezone from the date before sending it to the backend
-      description: '',
-      notes: [''],
-      credit: [0],
-      debit: [0],
-    },
-    // TODO Add validation for the form data
-  });
-
   function calcCreditRemaining() {
     return (
-      form.values.credit[0] -
-      form.values.credit.slice(1).reduce((sum, value) => sum + value, 0)
+      props.form.values.credit[0] -
+      props.form.values.credit.slice(1).reduce((sum, value) => sum + value, 0)
     );
   }
 
   function calcDebitRemaining() {
     return (
-      form.values.debit[0] -
-      form.values.debit.slice(1).reduce((sum, value) => sum + value, 0)
+      props.form.values.debit[0] -
+      props.form.values.debit.slice(1).reduce((sum, value) => sum + value, 0)
     );
   }
 
   function enableSaveButton() {
-    return calcCreditRemaining() === 0 && calcDebitRemaining() === 0;
+    if (props.form.values.categories.length > 1) {
+      return calcCreditRemaining() === 0 && calcDebitRemaining() === 0;
+    }
+    return true;
   }
 
   function handleCancelClick() {
@@ -96,47 +63,45 @@ export const TransactionForm: React.FC<Props> = (props) => {
   }
 
   function handleCategoryMinusClick(index: number) {
-    if (form.values.categories.length === 3) {
+    if (props.form.values.categories.length === 3) {
       // Remove two rows if it's the last split
-      form.removeListItem('categories', 2);
-      form.removeListItem('notes', 2);
-      form.removeListItem('credit', 2);
-      form.removeListItem('debit', 2);
-      form.removeListItem('categories', 1);
-      form.removeListItem('notes', 1);
-      form.removeListItem('credit', 1);
-      form.removeListItem('debit', 1);
+      props.form.removeListItem('categories', 2);
+      props.form.removeListItem('notes', 2);
+      props.form.removeListItem('credit', 2);
+      props.form.removeListItem('debit', 2);
+      props.form.removeListItem('categories', 1);
+      props.form.removeListItem('notes', 1);
+      props.form.removeListItem('credit', 1);
+      props.form.removeListItem('debit', 1);
     } else {
-      form.removeListItem('categories', index);
-      form.removeListItem('notes', index);
-      form.removeListItem('credit', index);
-      form.removeListItem('debit', index);
+      props.form.removeListItem('categories', index);
+      props.form.removeListItem('notes', index);
+      props.form.removeListItem('credit', index);
+      props.form.removeListItem('debit', index);
     }
   }
 
   function handleCategoryPlusClick() {
-    if (form.values.categories.length === 1) {
+    if (props.form.values.categories.length === 1) {
       // Insert two rows if it's the first split
-      form.insertListItem('categories', categoriesList[0].value);
-      form.insertListItem('notes', '');
-      form.insertListItem('credit', 0);
-      form.insertListItem('debit', 0);
-      form.insertListItem('categories', categoriesList[0].value);
-      form.insertListItem('notes', '');
-      form.insertListItem('credit', 0);
-      form.insertListItem('debit', 0);
+      props.form.insertListItem('categories', props.categoriesList[0].value);
+      props.form.insertListItem('notes', '');
+      props.form.insertListItem('credit', 0);
+      props.form.insertListItem('debit', 0);
+      props.form.insertListItem('categories', props.categoriesList[0].value);
+      props.form.insertListItem('notes', '');
+      props.form.insertListItem('credit', 0);
+      props.form.insertListItem('debit', 0);
     } else {
-      form.insertListItem('categories', categoriesList[0].value);
-      form.insertListItem('notes', '');
-      form.insertListItem('credit', 0);
-      form.insertListItem('debit', 0);
+      props.form.insertListItem('categories', props.categoriesList[0].value);
+      props.form.insertListItem('notes', '');
+      props.form.insertListItem('credit', 0);
+      props.form.insertListItem('debit', 0);
     }
   }
 
-  // TODO Handle saving a new transaction; obvi we'll have to handle a single row vs. multiple rows differently
-
   function renderCategoryPlusButton() {
-    if (form.values.categories.length === 1) {
+    if (props.form.values.categories.length === 1) {
       return (
         <Button
           fullWidth
@@ -153,22 +118,22 @@ export const TransactionForm: React.FC<Props> = (props) => {
   }
 
   function renderFormRows() {
-    if (form.values.categories.length === 1) {
+    if (props.form.values.categories.length === 1) {
       return (
         <SingleRowForm
-          accountsList={accountsList}
-          categoriesList={categoriesList}
-          form={form}
+          accountsList={props.accountsList}
+          categoriesList={props.categoriesList}
+          form={props.form}
         />
       );
     }
     return (
       <MultiRowForm
-        accountsList={accountsList}
-        categoriesList={categoriesList}
+        accountsList={props.accountsList}
+        categoriesList={props.categoriesList}
         creditRemaining={calcCreditRemaining()}
         debitRemaining={calcDebitRemaining()}
-        form={form}
+        form={props.form}
         onCategoryMinusClick={handleCategoryMinusClick}
         onCategoryPlusClick={handleCategoryPlusClick}
       />
@@ -180,15 +145,20 @@ export const TransactionForm: React.FC<Props> = (props) => {
       {renderFormRows()}
       <BorderlessRow>
         <td colSpan={4} />
-        <InputCell>
-          {renderCategoryPlusButton()}
-        </InputCell>
+        <InputCell>{renderCategoryPlusButton()}</InputCell>
         <td colSpan={3}>
           <Group position="right">
             <Button onClick={handleCancelClick} size="xs" variant="subtle">
               Cancel
             </Button>
-            <Button disabled={!enableSaveButton()} size="xs">Save</Button>
+            <Button
+              disabled={!enableSaveButton()}
+              form={FORM_ID}
+              size="xs"
+              type="submit"
+            >
+              Save
+            </Button>
           </Group>
         </td>
       </BorderlessRow>
