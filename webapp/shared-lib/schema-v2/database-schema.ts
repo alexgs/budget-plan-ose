@@ -12,12 +12,12 @@ import {
 
 export namespace DbSchema {
   export type NewAccount = Prisma.FinancialAccountCreateInput;
-  export type NewAccountSubrecord = Prisma.TransactionAccountCreateInput;
+  export type NewAccountSubrecord = Prisma.TransactionAccountCreateManyTransactionInput;
   export type NewCategory = Prisma.XOR<
     Prisma.CategoryCreateInput,
     Prisma.CategoryUncheckedCreateInput
   >;
-  export type NewCategorySubrecord = Prisma.TransactionCategoryCreateInput;
+  export type NewCategorySubrecord = Prisma.TransactionCategoryCreateManyTransactionInput;
   export type NewTransaction = Prisma.TransactionRecordCreateInput;
 
   export type Account = TransactionAccount;
