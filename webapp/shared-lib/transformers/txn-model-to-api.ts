@@ -3,21 +3,9 @@
  * under the Open Software License version 3.0.
  */
 
+import { formatUtcDate } from '../../client-lib';
 import { ApiSchema } from '../schema-v2/api-schema';
 import { ModelSchema } from '../schema-v2/model-schema';
-
-function formatUtcDate(date: Date): string {
-  // Get date in the local timezone
-  return [
-    date.getFullYear(),
-    padTwoDigits(date.getMonth() + 1),
-    padTwoDigits(date.getDate()),
-  ].join('-');
-}
-
-function padTwoDigits(x: number): string {
-  return x.toString(10).padStart(2, '0');
-}
 
 export function txnModelToApi(
   txn: ModelSchema.Transaction

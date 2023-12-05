@@ -17,6 +17,9 @@ import React from 'react';
 import { api, buildCategoryTree, getCategoryList } from '../../client-lib';
 import { TransactionRow } from '../../client-lib/types';
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
+import {
+  newTxnFormToApi
+} from '../../shared-lib/transformers/new-txn-form-to-api';
 
 import { BodyRow } from './BodyRow';
 import { HeaderCell, Resizer } from './HeaderCell';
@@ -93,6 +96,19 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
     // TODO Add validation for the form data
   });
 
+  async function executeFormSubmit(values: typeof form.values) {
+    // TODO Set busy indicator
+    const payload = newTxnFormToApi(values, accounts ?? []);
+    // TODO Call API
+    // TODO Clear busy indicator
+  }
+
+  function handleFormError(errors: typeof form.errors) {}
+
+  function handleFormSubmit(values: typeof form.values) {
+    void executeFormSubmit(values);
+  }
+
   function renderBodyRows() {
     return table
       .getRowModel()
@@ -118,7 +134,7 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
     <>
       <form
         id={FORM_ID}
-        onSubmit={form.onSubmit((values) => console.log(values))}
+        onSubmit={form.onSubmit(handleFormSubmit, handleFormError)}
       ></form>
       <Table
         fontSize="xs"

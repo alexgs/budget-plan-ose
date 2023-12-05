@@ -11,6 +11,7 @@ export namespace ApiSchema {
   export type AccountSubrecord = z.infer<typeof Validators.AccountSubrecord>;
   export type Category = z.infer<typeof Validators.Category>;
   export type CategorySubrecord = z.infer<typeof Validators.CategorySubrecord>;
+  export type NewCategorySubrecord = z.infer<typeof Validators.NewCategorySubrecord>;
   export type NewTransaction = z.infer<typeof Validators.NewTransaction>;
   export type Transaction = z.infer<typeof Validators.Transaction>;
 }
