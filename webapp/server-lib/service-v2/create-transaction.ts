@@ -13,6 +13,7 @@ import { txnDbToModel } from '../../shared-lib/transformers/txn-db-to-model';
 export async function createTransaction(
   txn: ApiSchema.NewTransaction
 ): Promise<ModelSchema.Transaction> {
+  // TODO Update the category balances (although not in this iteration of the product)
   const dbTxn: DbSchema.NewTransaction = newTxnApiToDb(txn);
   const result = await database.createTransaction(dbTxn);
   return txnDbToModel(result);

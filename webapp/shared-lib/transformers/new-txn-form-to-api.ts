@@ -4,7 +4,7 @@
  */
 
 import { UseFormReturnType } from '@mantine/form';
-import { formatUtcDate } from '../../client-lib';
+import { formatLocalDate } from '../../client-lib';
 import { FormValues } from '../../components/TransactionTableV2/TransactionForm';
 import { ACCOUNT_TYPES, AMOUNT_STATUS, TRANSACTION_TYPES } from '../constants';
 import { dollarsToCents } from '../dollars-to-cents';
@@ -50,7 +50,7 @@ function multiRowFormToApi(
 
   return {
     categories,
-    date: formatUtcDate(values.date),
+    date: formatLocalDate(values.date),
     description: values.description,
     type: getTransactionType(accounts, values.account),
     accounts: [
@@ -69,7 +69,7 @@ function singleRowFormToApi(
   accounts: ModelSchema.Account[]
 ): ApiSchema.NewTransaction {
   return {
-    date: formatUtcDate(values.date),
+    date: formatLocalDate(values.date),
     description: values.description,
     type: getTransactionType(accounts, values.account),
     accounts: [
@@ -91,6 +91,9 @@ function singleRowFormToApi(
   };
 }
 
+// TODO Write unit tests for these transformers to make sure that dates are
+//   handled correctly. It should always return the user's local date in
+//   YYYY-MM-DD format.
 export function newTxnFormToApi(
   values: UseFormReturnType<FormValues>['values'],
   accounts: ModelSchema.Account[]
