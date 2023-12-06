@@ -4,6 +4,7 @@
 
 import { postExtantTransaction } from './post-extant-transaction';
 import { postNewTransaction } from './post-new-transaction';
+import { saveNewTransaction } from './save-new-transaction';
 import { useAllAccounts } from './use-all-accounts';
 import { useAllCategories } from './use-all-categories';
 import { useAllTransactions } from './use-all-transactions';
@@ -11,6 +12,7 @@ import { useAllTransactions } from './use-all-transactions';
 export const api = {
   postExtantTransaction,
   postNewTransaction,
+  saveNewTransaction,
   useAllAccounts,
   useAllCategories,
   useAllTransactions,

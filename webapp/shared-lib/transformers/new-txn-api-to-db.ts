@@ -18,11 +18,6 @@ export function newTxnApiToDb(
       return {
         amount,
         isCredit,
-        account: {
-          connect: {
-            id: account.accountId,
-          },
-        },
         accountId: account.accountId,
         status: AMOUNT_STATUS.PENDING,
       };
@@ -36,11 +31,6 @@ export function newTxnApiToDb(
       return {
         amount,
         isCredit,
-        category: {
-          connect: {
-            id: category.categoryId,
-          },
-        },
         categoryId: category.categoryId,
       };
     }
@@ -48,6 +38,7 @@ export function newTxnApiToDb(
 
   return {
     ...txn,
+    date: new Date(`${txn.date}T00:00:00.000Z`), // Save the date as UTC
     accounts: {
       createMany: {
         data: accounts,

@@ -5,6 +5,7 @@
 
 import { Table } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { showNotification } from '@mantine/notifications';
 import {
   ExpandedState,
   flexRender,
@@ -39,6 +40,7 @@ const columns = getColumnDefs();
 
 export const TransactionTableV2: React.FC<Props> = (props) => {
   const [expanded, setExpanded] = React.useState<ExpandedState>({});
+  const [isSaving, setIsSaving] = React.useState<boolean>(false);
 
   const table = useReactTable({
     columns,
@@ -97,10 +99,33 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
   });
 
   async function executeFormSubmit(values: typeof form.values) {
-    // TODO Set busy indicator
+    setIsSaving(true);
     const payload = newTxnFormToApi(values, accounts ?? []);
-    // TODO Call API
-    // TODO Clear busy indicator
+    try {
+      const response = await api.saveNewTransaction(payload);
+
+      if (response.ok) {
+        showNotification({
+          message: `Saved transaction "${values.description}"`,
+          title: 'Success',
+        });
+      } else {
+        showNotification({
+          color: 'red',
+          message: 'Response not ok! Please check the logs.',
+          title: 'Error',
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      showNotification({
+        color: 'red',
+        message: 'Network error! Please check the logs.',
+        title: 'Error',
+      });
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   function handleFormError(errors: typeof form.errors) {}
