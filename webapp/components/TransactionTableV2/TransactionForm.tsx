@@ -5,7 +5,7 @@
 
 import { faPlusCircle } from '@fortawesome/pro-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Group } from '@mantine/core';
+import { Button, Group, Loader } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
 import React from 'react';
 import { BorderlessRow } from './BorderlessRow';
@@ -32,6 +32,7 @@ interface Props {
   categoriesList: { value: string; label: string }[];
   columnCount: number;
   form: UseFormReturnType<FormValues>;
+  isSaving: boolean;
   onCancel: VoidFunction;
 }
 
@@ -58,7 +59,7 @@ export const TransactionForm: React.FC<Props> = (props) => {
   }
 
   function handleCancelClick() {
-    // TODO Reset form state
+    props.form.reset();
     props.onCancel();
   }
 
@@ -79,6 +80,27 @@ export const TransactionForm: React.FC<Props> = (props) => {
       props.form.removeListItem('credit', index);
       props.form.removeListItem('debit', index);
     }
+  }
+
+  function renderButtons() {
+    if (props.isSaving) {
+      return <Loader />;
+    }
+    return (
+      <>
+        <Button onClick={handleCancelClick} size="xs" variant="subtle">
+          Cancel
+        </Button>
+        <Button
+          disabled={!enableSaveButton()}
+          form={FORM_ID}
+          size="xs"
+          type="submit"
+        >
+          Save
+        </Button>
+      </>
+    );
   }
 
   function handleCategoryPlusClick() {
@@ -147,19 +169,7 @@ export const TransactionForm: React.FC<Props> = (props) => {
         <td colSpan={4} />
         <InputCell>{renderCategoryPlusButton()}</InputCell>
         <td colSpan={3}>
-          <Group position="right">
-            <Button onClick={handleCancelClick} size="xs" variant="subtle">
-              Cancel
-            </Button>
-            <Button
-              disabled={!enableSaveButton()}
-              form={FORM_ID}
-              size="xs"
-              type="submit"
-            >
-              Save
-            </Button>
-          </Group>
+          <Group position="right">{renderButtons()}</Group>
         </td>
       </BorderlessRow>
     </>

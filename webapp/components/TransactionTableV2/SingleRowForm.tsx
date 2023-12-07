@@ -62,7 +62,6 @@ export const SingleRowForm: React.FC<Props> = (props) => {
       </InputCell>
       <InputCell>
         <TextInput
-          required
           form={FORM_ID}
           placeholder="Notes"
           size="xs"

@@ -128,10 +128,14 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
     }
   }
 
-  function handleFormError(errors: typeof form.errors) {}
+  function handleFormError(errors: typeof form.errors) {
+    console.error(errors);
+  }
 
   function handleFormSubmit(values: typeof form.values) {
-    void executeFormSubmit(values);
+    // Make a copy of the form values before resetting the form
+    void executeFormSubmit({ ...values });
+    form.reset();
   }
 
   function renderBodyRows() {
@@ -148,6 +152,7 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
           categoriesList={categoriesList}
           columnCount={columns.length}
           form={form}
+          isSaving={isSaving}
           onCancel={props.onCancel}
         />
       );
