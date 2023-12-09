@@ -3,7 +3,7 @@
  * under the Open Software License version 3.0.
  */
 
-import { faEllipsis } from '@fortawesome/pro-regular-svg-icons';
+import { faEllipsis, faPen } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ActionIcon, Menu } from '@mantine/core';
 import { Row } from '@tanstack/table-core';
@@ -15,6 +15,15 @@ interface Props {
 }
 
 export const MeatballMenu: React.FC<Props> = (props) => {
+  // Don't render on child rows
+  if (props.row.parentId) {
+    return null;
+  }
+
+  function handleEditClick() {
+    console.log(`>> ${props.row.original.id} <<`);
+  }
+
   return (
     <Menu>
       <Menu.Target>
@@ -23,9 +32,12 @@ export const MeatballMenu: React.FC<Props> = (props) => {
         </ActionIcon>
       </Menu.Target>
       <Menu.Dropdown>
-        <Menu.Item>Item 1</Menu.Item>
-        <Menu.Item>Item 2</Menu.Item>
-        <Menu.Item>Item 3</Menu.Item>
+        <Menu.Item
+          icon={<FontAwesomeIcon icon={faPen} />}
+          onClick={handleEditClick}
+        >
+          Edit
+        </Menu.Item>
       </Menu.Dropdown>
     </Menu>
   );
