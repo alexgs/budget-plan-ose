@@ -7,6 +7,8 @@ export { buildCategoryTree } from './build-category-tree';
 export { cloneCategoryTree } from './clone-category-tree';
 export { formatAmount } from './format-amount';
 export { formatClientDate } from './format-client-date';
+export { formatLocalDate } from './format-local-date';
+export { formatUtcDate } from './format-utc-date';
 export { getCategoryList } from './get-category-list';
 export { getRows } from './row-converters';
 export { globalFetcher } from './global-fetcher';

@@ -3,6 +3,7 @@
  * under the Open Software License version 3.0.
  */
 
+import { createTransaction } from './create-transaction';
 import { fixMissingReservations } from './fix-missing-reservations';
 import { fixZeroAccountSubrecords } from './fix-zero-account-subrecords';
 import { getAllTransactions } from './get-all-transactions';
@@ -12,8 +13,10 @@ import { reconcileAllTransactions } from './reconcile-all-transactions';
 import {
   removeExtraCategorySubrecords
 } from './remove-extra-category-subrecords';
+import { validateTxnPayload } from './validate-txn-payload';
 
 export const service = {
+  createTransaction,
   getAllTransactions,
   getPublicAccounts,
   getPublicCategories,
@@ -21,4 +24,5 @@ export const service = {
   fixZeroAccountSubrecords,
   reconcileAllTransactions,
   removeExtraCategorySubrecords,
+  validateTxnPayload
 };

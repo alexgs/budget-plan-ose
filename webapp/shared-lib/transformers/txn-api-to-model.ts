@@ -3,6 +3,8 @@
  * under the Open Software License version 3.0.
  */
 
+import { DateTime } from "luxon";
+
 import { ApiSchema } from '../schema-v2/api-schema';
 import { ModelSchema } from '../schema-v2/model-schema';
 
@@ -11,7 +13,7 @@ export function txnApiToModel(
 ): ModelSchema.Transaction {
   return {
     ...txn,
-    date: new Date(txn.date), // TODO This should be the date in the local timezone
+    date: DateTime.fromISO(txn.date).toJSDate(), // Use Luxon to get the date in the local timezone
     accounts: txn.accounts.map((a) => ({
       ...a,
       createdAt: new Date(a.createdAt),

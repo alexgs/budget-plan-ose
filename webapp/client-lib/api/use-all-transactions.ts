@@ -17,7 +17,8 @@ interface AllTransactionsResponse {
 
 export function useAllTransactions(): AllTransactionsResponse {
   const { data, error, isLoading } = useSWR<ApiSchema.Transaction[], Error>(
-    `/api/v2/transactions`
+    `/api/v2/transactions`,
+    { refreshInterval: 1000 },
   );
   const transactions = React.useMemo(
     () => data?.map((txn) => transformers.txnApiToModel(txn)),
