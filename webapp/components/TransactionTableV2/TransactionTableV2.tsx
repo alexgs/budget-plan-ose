@@ -163,7 +163,21 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
   function renderBodyRows() {
     return table
       .getRowModel()
-      .rows.map((row) => <BodyRow key={row.id} row={row} />);
+      .rows.map((row) => {
+        if (row.original.id === nowEditing) {
+          return (
+            <TransactionForm
+              accountsList={accountsList}
+              categoriesList={categoriesList}
+              columnCount={columns.length}
+              form={form}
+              isSaving={isSaving}
+              onCancel={() => setNowEditing(null)}
+            />
+          );
+        }
+        return (<BodyRow key={row.id} row={row} />);
+      });
   }
 
   function renderNewTxnForm() {
