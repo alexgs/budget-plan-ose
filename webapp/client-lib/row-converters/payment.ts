@@ -4,7 +4,7 @@
  */
 
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
-import { formatClientDate } from '../format-client-date';
+import { formatLocalDate } from '../format-local-date';
 import { TransactionRow } from '../types';
 import { getAccountNameIfAvailable } from './get-account-name-if-available';
 import { getCategoryNameIfAvailable } from './get-category-name-if-available';
@@ -21,13 +21,14 @@ export function paymentRowConverter(
 
   if (txn.categories.length === 1) {
     return {
+      id: txn.id,
       account: getAccountNameIfAvailable(txn.accounts[0].accountId, accounts),
       category: getCategoryNameIfAvailable(
         txn.categories[0].categoryId,
         categories,
       ),
       credit: txn.categories[0].credit,
-      date: formatClientDate(txn.date),
+      date: formatLocalDate(txn.date),
       debit: txn.categories[0].debit,
       description: txn.description,
       notes: txn.categories[0].notes ?? '',
@@ -41,6 +42,7 @@ export function paymentRowConverter(
 
     const categorySubrecords = txn.categories.map(
       (category): TransactionRow => ({
+        id: category.id,
         account: '',
         category: getCategoryNameIfAvailable(category.categoryId, categories),
         credit: category.credit,
@@ -51,10 +53,11 @@ export function paymentRowConverter(
       })
     );
     return {
+      id: txn.id,
       account: getAccountNameIfAvailable(txn.accounts[0].accountId, accounts),
       category: '',
       credit: amounts.credit,
-      date: formatClientDate(txn.date),
+      date: formatLocalDate(txn.date),
       debit: amounts.debit,
       description: txn.description,
       notes: '',

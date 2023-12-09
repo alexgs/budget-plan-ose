@@ -4,7 +4,7 @@
  */
 
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
-import { formatClientDate } from '../format-client-date';
+import { formatLocalDate } from '../format-local-date';
 import { TransactionRow } from '../types';
 import { getAccountNameIfAvailable } from './get-account-name-if-available';
 
@@ -21,10 +21,11 @@ export function creditCardPaymentRowConverter(
   const description = `Payment to "${getAccountNameIfAvailable(cardAccountSubrecord.accountId, accounts)}" card`
   return {
     description,
+    id: txn.id,
     account: getAccountNameIfAvailable(paymentAccountSubrecord.accountId, accounts),
     credit: 0,
     category: '',
-    date: formatClientDate(txn.date),
+    date: formatLocalDate(txn.date),
     debit: paymentAccountSubrecord.debit,
     notes: '',
   };

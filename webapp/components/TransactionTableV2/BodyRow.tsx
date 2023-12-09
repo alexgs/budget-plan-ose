@@ -14,10 +14,11 @@ interface Props {
 }
 
 export const BodyRow: React.FC<Props> = (props) => {
+  const visibleCells = props.row.getVisibleCells();
   return (
     <tr key={props.row.id}>
-      {props.row.getVisibleCells().map((cell, index) => {
-        if (index === 0) {
+      {visibleCells.map((cell, index) => {
+        if (index === 0 || index === visibleCells.length - 1) {
           return (
             <BodyCell
               key={cell.id}

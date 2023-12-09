@@ -18,9 +18,7 @@ import React from 'react';
 import { api, buildCategoryTree, getCategoryList } from '../../client-lib';
 import { TransactionRow } from '../../client-lib/types';
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
-import {
-  newTxnFormToApi
-} from '../../shared-lib/transformers/new-txn-form-to-api';
+import { newTxnFormToApi } from '../../shared-lib/transformers/new-txn-form-to-api';
 
 import { BodyRow } from './BodyRow';
 import { HeaderCell, Resizer } from './HeaderCell';
@@ -36,11 +34,20 @@ interface Props {
   showNewTxnForm?: boolean;
 }
 
-const columns = getColumnDefs();
-
 export const TransactionTableV2: React.FC<Props> = (props) => {
   const [expanded, setExpanded] = React.useState<ExpandedState>({});
   const [isSaving, setIsSaving] = React.useState<boolean>(false);
+  const [nowEditing, setNowEditing] = React.useState<string | null>(null);
+
+  const columns = React.useMemo(
+    () =>
+      getColumnDefs({
+        onEditClick: (transactionId: string) => {
+          setNowEditing(transactionId);
+        },
+      }),
+    []
+  );
 
   const table = useReactTable({
     columns,
@@ -138,7 +145,10 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
     void executeFormSubmit(payload);
 
     // Reset the form, using the previous values for the account, category, and date
-    const lastUsedCategoryId = payload.categories.length === 1 ? payload.categories[0] : categoriesList[0].value;
+    const lastUsedCategoryId =
+      payload.categories.length === 1
+        ? payload.categories[0]
+        : categoriesList[0].value;
     form.setValues({
       account: payload.account,
       categories: [lastUsedCategoryId],
@@ -147,7 +157,7 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
       notes: [''],
       credit: [0],
       debit: [0],
-    })
+    });
   }
 
   function renderBodyRows() {

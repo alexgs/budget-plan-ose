@@ -4,7 +4,7 @@
  */
 
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
-import { formatClientDate } from '../format-client-date';
+import { formatLocalDate } from '../format-local-date';
 import { TransactionRow } from '../types';
 import { getAccountNameIfAvailable } from './get-account-name-if-available';
 
@@ -32,10 +32,11 @@ export function accountTransferRowConverter(
   );
   const toAccount = getAccountNameIfAvailable(toSubrecord.accountId, accounts);
   return {
+    id: txn.id,
     account: fromAccount,
     credit: 0,
     category: '',
-    date: formatClientDate(txn.date),
+    date: formatLocalDate(txn.date),
     debit: fromSubrecord.debit,
     description: `Transfer to ${toAccount}`,
     notes: '',

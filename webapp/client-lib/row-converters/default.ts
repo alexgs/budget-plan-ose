@@ -4,7 +4,7 @@
  */
 
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
-import { formatClientDate } from '../format-client-date';
+import { formatLocalDate } from '../format-local-date';
 import { TransactionRow } from '../types';
 import { getAccountNameIfAvailable } from './get-account-name-if-available';
 import { getCategoryNameIfAvailable } from './get-category-name-if-available';
@@ -17,6 +17,7 @@ export function defaultRowConverter(
   console.log(`Default row converter used for transaction: ${txn.id}`);
   const accountSubrecords = txn.accounts.map(
     (account): TransactionRow => ({
+      id: account.id,
       date: '',
       account: getAccountNameIfAvailable(account.accountId, accounts),
       description: '',
@@ -28,6 +29,7 @@ export function defaultRowConverter(
   );
   const categorySubrecords = txn.categories.map(
     (category): TransactionRow => ({
+      id: category.id,
       date: '',
       account: '',
       description: '',
@@ -38,10 +40,11 @@ export function defaultRowConverter(
     })
   );
   return {
+    id: txn.id,
     account: '',
     credit: 0,
     category: '',
-    date: formatClientDate(txn.date),
+    date: formatLocalDate(txn.date),
     debit: 0,
     description: txn.description,
     notes: '',

@@ -8,14 +8,16 @@ import React from 'react';
 import { TransactionRow } from '../../client-lib/types';
 import { ChevronButton } from './ChevronButton';
 import { DollarAmountRenderer } from './DollarAmountRenderer';
+import { MeatballMenu } from './MeatballMenu';
 
 const columnHelper = createColumnHelper<TransactionRow>();
 
 export interface Options {
   showAccountColumn?: boolean;
+  onEditClick: (transactionId: string) => void;
 }
 
-export function getColumnDefs(options?: Options) {
+export function getColumnDefs(options: Options) {
   // TODO Use `opt` object to control which columns are shown
   const opt = {
     showAccountColumn: true,
@@ -64,6 +66,14 @@ export function getColumnDefs(options?: Options) {
       cell: (info) => <DollarAmountRenderer amountInCents={info.getValue()} />,
       header: 'Debit',
       size: 90,
+    }),
+    columnHelper.display({
+      id: 'meatballs',
+      cell: ({ row }) => (
+        <MeatballMenu onEditClick={opt.onEditClick} row={row} />
+      ),
+      enableResizing: false,
+      size: 30,
     }),
   ];
 
