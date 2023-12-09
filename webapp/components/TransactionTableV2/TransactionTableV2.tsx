@@ -98,7 +98,7 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
     // TODO Add validation for the form data
   });
 
-  async function executeFormSubmit(values: typeof form.values) {
+  async function executeFormSubmit(values: FormValues) {
     setIsSaving(true);
     const payload = newTxnFormToApi(values, accounts ?? []);
     try {
@@ -132,10 +132,22 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
     console.error(errors);
   }
 
-  function handleFormSubmit(values: typeof form.values) {
+  function handleFormSubmit(values: FormValues) {
     // Make a copy of the form values before resetting the form
-    void executeFormSubmit({ ...values });
-    form.reset();
+    const payload = { ...values };
+    void executeFormSubmit(payload);
+
+    // Reset the form, using the previous values for the account, category, and date
+    const lastUsedCategoryId = payload.categories.length === 1 ? payload.categories[0] : categoriesList[0].value;
+    form.setValues({
+      account: payload.account,
+      categories: [lastUsedCategoryId],
+      date: payload.date,
+      description: '',
+      notes: [''],
+      credit: [0],
+      debit: [0],
+    })
   }
 
   function renderBodyRows() {
