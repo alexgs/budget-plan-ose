@@ -8,6 +8,7 @@ import React from 'react';
 import { TransactionRow } from '../../client-lib/types';
 import { ChevronButton } from './ChevronButton';
 import { DollarAmountRenderer } from './DollarAmountRenderer';
+import { MeatballMenu } from './MeatballMenu';
 
 const columnHelper = createColumnHelper<TransactionRow>();
 
@@ -65,6 +66,12 @@ export function getColumnDefs(options?: Options) {
       header: 'Debit',
       size: 90,
     }),
+    columnHelper.display({
+      id: 'meatballs',
+      cell: ({ row }) => <MeatballMenu row={row} />,
+      enableResizing: false,
+      size: 30,
+    })
   ];
 
   return output;
