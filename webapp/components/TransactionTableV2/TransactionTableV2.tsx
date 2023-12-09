@@ -28,10 +28,12 @@ import { getColumnDefs } from './get-column-defs';
 
 interface Props {
   accounts?: ModelSchema.Account[];
+  categories?: ModelSchema.Category[];
   data: TransactionRow[];
   filter?: string;
   onCancel: VoidFunction;
   showNewTxnForm?: boolean;
+  transactions?: ModelSchema.Transaction[];
 }
 
 export const TransactionTableV2: React.FC<Props> = (props) => {
@@ -48,6 +50,28 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
       }),
     []
   );
+
+  React.useEffect(() => {
+    if (!nowEditing || !props.transactions) {
+      return;
+    }
+
+    const data = props.transactions.find((txn) => txn.id === nowEditing);
+    if (!data) {
+      throw new Error(`Could not find row with id ${nowEditing}`);
+    }
+
+    // Populate the form values from the row data
+    form.setValues({
+      account: data.accounts[0].accountId,
+      categories: [data.categories[0].categoryId],
+      date: data.date,
+      description: data.description,
+      notes: [data.categories[0].notes ?? ''],
+      credit: [data.categories[0].credit / 100],
+      debit: [data.categories[0].debit / 100],
+    });
+  }, [nowEditing, props.transactions]);
 
   const table = useReactTable({
     columns,
@@ -67,13 +91,9 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
     },
   });
 
-  // TODO Handle errors
-  const { error: accountError, accounts } = api.useAllAccounts();
-  const { error: categoryError, categories } = api.useAllCategories();
-
   let accountsList: { value: string; label: string }[] = [];
-  if (accounts) {
-    accountsList = accounts
+  if (props.accounts) {
+    accountsList = props.accounts
       .map((account) => ({
         value: account.id,
         label: account.description,
@@ -82,8 +102,8 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
   }
 
   let categoriesList: { value: string; label: string }[] = [];
-  if (categories) {
-    categoriesList = getCategoryList(buildCategoryTree(categories))
+  if (props.categories) {
+    categoriesList = getCategoryList(buildCategoryTree(props.categories))
       .filter((cat) => cat.isLeaf)
       .map((cat) => ({
         value: cat.id,
@@ -107,7 +127,7 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
 
   async function executeFormSubmit(values: FormValues) {
     setIsSaving(true);
-    const payload = newTxnFormToApi(values, accounts ?? []);
+    const payload = newTxnFormToApi(values, props.accounts ?? []);
     try {
       const response = await api.saveNewTransaction(payload);
 
@@ -135,6 +155,11 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
     }
   }
 
+  function handleFormCancel() {
+    setNowEditing(null);
+    props.onCancel();
+  }
+
   function handleFormError(errors: typeof form.errors) {
     console.error(errors);
   }
@@ -158,6 +183,7 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
       credit: [0],
       debit: [0],
     });
+    setNowEditing(null);
   }
 
   function renderBodyRows() {
@@ -167,12 +193,13 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
         if (row.original.id === nowEditing) {
           return (
             <TransactionForm
+              key={row.id}
               accountsList={accountsList}
               categoriesList={categoriesList}
               columnCount={columns.length}
               form={form}
               isSaving={isSaving}
-              onCancel={() => setNowEditing(null)}
+              onCancel={handleFormCancel}
             />
           );
         }
@@ -189,7 +216,7 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
           columnCount={columns.length}
           form={form}
           isSaving={isSaving}
-          onCancel={props.onCancel}
+          onCancel={handleFormCancel}
         />
       );
     }
