@@ -57,7 +57,7 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
   );
 
   React.useEffect(() => {
-    if (!nowEditing || !props.transactions) {
+    if (!nowEditing || !props.accounts || !props.transactions) {
       return;
     }
 
@@ -66,9 +66,9 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
       throw new Error(`Could not find row with id ${nowEditing}`);
     }
 
-    // Populate the form values from the row data
-    form.setValues(getFormValuesFromTxn(data));
-  }, [nowEditing, props.transactions]);
+    // Populate the form values from the transaction data
+    form.setValues(getFormValuesFromTxn(data, props.accounts));
+  }, [nowEditing, props.accounts, props.transactions]);
 
   const table = useReactTable({
     columns,
