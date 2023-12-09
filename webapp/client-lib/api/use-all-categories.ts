@@ -17,7 +17,8 @@ interface AllCategoriesResponse {
 
 export function useAllCategories(): AllCategoriesResponse {
   const { data, error, isLoading } = useSWR<ApiSchema.Category[], Error>(
-    `/api/v2/categories`
+    `/api/v2/categories`,
+    { refreshInterval: 1000 },
   );
   const categories = React.useMemo(
     () => data?.map((category) => transformers.categoryApiToModel(category)),
