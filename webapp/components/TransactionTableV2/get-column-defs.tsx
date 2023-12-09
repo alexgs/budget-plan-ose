@@ -14,9 +14,10 @@ const columnHelper = createColumnHelper<TransactionRow>();
 
 export interface Options {
   showAccountColumn?: boolean;
+  onEditClick: (transactionId: string) => void;
 }
 
-export function getColumnDefs(options?: Options) {
+export function getColumnDefs(options: Options) {
   // TODO Use `opt` object to control which columns are shown
   const opt = {
     showAccountColumn: true,
@@ -68,10 +69,12 @@ export function getColumnDefs(options?: Options) {
     }),
     columnHelper.display({
       id: 'meatballs',
-      cell: ({ row }) => <MeatballMenu row={row} />,
+      cell: ({ row }) => (
+        <MeatballMenu onEditClick={opt.onEditClick} row={row} />
+      ),
       enableResizing: false,
       size: 30,
-    })
+    }),
   ];
 
   return output;

@@ -11,6 +11,7 @@ import React from 'react';
 import { TransactionRow } from '../../client-lib/types';
 
 interface Props {
+  onEditClick: (transactionId: string) => void;
   row: Row<TransactionRow>;
 }
 
@@ -21,7 +22,7 @@ export const MeatballMenu: React.FC<Props> = (props) => {
   }
 
   function handleEditClick() {
-    console.log(`>> ${props.row.original.id} <<`);
+    props.onEditClick(props.row.original.id);
   }
 
   return (
