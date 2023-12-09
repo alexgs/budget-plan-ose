@@ -58,9 +58,11 @@ function NewTablePage() {
         </Flex>
         <TransactionTableV2
           accounts={accounts}
+          categories={categories}
           data={data}
           filter={debouncedFilter}
           showNewTxnForm={showNewTxnForm}
+          transactions={transactions}
           onCancel={handleCancelClick}
         />
       </Page>
