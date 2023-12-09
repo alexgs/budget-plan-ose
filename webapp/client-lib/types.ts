@@ -49,6 +49,7 @@ export interface RawCategory {
 }
 
 export interface TransactionRow {
+  id: string;
   account: string;
   category: string;
   credit: number;

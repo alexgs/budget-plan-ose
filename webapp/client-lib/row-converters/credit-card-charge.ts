@@ -3,9 +3,9 @@
  * under the Open Software License version 3.0.
  */
 
-import { getReservationCategoryId } from '../../shared-lib/get-reservation-category-id';
+import { getReservationCategoryId } from '../../shared-lib';
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
-import { formatClientDate } from '../format-client-date';
+import { formatLocalDate } from '../format-local-date';
 import { TransactionRow } from '../types';
 import { getAccountNameIfAvailable } from './get-account-name-if-available';
 import { getCategoryNameIfAvailable } from './get-category-name-if-available';
@@ -50,13 +50,14 @@ export function creditCardChargeRowConverter(
 
   if (chargedCategories.length === 1) {
     return {
+      id: txn.id,
       account: getAccountNameIfAvailable(txn.accounts[0].accountId, accounts),
       category: getCategoryNameIfAvailable(
         chargedCategories[0].categoryId,
         categories
       ),
       credit: chargedCategories[0].credit,
-      date: formatClientDate(txn.date),
+      date: formatLocalDate(txn.date),
       debit: chargedCategories[0].debit,
       description: txn.description,
       notes: chargedCategories[0].notes ?? '',
@@ -64,6 +65,7 @@ export function creditCardChargeRowConverter(
   } else {
     const categorySubrecords = chargedCategories.map(
       (category): TransactionRow => ({
+        id: category.id,
         account: '',
         category: getCategoryNameIfAvailable(category.categoryId, categories),
         credit: category.credit,
@@ -74,10 +76,11 @@ export function creditCardChargeRowConverter(
       })
     );
     return {
+      id: txn.id,
       account: getAccountNameIfAvailable(txn.accounts[0].accountId, accounts),
       category: '',
       credit: 0,
-      date: formatClientDate(txn.date),
+      date: formatLocalDate(txn.date),
       debit: 0,
       description: txn.description,
       notes: chargedCategories[0].notes ?? '',
