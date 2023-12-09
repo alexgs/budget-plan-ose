@@ -10,5 +10,6 @@ export { formatClientDate } from './format-client-date';
 export { formatLocalDate } from './format-local-date';
 export { formatUtcDate } from './format-utc-date';
 export { getCategoryList } from './get-category-list';
+export { getFormValuesFromTxn } from './get-form-values-from-txn';
 export { getRows } from './row-converters';
 export { globalFetcher } from './global-fetcher';

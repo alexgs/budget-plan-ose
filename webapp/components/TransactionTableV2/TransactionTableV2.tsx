@@ -15,7 +15,12 @@ import {
 } from '@tanstack/react-table';
 import React from 'react';
 
-import { api, buildCategoryTree, getCategoryList } from '../../client-lib';
+import {
+  api,
+  buildCategoryTree,
+  getCategoryList,
+  getFormValuesFromTxn,
+} from '../../client-lib';
 import { TransactionRow } from '../../client-lib/types';
 import { ModelSchema } from '../../shared-lib/schema-v2/model-schema';
 import { newTxnFormToApi } from '../../shared-lib/transformers/new-txn-form-to-api';
@@ -62,15 +67,7 @@ export const TransactionTableV2: React.FC<Props> = (props) => {
     }
 
     // Populate the form values from the row data
-    form.setValues({
-      account: data.accounts[0].accountId,
-      categories: [data.categories[0].categoryId],
-      date: data.date,
-      description: data.description,
-      notes: [data.categories[0].notes ?? ''],
-      credit: [data.categories[0].credit / 100],
-      debit: [data.categories[0].debit / 100],
-    });
+    form.setValues(getFormValuesFromTxn(data));
   }, [nowEditing, props.transactions]);
 
   const table = useReactTable({
