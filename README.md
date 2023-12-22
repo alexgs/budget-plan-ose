@@ -1,4 +1,8 @@
-# Budget Plan
+# Budget Plan OSE
+
+Open source edition (OSE) of [Budget Plan][2], a personal budgeting application. Please visit [BudgetPlan.io][2] for more information.
+
+[2]: https://budgetplan.io
 
 ## Standard Operating Procedures
 
